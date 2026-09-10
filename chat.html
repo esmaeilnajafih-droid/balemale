@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>چت زنده</title>
+    <title>چت خصوصی</title>
     <style>
-        /* ===== ریست ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100%; font-family: Tahoma, Arial, sans-serif; }
 
-        /* ===== صفحه چت ===== */
         body.chat-page {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
@@ -19,48 +17,207 @@
             padding: 10px;
         }
 
-        .chat-container {
+        .app {
             width: 100%;
-            max-width: 800px;
+            max-width: 1000px;
             height: 95vh;
             max-height: 900px;
             background: #fff;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             display: flex;
-            flex-direction: column;
             overflow: hidden;
         }
 
-        /* ===== هدر ===== */
-        .chat-container header {
+        /* ===== ستون کناری (مخاطبین) ===== */
+        .sidebar {
+            width: 300px;
+            background: #f8f9fa;
+            border-left: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
             background: linear-gradient(135deg, #0088cc 0%, #006fa8 100%);
             color: white;
-            padding: 18px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 18px;
         }
 
-        .chat-container header h2 {
-            font-size: 18px;
-            font-weight: 600;
+        .sidebar-header h2 {
+            font-size: 16px;
+            margin-bottom: 6px;
         }
 
-        .user-badge {
+        .my-email {
+            font-size: 11.5px;
+            opacity: 0.9;
+            direction: ltr;
+            text-align: left;
+            word-break: break-all;
+        }
+
+        .logout-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
             font-size: 12px;
-            background: rgba(255, 255, 255, 0.25);
-            padding: 5px 12px;
-            border-radius: 20px;
+            transition: all 0.2s;
         }
 
-        /* ===== لیست پیام‌ها ===== */
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* دکمه مخاطب جدید */
+        .new-contact-btn {
+            margin: 12px;
+            padding: 10px;
+            background: #fff;
+            border: 2px dashed #0088cc;
+            color: #0088cc;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .new-contact-btn:hover {
+            background: #e6f4fa;
+        }
+
+        /* لیست مخاطبین */
+        .contacts-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 12px 12px;
+        }
+
+        .contacts-list::-webkit-scrollbar { width: 5px; }
+        .contacts-list::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 3px;
+        }
+
+        .contact-item {
+            padding: 12px 14px;
+            background: #fff;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid transparent;
+        }
+
+        .contact-item:hover {
+            background: #e6f4fa;
+        }
+
+        .contact-item.active {
+            background: #e6f4fa;
+            border-color: #0088cc;
+        }
+
+        .contact-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #0088cc, #764ba2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .contact-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .contact-email {
+            font-size: 12.5px;
+            color: #1a1a1a;
+            direction: ltr;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .empty-contacts {
+            text-align: center;
+            color: #adb5bd;
+            font-size: 13px;
+            padding: 40px 20px;
+            line-height: 1.8;
+        }
+
+        /* ===== ناحیه چت ===== */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #e5ddd5;
+        }
+
+        .chat-header {
+            background: #fff;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-header .contact-avatar {
+            width: 40px;
+            height: 40px;
+        }
+
+        .chat-header-email {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: #1a1a1a;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .no-chat-selected {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #667781;
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+            gap: 10px;
+        }
+
+        .no-chat-selected .big-icon {
+            font-size: 60px;
+            opacity: 0.5;
+        }
+
         #messages-list {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background: #e5ddd5;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -72,11 +229,10 @@
             border-radius: 3px;
         }
 
-        /* ===== حباب پیام ===== */
         .message-item {
             max-width: 70%;
             padding: 10px 14px;
-            background: #ffffff;
+            background: #fff;
             border-radius: 16px 16px 16px 4px;
             align-self: flex-start;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
@@ -102,7 +258,6 @@
             word-break: break-word;
         }
 
-        /* ===== ناحیه ورودی ===== */
         .message-input-area {
             display: flex;
             padding: 14px 20px;
@@ -127,7 +282,6 @@
         .message-input-area input:focus {
             background: #fff;
             border-color: #0088cc;
-            box-shadow: 0 0 0 4px rgba(0, 136, 204, 0.1);
         }
 
         .message-input-area button {
@@ -141,51 +295,216 @@
             font-weight: 600;
             font-family: inherit;
             transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0, 136, 204, 0.3);
         }
 
         .message-input-area button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.4);
         }
 
-        /* ===== حالت خالی ===== */
-        #messages-list:empty::before {
-            content: '✨ هنوز پیامی نیست. اولین نفر باش!';
-            display: block;
-            text-align: center;
+        .message-input-area button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== مودال مخاطب جدید ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            animation: fadeIn 0.2s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: #fff;
+            padding: 28px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal h3 {
+            font-size: 18px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .modal p {
+            font-size: 13px;
             color: #667781;
+            margin-bottom: 18px;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 2px solid #e0e0e0;
+            background: #f8f9fa;
+            border-radius: 12px;
+            font-size: 14.5px;
+            outline: none;
+            font-family: inherit;
+            direction: ltr;
+            text-align: left;
+            margin-bottom: 14px;
+            transition: all 0.2s;
+        }
+
+        .modal input:focus {
+            background: #fff;
+            border-color: #0088cc;
+            box-shadow: 0 0 0 4px rgba(0, 136, 204, 0.12);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
             font-size: 14px;
-            padding: 40px 20px;
-            opacity: 0.7;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel {
+            background: #f0f2f5;
+            color: #667781;
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0088cc 0%, #006fa8 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
         }
 
         /* ===== ریسپانسیو ===== */
-        @media (max-width: 600px) {
+        @media (max-width: 700px) {
             body { padding: 0; }
-            .chat-container {
+            .app {
                 height: 100vh;
                 max-height: 100vh;
                 border-radius: 0;
+                position: relative;
+            }
+            .sidebar {
+                position: absolute;
+                top: 0; left: 0; bottom: 0;
+                width: 100%;
+                z-index: 10;
+                transition: transform 0.3s;
+            }
+            .sidebar.hidden {
+                transform: translateX(-100%);
+            }
+            .chat-area {
+                width: 100%;
             }
             .message-item { max-width: 85%; }
-            .message-input-area { padding: 10px 12px; }
-            .message-input-area button { padding: 12px 16px; }
+            .back-btn {
+                display: flex !important;
+            }
+        }
+
+        .back-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #0088cc;
+            padding: 0 8px;
         }
     </style>
 </head>
 <body class="chat-page">
-    <div class="chat-container">
-        <header>
-            <h2>💬 پیام‌رسان</h2>
-            <span class="user-badge" id="user-badge">کاربر مهمان</span>
-        </header>
+    <div class="app">
+        <!-- ===== ستون کناری ===== -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>💬 پیام‌رسان</h2>
+                <div class="my-email" id="my-email-display"></div>
+                <button class="logout-btn" id="logout-btn">خروج</button>
+            </div>
 
-        <div id="messages-list"></div>
+            <button class="new-contact-btn" id="new-contact-btn">
+                ➕ مخاطب جدید
+            </button>
 
-        <div class="message-input-area">
-            <input type="text" id="message-input" placeholder="پیام خود را بنویسید...">
-            <button id="send-message-btn">ارسال</button>
+            <div class="contacts-list" id="contacts-list">
+                <div class="empty-contacts">
+                    هنوز مخاطبی نداری.<br>
+                    روی «مخاطب جدید» بزن.
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ناحیه چت ===== -->
+        <div class="chat-area" id="chat-area">
+            <div class="chat-header" id="chat-header" style="display:none;">
+                <button class="back-btn" id="back-btn">→</button>
+                <div class="contact-avatar" id="chat-header-avatar"></div>
+                <div class="chat-header-email" id="chat-header-email"></div>
+            </div>
+
+            <div class="no-chat-selected" id="no-chat-selected">
+                <div class="big-icon">💬</div>
+                <div>یک مخاطب را انتخاب کن یا مخاطب جدید بساز</div>
+            </div>
+
+            <div id="messages-list" style="display:none;"></div>
+
+            <div class="message-input-area" id="message-input-area" style="display:none;">
+                <input type="text" id="message-input" placeholder="پیام خود را بنویسید...">
+                <button id="send-message-btn">ارسال</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== مودال مخاطب جدید ===== -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <h3>➕ مخاطب جدید</h3>
+            <p>ایمیل مخاطب را وارد کن</p>
+            <input type="email" id="new-contact-email" placeholder="friend@example.com">
+            <div class="modal-buttons">
+                <button class="btn-cancel" id="modal-cancel">انصراف</button>
+                <button class="btn-primary" id="modal-add">افزودن</button>
+            </div>
         </div>
     </div>
 
@@ -197,90 +516,274 @@
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // ===== شناسه و نام کاربر =====
-        let userId = localStorage.getItem('user_id');
-        if (!userId) {
-            userId = 'user-' + Math.random().toString(36).substring(2) + Date.now().toString(36);
-            localStorage.setItem('user_id', userId);
+        // ===== ایمیل من =====
+        const myEmail = localStorage.getItem('my_email');
+        if (!myEmail) {
+            window.location.href = 'index.html';
         }
 
-        const username = localStorage.getItem('username') || 'کاربر مهمان';
-        document.getElementById('user-badge').textContent = username;
+        document.getElementById('my-email-display').textContent = myEmail;
+
+        // ===== متغیرهای وضعیت =====
+        let currentContact = null;
+        let realtimeChannel = null;
 
         // ===== عناصر =====
+        const contactsList = document.getElementById('contacts-list');
         const messagesList = document.getElementById('messages-list');
-        const input = document.getElementById('message-input');
+        const messageInput = document.getElementById('message-input');
         const sendBtn = document.getElementById('send-message-btn');
+        const chatHeader = document.getElementById('chat-header');
+        const chatHeaderEmail = document.getElementById('chat-header-email');
+        const chatHeaderAvatar = document.getElementById('chat-header-avatar');
+        const noChatSelected = document.getElementById('no-chat-selected');
+        const messageInputArea = document.getElementById('message-input-area');
+        const sidebar = document.getElementById('sidebar');
 
-        // جلوگیری از XSS
+        // ===== توابع کمکی =====
         const escapeHtml = (text) => {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         };
 
-        // نمایش پیام
+        const getInitial = (email) => email.charAt(0).toUpperCase();
+
+        // ===== نمایش پیام =====
         const addMessage = (msg) => {
             const msgDiv = document.createElement('div');
             msgDiv.className = 'message-item';
-            if (msg.user_id === userId) msgDiv.classList.add('my-message');
+            if (msg.sender_email === myEmail) {
+                msgDiv.classList.add('my-message');
+            }
             msgDiv.innerHTML = `<div class="msg-content">${escapeHtml(msg.content)}</div>`;
             messagesList.appendChild(msgDiv);
             messagesList.scrollTop = messagesList.scrollHeight;
         };
 
-        // بارگذاری پیام‌های قبلی
+        // ===== بارگذاری مخاطبین =====
+        const loadContacts = async () => {
+            // تمام پیام‌هایی که من فرستادم یا دریافت کردم
+            const { data, error } = await supabase
+                .from('messages')
+                .select('sender_email, receiver_email')
+                .or(`sender_email.eq.${myEmail},receiver_email.eq.${myEmail}`);
+
+            if (error) {
+                console.error('خطا در بارگذاری مخاطبین:', error);
+                return [];
+            }
+
+            // استخراج ایمیل‌های یکتا (به جز خودم)
+            const contactsSet = new Set();
+            data.forEach(msg => {
+                if (msg.sender_email !== myEmail) contactsSet.add(msg.sender_email);
+                if (msg.receiver_email !== myEmail) contactsSet.add(msg.receiver_email);
+            });
+
+            return Array.from(contactsSet);
+        };
+
+        // ===== نمایش لیست مخاطبین =====
+        const renderContacts = async () => {
+            const contacts = await loadContacts();
+
+            if (contacts.length === 0) {
+                contactsList.innerHTML = `
+                    <div class="empty-contacts">
+                        هنوز مخاطبی نداری.<br>
+                        روی «مخاطب جدید» بزن.
+                    </div>
+                `;
+                return;
+            }
+
+            contactsList.innerHTML = '';
+            contacts.forEach(email => {
+                const item = document.createElement('div');
+                item.className = 'contact-item';
+                if (email === currentContact) item.classList.add('active');
+                item.innerHTML = `
+                    <div class="contact-avatar">${getInitial(email)}</div>
+                    <div class="contact-info">
+                        <div class="contact-email">${escapeHtml(email)}</div>
+                    </div>
+                `;
+                item.addEventListener('click', () => openChat(email));
+                contactsList.appendChild(item);
+            });
+        };
+
+        // ===== باز کردن چت =====
+        const openChat = async (email) => {
+            currentContact = email;
+
+            // به‌روزرسانی UI
+            chatHeader.style.display = 'flex';
+            noChatSelected.style.display = 'none';
+            messagesList.style.display = 'flex';
+            messageInputArea.style.display = 'flex';
+
+            chatHeaderEmail.textContent = email;
+            chatHeaderAvatar.textContent = getInitial(email);
+
+            // در موبایل، ستون کناری را مخفی کن
+            if (window.innerWidth <= 700) {
+                sidebar.classList.add('hidden');
+            }
+
+            // هایلایت مخاطب فعال
+            document.querySelectorAll('.contact-item').forEach(el => {
+                el.classList.remove('active');
+                if (el.querySelector('.contact-email').textContent === email) {
+                    el.classList.add('active');
+                }
+            });
+
+            // بارگذاری پیام‌ها
+            await loadMessages();
+
+            // راه‌اندازی Realtime برای این چت
+            setupRealtime();
+
+            messageInput.focus();
+        };
+
+        // ===== بارگذاری پیام‌های چت فعلی =====
         const loadMessages = async () => {
+            if (!currentContact) return;
+
             const { data, error } = await supabase
                 .from('messages')
                 .select('*')
+                .or(
+                    `and(sender_email.eq.${myEmail},receiver_email.eq.${currentContact}),` +
+                    `and(sender_email.eq.${currentContact},receiver_email.eq.${myEmail})`
+                )
                 .order('created_at', { ascending: true });
 
             if (error) {
-                console.error('خطا در بارگذاری:', error);
+                console.error('خطا در بارگذاری پیام‌ها:', error);
                 return;
             }
+
             messagesList.innerHTML = '';
             data.forEach(addMessage);
         };
 
-        await loadMessages();
+        // ===== Realtime =====
+        const setupRealtime = () => {
+            // حذف کانال قبلی
+            if (realtimeChannel) {
+                supabase.removeChannel(realtimeChannel);
+            }
 
-        // Realtime
-        supabase
-            .channel('messages-channel')
-            .on(
-                'postgres_changes',
-                { event: 'INSERT', schema: 'public', table: 'messages' },
-                (payload) => addMessage(payload.new)
-            )
-            .subscribe((status) => {
-                console.log('وضعیت Realtime:', status);
-            });
+            realtimeChannel = supabase
+                .channel('chat-' + currentContact)
+                .on(
+                    'postgres_changes',
+                    { event: 'INSERT', schema: 'public', table: 'messages' },
+                    (payload) => {
+                        const msg = payload.new;
+                        // فقط پیام‌های مربوط به این چت را نمایش بده
+                        const isRelevant =
+                            (msg.sender_email === myEmail && msg.receiver_email === currentContact) ||
+                            (msg.sender_email === currentContact && msg.receiver_email === myEmail);
+                        
+                        if (isRelevant) {
+                            addMessage(msg);
+                            renderContacts(); // به‌روزرسانی لیست مخاطبین
+                        }
+                    }
+                )
+                .subscribe((status) => {
+                    console.log('Realtime:', status);
+                });
+        };
 
-        // ارسال پیام
+        // ===== ارسال پیام =====
         const sendMessage = async () => {
-            const content = input.value.trim();
-            if (!content) return;
+            const content = messageInput.value.trim();
+            if (!content || !currentContact) return;
 
             const { error } = await supabase.from('messages').insert({
                 content: content,
-                user_id: userId,
+                sender_email: myEmail,
+                receiver_email: currentContact,
             });
 
             if (error) {
                 console.error('خطا در ارسال:', error);
                 alert('خطا: ' + error.message);
             } else {
-                input.value = '';
-                input.focus();
+                messageInput.value = '';
+                messageInput.focus();
             }
         };
 
         sendBtn.addEventListener('click', sendMessage);
-        input.addEventListener('keypress', (e) => {
+        messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
         });
+
+        // ===== دکمه مخاطب جدید =====
+        const modalOverlay = document.getElementById('modal-overlay');
+        const newContactEmail = document.getElementById('new-contact-email');
+
+        document.getElementById('new-contact-btn').addEventListener('click', () => {
+            modalOverlay.classList.add('show');
+            newContactEmail.value = '';
+            newContactEmail.focus();
+        });
+
+        document.getElementById('modal-cancel').addEventListener('click', () => {
+            modalOverlay.classList.remove('show');
+        });
+
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('show');
+            }
+        });
+
+        document.getElementById('modal-add').addEventListener('click', async () => {
+            const email = newContactEmail.value.trim().toLowerCase();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailRegex.test(email)) {
+                alert('ایمیل معتبر نیست');
+                return;
+            }
+
+            if (email === myEmail) {
+                alert('نمی‌توانی با خودت چت کنی!');
+                return;
+            }
+
+            modalOverlay.classList.remove('show');
+            await renderContacts();
+            await openChat(email);
+        });
+
+        newContactEmail.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('modal-add').click();
+            }
+        });
+
+        // ===== دکمه بازگشت (موبایل) =====
+        document.getElementById('back-btn').addEventListener('click', () => {
+            sidebar.classList.remove('hidden');
+        });
+
+        // ===== خروج =====
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('my_email');
+            window.location.href = 'index.html';
+        });
+
+        // ===== شروع =====
+        await renderContacts();
     </script>
 </body>
 </html>
