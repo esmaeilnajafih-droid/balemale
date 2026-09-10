@@ -1161,14 +1161,12 @@
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-        const SUPABASE_URL = 'https://mjmzpbhflctxrkrkzebw.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qbXpwYmhmbGN0eHJrcmt6ZWJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NzA3ODAsImV4cCI6MjEwNDU0Njc4MH0.AtV8I1RsdPG_I7hIMNlM489wjse6k4Jz0pEfRbQpYY4';
+        const SUPABASE_URL = 'https://sgjrwmnfvrpjtshlabva.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnanJ3bW5mdnJwanRzaGxhYnZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwNTYwNzcsImV4cCI6MjEwNDYzMjA3N30._BOp-ONPTEbaM2mnGdJbdvjN-7qqA87zvannrOv02Eo';
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // ============================================
-        // بررسی نشست Supabase Auth
-        // ============================================
+        // بررسی نشست
         const { data: { session } } = await supabase.auth.getSession();
         if (!session?.user?.email) {
             localStorage.removeItem('my_email');
@@ -1178,9 +1176,6 @@
         const myEmail = session.user.email;
         localStorage.setItem('my_email', myEmail);
 
-        // ============================================
-        // ترجمه‌ها
-        // ============================================
         const translations = {
             fa: {
                 appName: 'بله مله',
@@ -2263,7 +2258,6 @@
             attachMenu.classList.remove('show');
         });
 
-        // ===== خروج (با signOut) =====
         document.getElementById('logout-btn').addEventListener('click', async () => {
             if (!confirm(currentLang === 'fa' ? 'از حساب خارج می‌شوید؟' : 'Sign out?')) return;
             await supabase.auth.signOut();
