@@ -321,14 +321,11 @@
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-        const SUPABASE_URL = 'https://mjmzpbhflctxrkrkzebw.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qbXpwYmhmbGN0eHJrcmt6ZWJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NzA3ODAsImV4cCI6MjEwNDU0Njc4MH0.AtV8I1RsdPG_I7hIMNlM489wjse6k4Jz0pEfRbQpYY4';
+        const SUPABASE_URL = 'https://sgjrwmnfvrpjtshlabva.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnanJ3bW5mdnJwanRzaGxhYnZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwNTYwNzcsImV4cCI6MjEwNDYzMjA3N30._BOp-ONPTEbaM2mnGdJbdvjN-7qqA87zvannrOv02Eo';
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // ============================================
-        // ترجمه‌ها
-        // ============================================
         const translations = {
             fa: {
                 appName: 'بله مله',
@@ -375,7 +372,7 @@
         let currentLang = localStorage.getItem('lang') || 'fa';
         const t = (key) => translations[currentLang][key] || key;
 
-        let currentMode = 'login'; // login | signup
+        let currentMode = 'login';
 
         const applyLanguage = () => {
             document.documentElement.lang = currentLang;
@@ -400,9 +397,6 @@
             btn.textContent = currentMode === 'login' ? t('loginBtn') : t('signupBtn');
         };
 
-        // ============================================
-        // تب‌ها
-        // ============================================
         document.getElementById('tab-login').addEventListener('click', () => {
             currentMode = 'login';
             document.getElementById('tab-login').classList.add('active');
@@ -419,39 +413,28 @@
             document.getElementById('message-area').textContent = '';
         });
 
-        // ============================================
-        // تغییر زبان
-        // ============================================
         document.getElementById('lang-btn').addEventListener('click', () => {
             currentLang = currentLang === 'fa' ? 'en' : 'fa';
             localStorage.setItem('lang', currentLang);
             applyLanguage();
         });
 
-        // ============================================
-        // ورود / ثبت‌نام
-        // ============================================
         const emailInput = document.getElementById('email-input');
         const passwordInput = document.getElementById('password-input');
         const submitBtn = document.getElementById('submit-btn');
         const messageArea = document.getElementById('message-area');
 
         // چک کردن نشست فعلی
-        const checkSession = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user?.email) {
-                localStorage.setItem('my_email', session.user.email);
-                window.location.href = 'chat.html';
-            }
-        };
-
-        await checkSession();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user?.email) {
+            localStorage.setItem('my_email', session.user.email);
+            window.location.href = 'chat.html';
+        }
 
         const handleSubmit = async () => {
             const email = emailInput.value.trim().toLowerCase();
             const password = passwordInput.value;
 
-            // اعتبارسنجی
             if (!email) {
                 messageArea.textContent = t('emptyEmail');
                 messageArea.className = 'error';
@@ -483,7 +466,6 @@
 
             try {
                 if (currentMode === 'login') {
-                    // ورود
                     const { data, error } = await supabase.auth.signInWithPassword({
                         email,
                         password,
@@ -506,7 +488,6 @@
                         }, 500);
                     }
                 } else {
-                    // ثبت‌نام
                     const { data, error } = await supabase.auth.signUp({
                         email,
                         password,
@@ -520,7 +501,6 @@
                     }
 
                     if (data.session?.user?.email) {
-                        // چون Confirm email خاموشه، مستقیم وارد می‌شه
                         localStorage.setItem('my_email', data.session.user.email);
                         messageArea.textContent = t('signupSuccess');
                         messageArea.className = 'success';
