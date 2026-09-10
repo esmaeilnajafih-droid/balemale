@@ -424,7 +424,6 @@
             border-radius: 10px;
         }
 
-        /* ===== پیام فایل ===== */
         .file-message {
             display: flex;
             align-items: center;
@@ -735,6 +734,125 @@
 
         .type-option svg { width: 24px; height: 24px; fill: currentColor; }
 
+        .contacts-picker {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid #e4e8ec;
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 14px;
+            background: #f8fafc;
+        }
+
+        .contacts-picker::-webkit-scrollbar { width: 5px; }
+        .contacts-picker::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 3px;
+        }
+
+        .contacts-picker .empty {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            padding: 20px 10px;
+        }
+
+        .contact-checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+            margin-bottom: 4px;
+            background: #fff;
+        }
+
+        .contact-checkbox-item:hover {
+            background: var(--primary-light);
+        }
+
+        .contact-checkbox-item.selected {
+            background: var(--primary-light);
+            outline: 2px solid var(--primary);
+        }
+
+        .contact-checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .contact-checkbox-item .mini-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .contact-checkbox-item .mini-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .contact-checkbox-item .mini-name {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .contact-checkbox-item .mini-email {
+            font-size: 11px;
+            color: var(--text-muted);
+            direction: ltr;
+            text-align: right;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        body.lang-en .contact-checkbox-item .mini-email {
+            text-align: left;
+        }
+
+        .selected-count {
+            font-size: 12.5px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
+            min-height: 18px;
+        }
+
+        .search-contacts {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e4e8ec;
+            background: #f8fafc;
+            border-radius: 10px;
+            font-size: 13.5px;
+            outline: none;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+
+        .search-contacts:focus {
+            background: #fff;
+            border-color: var(--primary);
+        }
+
         .modal-buttons { display: flex; gap: 10px; margin-top: 8px; }
 
         .modal-buttons button {
@@ -856,6 +974,10 @@
 
             .sidebar-header h2 { font-size: 17px; }
             .sidebar-header h2 svg { width: 30px; height: 30px; }
+
+            .contacts-picker {
+                max-height: 150px;
+            }
         }
 
         @media (max-width: 380px) {
@@ -1022,8 +1144,12 @@
             <label data-i18n="description">توضیحات (اختیاری)</label>
             <textarea id="group-desc" data-i18n-placeholder="groupDescPlaceholder"></textarea>
 
-            <label data-i18n="membersLabel">ایمیل اعضا (با کاما جدا کن)</label>
-            <textarea id="group-members" placeholder="ali@test.com, sara@test.com"></textarea>
+            <label data-i18n="membersLabel">انتخاب اعضا</label>
+            <input type="text" class="search-contacts" id="search-contacts" data-i18n-placeholder="searchContacts" placeholder="جستجو...">
+            <div class="contacts-picker" id="contacts-picker">
+                <div class="empty" data-i18n="loadingContacts">در حال بارگذاری مخاطبین...</div>
+            </div>
+            <div class="selected-count" id="selected-count"></div>
 
             <div class="modal-buttons">
                 <button class="btn-cancel" data-close data-i18n="cancel">انصراف</button>
@@ -1039,6 +1165,18 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qbXpwYmhmbGN0eHJrcmt6ZWJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NzA3ODAsImV4cCI6MjEwNDU0Njc4MH0.AtV8I1RsdPG_I7hIMNlM489wjse6k4Jz0pEfRbQpYY4';
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ============================================
+        // بررسی نشست Supabase Auth
+        // ============================================
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user?.email) {
+            localStorage.removeItem('my_email');
+            window.location.href = 'index.html';
+        }
+
+        const myEmail = session.user.email;
+        localStorage.setItem('my_email', myEmail);
 
         // ============================================
         // ترجمه‌ها
@@ -1070,7 +1208,7 @@
                 type: 'نوع',
                 name: 'نام',
                 description: 'توضیحات (اختیاری)',
-                membersLabel: 'ایمیل اعضا (با کاما جدا کن)',
+                membersLabel: 'انتخاب اعضا',
                 create: 'ساخت',
                 groupNamePlaceholder: 'مثلاً: گروه دوستان',
                 groupDescPlaceholder: 'توضیح کوتاه...',
@@ -1091,6 +1229,11 @@
                 enterName: 'نام را وارد کن',
                 groupCreateError: 'خطا در ساخت: ',
                 groupMemberError: 'خطا در افزودن اعضا: ',
+                searchContacts: 'جستجو...',
+                loadingContacts: 'در حال بارگذاری مخاطبین...',
+                noContactsAvailable: 'هنوز مخاطبی نداری. اول با کسی چت کن.',
+                noContactsFound: 'مخاطبی پیدا نشد',
+                selectedCount: 'انتخاب شده: ',
                 backTitle: 'بازگشت',
                 logoutTitle: 'خروج',
                 attachTitle: 'ضمیمه',
@@ -1123,7 +1266,7 @@
                 type: 'Type',
                 name: 'Name',
                 description: 'Description (optional)',
-                membersLabel: 'Member emails (comma separated)',
+                membersLabel: 'Select Members',
                 create: 'Create',
                 groupNamePlaceholder: 'e.g. Friends Group',
                 groupDescPlaceholder: 'Short description...',
@@ -1144,6 +1287,11 @@
                 enterName: 'Enter a name',
                 groupCreateError: 'Create error: ',
                 groupMemberError: 'Member add error: ',
+                searchContacts: 'Search...',
+                loadingContacts: 'Loading contacts...',
+                noContactsAvailable: 'No contacts yet. Chat with someone first.',
+                noContactsFound: 'No contacts found',
+                selectedCount: 'Selected: ',
                 backTitle: 'Back',
                 logoutTitle: 'Logout',
                 attachTitle: 'Attach',
@@ -1189,9 +1337,6 @@
             applyLanguage();
         });
 
-        const myEmail = localStorage.getItem('my_email');
-        if (!myEmail) window.location.href = 'index.html';
-
         document.getElementById('my-email-display').textContent = myEmail;
         document.getElementById('my-name').textContent = myEmail.split('@')[0];
         document.getElementById('my-avatar').textContent = myEmail.charAt(0).toUpperCase();
@@ -1200,6 +1345,8 @@
         let currentChat = null;
         let realtimeChannel = null;
         let selectedGroupType = 'group';
+        let allContacts = [];
+        let selectedContacts = [];
 
         let mediaRecorder = null;
         let audioChunks = [];
@@ -1646,7 +1793,6 @@
             if (e.key === 'Enter') sendMessage();
         });
 
-        // ===== ارسال عکس =====
         fileInput.addEventListener('change', async () => {
             const file = fileInput.files[0];
             if (!file) return;
@@ -1716,7 +1862,6 @@
             }
         });
 
-        // ===== ارسال فایل =====
         fileInputDoc.addEventListener('change', async () => {
             const file = fileInputDoc.files[0];
             if (!file) return;
@@ -1786,7 +1931,6 @@
             }
         });
 
-        // ===== ضبط صدا =====
         const startRecording = async () => {
             if (!currentChat) return;
             if (currentChat.type === 'channel' && !currentChat.isOwner) return;
@@ -1898,7 +2042,6 @@
             }, 200);
         });
 
-        // ===== مودال مخاطب =====
         const contactModal = document.getElementById('contact-modal');
         const newContactEmail = document.getElementById('new-contact-email');
 
@@ -1920,30 +2063,126 @@
             await openPrivateChat(email);
         });
 
-        // ===== مودال گروه/کانال =====
+        const loadContactsForPicker = async () => {
+            const picker = document.getElementById('contacts-picker');
+            picker.innerHTML = `<div class="empty">${t('loadingContacts')}</div>`;
+
+            const { data, error } = await supabase
+                .from('messages')
+                .select('sender_email, receiver_email')
+                .is('chat_id', null)
+                .or(`sender_email.eq.${myEmail},receiver_email.eq.${myEmail}`);
+
+            if (error || !data) {
+                picker.innerHTML = `<div class="empty">${t('noContactsAvailable')}</div>`;
+                return;
+            }
+
+            const contactsSet = new Set();
+            data.forEach(msg => {
+                if (msg.sender_email !== myEmail) contactsSet.add(msg.sender_email);
+                if (msg.receiver_email !== myEmail) contactsSet.add(msg.receiver_email);
+            });
+
+            allContacts = Array.from(contactsSet);
+
+            if (allContacts.length === 0) {
+                picker.innerHTML = `<div class="empty">${t('noContactsAvailable')}</div>`;
+                return;
+            }
+
+            renderContactsPicker(allContacts);
+        };
+
+        const renderContactsPicker = (contacts) => {
+            const picker = document.getElementById('contacts-picker');
+            const selectedCountEl = document.getElementById('selected-count');
+
+            if (contacts.length === 0) {
+                picker.innerHTML = `<div class="empty">${t('noContactsFound')}</div>`;
+                selectedCountEl.textContent = '';
+                return;
+            }
+
+            picker.innerHTML = '';
+            contacts.forEach(email => {
+                const isSelected = selectedContacts.includes(email);
+                const item = document.createElement('div');
+                item.className = 'contact-checkbox-item' + (isSelected ? ' selected' : '');
+                item.dataset.email = email;
+                item.innerHTML = `
+                    <input type="checkbox" ${isSelected ? 'checked' : ''}>
+                    <div class="mini-avatar">${getInitial(email)}</div>
+                    <div class="mini-info">
+                        <div class="mini-name">${escapeHtml(email.split('@')[0])}</div>
+                        <div class="mini-email">${escapeHtml(email)}</div>
+                    </div>
+                `;
+
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleContact(email);
+                });
+
+                picker.appendChild(item);
+            });
+
+            if (selectedContacts.length > 0) {
+                selectedCountEl.textContent = t('selectedCount') + selectedContacts.length;
+            } else {
+                selectedCountEl.textContent = '';
+            }
+        };
+
+        const toggleContact = (email) => {
+            const idx = selectedContacts.indexOf(email);
+            if (idx > -1) {
+                selectedContacts.splice(idx, 1);
+            } else {
+                selectedContacts.push(email);
+            }
+            renderContactsPicker(allContacts);
+        };
+
         const groupModal = document.getElementById('group-modal');
         const groupName = document.getElementById('group-name');
         const groupDesc = document.getElementById('group-desc');
-        const groupMembers = document.getElementById('group-members');
         const groupModalTitle = document.getElementById('group-modal-title');
 
         const openGroupModal = (type) => {
             selectedGroupType = type;
+            selectedContacts = [];
             groupModal.classList.add('show');
             groupName.value = '';
             groupDesc.value = '';
-            groupMembers.value = '';
             groupModalTitle.textContent = type === 'group' ? t('newGroup') : t('newChannel');
 
             document.querySelectorAll('.type-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.type === type);
             });
 
+            const searchInput = document.getElementById('search-contacts');
+            if (searchInput) searchInput.value = '';
+
+            loadContactsForPicker();
+
             setTimeout(() => groupName.focus(), 100);
         };
 
         document.getElementById('new-group-btn').addEventListener('click', () => openGroupModal('group'));
         document.getElementById('new-channel-btn').addEventListener('click', () => openGroupModal('channel'));
+
+        document.getElementById('search-contacts').addEventListener('input', (e) => {
+            const query = e.target.value.trim().toLowerCase();
+            if (!query) {
+                renderContactsPicker(allContacts);
+                return;
+            }
+            const filtered = allContacts.filter(email =>
+                email.toLowerCase().includes(query)
+            );
+            renderContactsPicker(filtered);
+        });
 
         document.querySelectorAll('.type-option').forEach(opt => {
             opt.addEventListener('click', () => {
@@ -1957,14 +2196,8 @@
         document.getElementById('group-create').addEventListener('click', async () => {
             const name = groupName.value.trim();
             const desc = groupDesc.value.trim();
-            const membersRaw = groupMembers.value.trim();
 
             if (!name) { alert(t('enterName')); return; }
-
-            const members = membersRaw
-                .split(',')
-                .map(e => e.trim().toLowerCase())
-                .filter(e => e && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
 
             const { data: chatData, error: chatError } = await supabase
                 .from('chats')
@@ -1985,9 +2218,11 @@
 
             const allMembers = [
                 { chat_id: chatId, member_email: myEmail, role: 'owner' },
-                ...members
-                    .filter(e => e !== myEmail)
-                    .map(e => ({ chat_id: chatId, member_email: e, role: 'member' }))
+                ...selectedContacts.map(email => ({
+                    chat_id: chatId,
+                    member_email: email,
+                    role: 'member'
+                }))
             ];
 
             const { error: memError } = await supabase
@@ -2000,6 +2235,7 @@
             }
 
             groupModal.classList.remove('show');
+            selectedContacts = [];
 
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             const targetTab = document.querySelector(`.tab[data-tab="${selectedGroupType}"]`);
@@ -2027,7 +2263,10 @@
             attachMenu.classList.remove('show');
         });
 
-        document.getElementById('logout-btn').addEventListener('click', () => {
+        // ===== خروج (با signOut) =====
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            if (!confirm(currentLang === 'fa' ? 'از حساب خارج می‌شوید؟' : 'Sign out?')) return;
+            await supabase.auth.signOut();
             localStorage.removeItem('my_email');
             window.location.href = 'index.html';
         });
