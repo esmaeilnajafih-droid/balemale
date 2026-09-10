@@ -26,6 +26,7 @@
             background: #0f172a;
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh; padding: 10px;
+            overflow: hidden;
         }
 
         .app {
@@ -35,6 +36,7 @@
             display: flex; overflow: hidden;
         }
 
+        /* ===== ستون کناری ===== */
         .sidebar {
             width: 340px; background: var(--sidebar-bg);
             border-left: 1px solid var(--border);
@@ -44,7 +46,6 @@
         .sidebar-header {
             padding: 14px 16px;
             border-bottom: 1px solid var(--border);
-            background: #fff;
         }
 
         .sidebar-header h2 {
@@ -52,11 +53,13 @@
             display: flex; align-items: center; gap: 8px;
         }
 
-        .sidebar-header h2::before {
-            content: ''; width: 32px; height: 32px;
+        .sidebar-header h2 svg {
+            width: 30px; height: 30px;
             background: linear-gradient(135deg, var(--primary), #764ba2);
             border-radius: 50%;
-            display: inline-flex; align-items: center; justify-content: center;
+            padding: 6px;
+            fill: white;
+            flex-shrink: 0;
         }
 
         .my-info {
@@ -92,12 +95,13 @@
         .logout-btn {
             background: transparent; color: #ef4444;
             border: none; cursor: pointer;
-            font-family: inherit; font-size: 18px;
             padding: 6px; border-radius: 8px;
-            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
         }
 
         .logout-btn:hover { background: #fef2f2; }
+
+        .logout-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
         .action-buttons {
             display: flex; gap: 4px; padding: 10px 12px;
@@ -109,12 +113,12 @@
             border: none; color: var(--primary);
             border-radius: 10px; cursor: pointer;
             font-family: inherit; font-size: 11.5px;
-            font-weight: 600; transition: all 0.2s;
+            font-weight: 600;
             display: flex; flex-direction: column; align-items: center; gap: 4px;
         }
 
         .action-btn:hover { background: var(--primary-light); }
-        .action-btn .icon { font-size: 18px; }
+        .action-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
         .tabs {
             display: flex; background: #fff;
@@ -126,7 +130,7 @@
             flex: 1; padding: 12px 0; text-align: center;
             font-size: 13px; color: var(--text-muted);
             cursor: pointer; position: relative;
-            transition: all 0.2s; font-weight: 600;
+            font-weight: 600;
         }
 
         .tab.active { color: var(--primary); }
@@ -138,8 +142,6 @@
             border-radius: 3px 3px 0 0;
         }
 
-        .tab:hover { color: var(--primary); }
-
         .list-container { flex: 1; overflow-y: auto; }
 
         .list-container::-webkit-scrollbar { width: 5px; }
@@ -149,7 +151,6 @@
 
         .list-item {
             padding: 12px 16px; cursor: pointer;
-            transition: background 0.15s;
             display: flex; align-items: center; gap: 12px;
             border-bottom: 1px solid #f1f5f9;
         }
@@ -167,6 +168,8 @@
         .avatar.private { background: linear-gradient(135deg, #0088cc, #764ba2); }
         .avatar.group { background: linear-gradient(135deg, #22c55e, #16a34a); }
         .avatar.channel { background: linear-gradient(135deg, #f97316, #ea580c); }
+
+        .avatar svg { width: 22px; height: 22px; fill: white; }
 
         .item-info { flex: 1; min-width: 0; }
 
@@ -199,15 +202,20 @@
         }
 
         .empty-list::before {
-            content: '💬'; display: block;
-            font-size: 48px; margin-bottom: 12px;
-            opacity: 0.4;
+            content: ''; display: block;
+            width: 60px; height: 60px;
+            margin: 0 auto 12px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237d8b99' opacity='0.4'%3E%3Cpath d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
         }
 
+        /* ===== ناحیه چت ===== */
         .chat-area {
             flex: 1; display: flex; flex-direction: column;
             background: var(--bg-chat);
             position: relative;
+            min-width: 0;
         }
 
         .chat-area::before {
@@ -258,8 +266,10 @@
             position: relative; z-index: 2;
         }
 
-        .no-chat-selected .big-icon {
-            font-size: 80px; opacity: 0.3;
+        .no-chat-selected svg {
+            width: 80px; height: 80px;
+            fill: var(--text-muted);
+            opacity: 0.3;
         }
 
         #messages-list {
@@ -311,7 +321,7 @@
 
         .voice-message {
             display: flex; align-items: center; gap: 12px;
-            min-width: 220px; padding: 2px 0;
+            min-width: 200px; padding: 2px 0;
         }
 
         .voice-play-btn {
@@ -319,12 +329,11 @@
             background: var(--primary); color: white;
             border: none; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            font-size: 14px; flex-shrink: 0;
-            transition: all 0.2s;
+            flex-shrink: 0;
             box-shadow: 0 2px 6px rgba(0, 136, 204, 0.3);
         }
 
-        .voice-play-btn:hover { transform: scale(1.08); }
+        .voice-play-btn svg { width: 16px; height: 16px; fill: white; }
         .voice-play-btn.playing { background: #ef4444; }
 
         .voice-wave {
@@ -342,16 +351,12 @@
             direction: ltr; flex-shrink: 0; font-weight: 600;
         }
 
-        /* ===== پیام عکس ===== */
         .image-message {
             max-width: 280px;
             border-radius: 10px;
             overflow: hidden;
             cursor: pointer;
-            transition: transform 0.2s;
         }
-
-        .image-message:hover { transform: scale(1.02); }
 
         .image-message img {
             width: 100%;
@@ -360,8 +365,9 @@
             border-radius: 10px;
         }
 
+        /* ===== ناحیه ورودی ===== */
         .message-input-area {
-            display: flex; padding: 12px 20px;
+            display: flex; padding: 10px 14px;
             background: #fff;
             border-top: 1px solid var(--border);
             gap: 8px; align-items: center;
@@ -369,13 +375,13 @@
         }
 
         .message-input-area input[type="text"] {
-            flex: 1; padding: 12px 20px;
+            flex: 1; padding: 12px 18px;
             border: 2px solid transparent;
             background: #f0f2f5;
             border-radius: 22px;
             font-size: 14.5px; outline: none;
             font-family: inherit;
-            transition: all 0.2s;
+            min-width: 0;
         }
 
         .message-input-area input[type="text"]:focus {
@@ -388,48 +394,90 @@
             background: #f8f9fa; cursor: not-allowed;
         }
 
-        .attach-btn, .mic-btn {
+        .attach-btn {
             width: 44px; height: 44px; border-radius: 50%;
             background: #f0f2f5; color: var(--primary);
             border: none; cursor: pointer;
-            font-size: 18px; flex-shrink: 0;
-            transition: all 0.2s;
+            flex-shrink: 0;
             display: flex; align-items: center; justify-content: center;
         }
 
-        .attach-btn:hover, .mic-btn:hover {
-            background: var(--primary-light);
-            transform: scale(1.05);
-        }
-
-        .attach-btn:disabled, .mic-btn:disabled {
-            opacity: 0.4; cursor: not-allowed; transform: none;
-        }
-
-        .mic-btn.recording {
-            background: #ef4444; color: white;
-            animation: pulse-record 1s infinite;
-        }
-
-        @keyframes pulse-record {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
-            50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
-        }
+        .attach-btn:hover { background: var(--primary-light); }
+        .attach-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .attach-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
         .send-btn {
             width: 44px; height: 44px; border-radius: 50%;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white; border: none;
-            cursor: pointer; font-size: 18px;
+            cursor: pointer;
             flex-shrink: 0;
-            transition: all 0.2s;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 3px 10px rgba(0, 136, 204, 0.35);
         }
 
         .send-btn:hover { transform: scale(1.06); }
-        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .send-btn svg { width: 20px; height: 20px; fill: white; }
 
+        /* ===== منوی ضمیمه ===== */
+        .attach-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 14px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 100;
+            min-width: 200px;
+            animation: menuIn 0.2s ease-out;
+        }
+
+        .attach-menu.show { display: flex; }
+
+        @keyframes menuIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .attach-menu-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text);
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: right;
+        }
+
+        .attach-menu-item:hover { background: var(--primary-light); }
+
+        .attach-menu-icon {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .attach-menu-icon svg { width: 20px; height: 20px; fill: white; }
+
+        .attach-menu-icon.image {
+            background: linear-gradient(135deg, #0088cc, #764ba2);
+        }
+
+        .attach-menu-icon.voice {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+        }
+
+        /* ===== نوار ضبط ===== */
         .recording-bar {
             display: none;
             align-items: center; gap: 12px;
@@ -466,18 +514,15 @@
             padding: 8px 18px; border: none; border-radius: 20px;
             cursor: pointer; font-family: inherit;
             font-size: 13px; font-weight: 700;
-            transition: all 0.2s;
         }
 
         .rec-cancel { background: #f0f2f5; color: #667781; }
-        .rec-cancel:hover { background: #e0e0e0; }
-
         .rec-send {
             background: #22c55e; color: white;
             box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
         }
-        .rec-send:hover { transform: translateY(-1px); }
 
+        /* ===== مودال ===== */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(15, 23, 42, 0.6);
@@ -494,12 +539,6 @@
             width: 100%; max-width: 440px;
             box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
             max-height: 90vh; overflow-y: auto;
-            animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.92); }
-            to { opacity: 1; transform: scale(1); }
         }
 
         .modal h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
@@ -517,13 +556,11 @@
             border-radius: 12px; font-size: 14.5px;
             outline: none; font-family: inherit;
             margin-bottom: 14px;
-            transition: all 0.2s;
         }
 
         .modal input:focus, .modal textarea:focus {
             background: #fff;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0, 136, 204, 0.08);
         }
 
         .modal textarea { resize: vertical; min-height: 70px; }
@@ -536,20 +573,19 @@
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             text-align: center; cursor: pointer;
-            transition: all 0.2s; font-size: 13px;
-            font-weight: 600; color: var(--text-muted);
+            font-size: 13px; font-weight: 600;
+            color: var(--text-muted);
+            display: flex; flex-direction: column;
+            align-items: center; gap: 6px;
         }
 
-        .type-option:hover { background: var(--primary-light); }
         .type-option.active {
             background: var(--primary-light);
             border-color: var(--primary);
             color: var(--primary);
         }
 
-        .type-option .icon {
-            font-size: 22px; display: block; margin-bottom: 4px;
-        }
+        .type-option svg { width: 24px; height: 24px; fill: currentColor; }
 
         .modal-buttons { display: flex; gap: 10px; margin-top: 8px; }
 
@@ -558,25 +594,23 @@
             border: none; border-radius: 12px;
             font-family: inherit; font-size: 14px;
             font-weight: 700; cursor: pointer;
-            transition: all 0.2s;
         }
 
         .btn-cancel { background: #f0f2f5; color: #667781; }
-        .btn-cancel:hover { background: #e0e0e0; }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            box-shadow: 0 3px 10px rgba(0, 136, 204, 0.3);
         }
-
-        .btn-primary:hover { transform: translateY(-1px); }
 
         .back-btn {
             display: none; background: transparent; border: none;
-            font-size: 20px; cursor: pointer;
+            cursor: pointer;
             color: var(--primary); padding: 0 8px;
+            align-items: center;
         }
+
+        .back-btn svg { width: 22px; height: 22px; fill: currentColor; }
 
         .image-viewer {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -597,6 +631,7 @@
             border-radius: 8px;
         }
 
+        /* ===== ریسپانسیو موبایل ===== */
         @media (max-width: 700px) {
             body { padding: 0; }
             .app {
@@ -613,16 +648,39 @@
             .message-item { max-width: 85%; }
             .back-btn { display: flex; }
             #messages-list { padding: 16px 12px; }
-            .attach-btn, .mic-btn { width: 40px; height: 40px; font-size: 16px; }
-            .send-btn { width: 40px; height: 40px; font-size: 16px; }
+
+            .message-input-area {
+                padding: 8px 10px;
+                gap: 6px;
+            }
+
+            .message-input-area input[type="text"] {
+                padding: 10px 14px;
+                font-size: 14px;
+            }
+
+            .attach-btn, .send-btn {
+                width: 40px; height: 40px;
+            }
+
+            .attach-menu {
+                bottom: 60px;
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+            }
         }
     </style>
 </head>
 <body class="chat-page">
     <div class="app">
+        <!-- ===== ستون کناری ===== -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2>پیام‌رسان</h2>
+                <h2>
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                    پیام‌رسان
+                </h2>
             </div>
 
             <div class="my-info">
@@ -631,18 +689,23 @@
                     <div class="my-name" id="my-name"></div>
                     <div class="my-email" id="my-email-display"></div>
                 </div>
-                <button class="logout-btn" id="logout-btn" title="خروج">⎋</button>
+                <button class="logout-btn" id="logout-btn" title="خروج">
+                    <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                </button>
             </div>
 
             <div class="action-buttons">
                 <button class="action-btn" id="new-contact-btn">
-                    <span class="icon">👤</span> مخاطب
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    مخاطب
                 </button>
                 <button class="action-btn" id="new-group-btn">
-                    <span class="icon">👥</span> گروه
+                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    گروه
                 </button>
                 <button class="action-btn" id="new-channel-btn">
-                    <span class="icon">📢</span> کانال
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>
+                    کانال
                 </button>
             </div>
 
@@ -655,9 +718,12 @@
             <div class="list-container" id="list-container"></div>
         </div>
 
+        <!-- ===== ناحیه چت ===== -->
         <div class="chat-area">
             <div class="chat-header" id="chat-header" style="display:none;">
-                <button class="back-btn" id="back-btn">→</button>
+                <button class="back-btn" id="back-btn">
+                    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                </button>
                 <div class="avatar" id="chat-header-avatar"></div>
                 <div class="chat-header-info">
                     <div class="chat-header-name" id="chat-header-name"></div>
@@ -666,21 +732,40 @@
             </div>
 
             <div class="channel-notice" id="channel-notice" style="display:none;">
-                📢 فقط ادمین‌ها می‌توانند پیام بفرستند
+                فقط ادمین‌ها می‌توانند پیام بفرستند
             </div>
 
             <div class="no-chat-selected" id="no-chat-selected">
-                <div class="big-icon">💬</div>
+                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
                 <div>یک چت را انتخاب کن یا چت جدید بساز</div>
             </div>
 
             <div id="messages-list" style="display:none;"></div>
 
             <div class="message-input-area" id="message-input-area" style="display:none;">
-                <button class="attach-btn" id="attach-btn" title="ارسال عکس">📎</button>
-                <input type="text" id="message-input" placeholder="پیام خود را بنویسید...">
-                <button class="mic-btn" id="mic-btn" title="ضبط ویس">🎤</button>
-                <button class="send-btn" id="send-message-btn" title="ارسال">➤</button>
+                <button class="attach-btn" id="attach-btn" title="ضمیمه">
+                    <svg viewBox="0 0 24 24"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg>
+                </button>
+                <input type="text" id="message-input" placeholder="پیام...">
+                <button class="send-btn" id="send-message-btn" title="ارسال">
+                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                </button>
+            </div>
+
+            <!-- منوی ضمیمه -->
+            <div class="attach-menu" id="attach-menu">
+                <button class="attach-menu-item" id="menu-image">
+                    <span class="attach-menu-icon image">
+                        <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                    </span>
+                    ارسال عکس
+                </button>
+                <button class="attach-menu-item" id="menu-voice">
+                    <span class="attach-menu-icon voice">
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+                    </span>
+                    ضبط ویس
+                </button>
             </div>
 
             <div class="recording-bar" id="recording-bar">
@@ -703,7 +788,7 @@
 
     <div class="modal-overlay" id="contact-modal">
         <div class="modal">
-            <h3>👤 مخاطب جدید</h3>
+            <h3>مخاطب جدید</h3>
             <p>ایمیل مخاطب را وارد کن</p>
             <input type="email" id="new-contact-email" placeholder="friend@example.com">
             <div class="modal-buttons">
@@ -715,16 +800,18 @@
 
     <div class="modal-overlay" id="group-modal">
         <div class="modal">
-            <h3 id="group-modal-title">👥 گروه جدید</h3>
+            <h3 id="group-modal-title">گروه جدید</h3>
             <p>اطلاعات را وارد کن</p>
 
             <label>نوع</label>
             <div class="type-selector">
                 <div class="type-option active" data-type="group">
-                    <span class="icon">👥</span> گروه
+                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    گروه
                 </div>
                 <div class="type-option" data-type="channel">
-                    <span class="icon">📢</span> کانال
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>
+                    کانال
                 </div>
             </div>
 
@@ -774,8 +861,8 @@
         const messagesList = document.getElementById('messages-list');
         const messageInput = document.getElementById('message-input');
         const sendBtn = document.getElementById('send-message-btn');
-        const micBtn = document.getElementById('mic-btn');
         const attachBtn = document.getElementById('attach-btn');
+        const attachMenu = document.getElementById('attach-menu');
         const fileInput = document.getElementById('file-input');
         const chatHeader = document.getElementById('chat-header');
         const chatHeaderName = document.getElementById('chat-header-name');
@@ -790,6 +877,13 @@
         const imageViewer = document.getElementById('image-viewer');
         const imageViewerImg = document.getElementById('image-viewer-img');
 
+        // آیکون‌های SVG
+        const svgPlay = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+        const svgPause = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+        const svgPerson = '<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
+        const svgGroup = '<svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>';
+        const svgChannel = '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>';
+
         const escapeHtml = (text) => {
             const div = document.createElement('div');
             div.textContent = text;
@@ -803,6 +897,28 @@
             const s = Math.floor(seconds % 60);
             return `${m}:${s.toString().padStart(2, '0')}`;
         };
+
+        document.addEventListener('click', (e) => {
+            if (!attachMenu.classList.contains('show')) return;
+            if (e.target.closest('#attach-menu') || e.target.closest('#attach-btn')) return;
+            attachMenu.classList.remove('show');
+        });
+
+        attachBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!currentChat) return;
+            attachMenu.classList.toggle('show');
+        });
+
+        document.getElementById('menu-image').addEventListener('click', () => {
+            attachMenu.classList.remove('show');
+            fileInput.click();
+        });
+
+        document.getElementById('menu-voice').addEventListener('click', () => {
+            attachMenu.classList.remove('show');
+            startRecording();
+        });
 
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
@@ -898,8 +1014,9 @@
                 const badge = type === 'group'
                     ? '<span class="item-badge badge-group">گروه</span>'
                     : '<span class="item-badge badge-channel">کانال</span>';
+                const avatarSvg = type === 'group' ? svgGroup : svgChannel;
                 item.innerHTML = `
-                    <div class="avatar ${type}">${type === 'group' ? '👥' : '📢'}</div>
+                    <div class="avatar ${type}">${avatarSvg}</div>
                     <div class="item-info">
                         <div class="item-name">${escapeHtml(chat.name)}</div>
                         <div class="item-sub">${escapeHtml(chat.description || 'بدون توضیحات')}</div>
@@ -928,9 +1045,8 @@
 
             messageInput.disabled = false;
             sendBtn.disabled = false;
-            micBtn.disabled = false;
             attachBtn.disabled = false;
-            messageInput.placeholder = 'پیام خود را بنویسید...';
+            messageInput.placeholder = 'پیام...';
 
             if (window.innerWidth <= 700) sidebar.classList.add('hidden');
 
@@ -965,23 +1081,21 @@
 
             chatHeaderName.textContent = chat.name;
             chatHeaderSub.textContent = chat.description || '';
-            chatHeaderAvatar.textContent = isChannel ? '📢' : '👥';
+            chatHeaderAvatar.innerHTML = isChannel ? svgChannel : svgGroup;
             chatHeaderAvatar.className = 'avatar ' + chat.type;
 
             if (isChannel && !isOwner) {
                 channelNotice.style.display = 'block';
                 messageInput.disabled = true;
                 sendBtn.disabled = true;
-                micBtn.disabled = true;
                 attachBtn.disabled = true;
-                messageInput.placeholder = 'فقط ادمین‌ها می‌توانند پیام بفرستند';
+                messageInput.placeholder = 'فقط ادمین‌ها';
             } else {
                 channelNotice.style.display = 'none';
                 messageInput.disabled = false;
                 sendBtn.disabled = false;
-                micBtn.disabled = false;
                 attachBtn.disabled = false;
-                messageInput.placeholder = 'پیام خود را بنویسید...';
+                messageInput.placeholder = 'پیام...';
             }
 
             if (window.innerWidth <= 700) sidebar.classList.add('hidden');
@@ -1039,7 +1153,7 @@
                 const duration = msg.audio_duration || 0;
                 html += `
                     <div class="voice-message">
-                        <button class="voice-play-btn" data-url="${escapeHtml(msg.audio_url)}">▶</button>
+                        <button class="voice-play-btn" data-url="${escapeHtml(msg.audio_url)}">${svgPlay}</button>
                         <div class="voice-wave">
                             ${Array.from({length: 20}, () => `<span style="height:${Math.random()*20+8}px"></span>`).join('')}
                         </div>
@@ -1070,24 +1184,24 @@
                     currentAudio.pause();
                     currentAudio = null;
                     document.querySelectorAll('.voice-play-btn').forEach(b => {
-                        b.textContent = '▶';
+                        b.innerHTML = svgPlay;
                         b.classList.remove('playing');
                     });
                 }
 
                 if (playBtn.classList.contains('playing')) {
-                    playBtn.textContent = '▶';
+                    playBtn.innerHTML = svgPlay;
                     playBtn.classList.remove('playing');
                     return;
                 }
 
                 currentAudio = new Audio(url);
                 currentAudio.play();
-                playBtn.textContent = '⏸';
+                playBtn.innerHTML = svgPause;
                 playBtn.classList.add('playing');
 
                 currentAudio.addEventListener('ended', () => {
-                    playBtn.textContent = '▶';
+                    playBtn.innerHTML = svgPlay;
                     playBtn.classList.remove('playing');
                     currentAudio = null;
                 });
@@ -1154,20 +1268,13 @@
             if (e.key === 'Enter') sendMessage();
         });
 
-        // ===== ارسال عکس =====
-        attachBtn.addEventListener('click', () => {
-            if (!currentChat) return;
-            if (currentChat.type === 'channel' && !currentChat.isOwner) return;
-            fileInput.click();
-        });
-
         fileInput.addEventListener('change', async () => {
             const file = fileInput.files[0];
             if (!file) return;
             fileInput.value = '';
 
             if (!file.type.startsWith('image/')) {
-                alert('فقط عکس می‌توانی بفرستی');
+                alert('فقط عکس');
                 return;
             }
 
@@ -1178,7 +1285,7 @@
 
             const tempDiv = document.createElement('div');
             tempDiv.className = 'message-item my-message';
-            tempDiv.innerHTML = `<div class="msg-content">⏳ در حال آپلود عکس...</div>`;
+            tempDiv.innerHTML = `<div class="msg-content">در حال آپلود...</div>`;
             messagesList.appendChild(tempDiv);
             messagesList.scrollTop = messagesList.scrollHeight;
 
@@ -1250,8 +1357,6 @@
                 mediaRecorder.start();
                 recordingStartTime = Date.now();
 
-                micBtn.classList.add('recording');
-                micBtn.textContent = '⏹';
                 recordingBar.classList.add('show');
                 messageInputArea.style.display = 'none';
 
@@ -1263,7 +1368,7 @@
                 }, 500);
 
             } catch (err) {
-                alert('دسترسی به میکروفون داده نشد: ' + err.message);
+                alert('دسترسی به میکروفون داده نشد');
                 console.error(err);
             }
         };
@@ -1280,8 +1385,6 @@
                 recordingTimer = null;
             }
 
-            micBtn.classList.remove('recording');
-            micBtn.textContent = '🎤';
             recordingBar.classList.remove('show');
             messageInputArea.style.display = 'flex';
 
@@ -1291,14 +1394,6 @@
                 recordingStartTime = null;
             }
         };
-
-        micBtn.addEventListener('click', () => {
-            if (mediaRecorder && mediaRecorder.state === 'recording') {
-                stopRecording(false);
-            } else {
-                startRecording();
-            }
-        });
 
         document.getElementById('rec-cancel').addEventListener('click', () => {
             stopRecording(true);
@@ -1386,7 +1481,7 @@
             groupName.value = '';
             groupDesc.value = '';
             groupMembers.value = '';
-            groupModalTitle.textContent = type === 'group' ? '👥 گروه جدید' : '📢 کانال جدید';
+            groupModalTitle.textContent = type === 'group' ? 'گروه جدید' : 'کانال جدید';
 
             document.querySelectorAll('.type-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.type === type);
@@ -1403,7 +1498,7 @@
                 document.querySelectorAll('.type-option').forEach(o => o.classList.remove('active'));
                 opt.classList.add('active');
                 selectedGroupType = opt.dataset.type;
-                groupModalTitle.textContent = selectedGroupType === 'group' ? '👥 گروه جدید' : '📢 کانال جدید';
+                groupModalTitle.textContent = selectedGroupType === 'group' ? 'گروه جدید' : 'کانال جدید';
             });
         });
 
