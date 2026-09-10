@@ -4,15 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>چت زنده</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== ریست ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; font-family: Tahoma, Arial, sans-serif; }
+
+        /* ===== صفحه چت ===== */
+        body.chat-page {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 800px;
+            height: 95vh;
+            max-height: 900px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ===== هدر ===== */
+        .chat-container header {
+            background: linear-gradient(135deg, #0088cc 0%, #006fa8 100%);
+            color: white;
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-container header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .user-badge {
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        /* ===== لیست پیام‌ها ===== */
+        #messages-list {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #e5ddd5;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #messages-list::-webkit-scrollbar { width: 6px; }
+        #messages-list::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+
+        /* ===== حباب پیام ===== */
+        .message-item {
+            max-width: 70%;
+            padding: 10px 14px;
+            background: #ffffff;
+            border-radius: 16px 16px 16px 4px;
+            align-self: flex-start;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+            word-wrap: break-word;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .message-item.my-message {
+            background: #d9fdd3;
+            align-self: flex-end;
+            border-radius: 16px 16px 4px 16px;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg-content {
+            font-size: 14.5px;
+            color: #1a1a1a;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        /* ===== ناحیه ورودی ===== */
+        .message-input-area {
+            display: flex;
+            padding: 14px 20px;
+            background: #fff;
+            border-top: 1px solid #e0e0e0;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .message-input-area input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid transparent;
+            background: #f0f2f5;
+            border-radius: 24px;
+            font-size: 14.5px;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .message-input-area input:focus {
+            background: #fff;
+            border-color: #0088cc;
+            box-shadow: 0 0 0 4px rgba(0, 136, 204, 0.1);
+        }
+
+        .message-input-area button {
+            padding: 12px 22px;
+            background: linear-gradient(135deg, #0088cc 0%, #006fa8 100%);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 14.5px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 136, 204, 0.3);
+        }
+
+        .message-input-area button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.4);
+        }
+
+        /* ===== حالت خالی ===== */
+        #messages-list:empty::before {
+            content: '✨ هنوز پیامی نیست. اولین نفر باش!';
+            display: block;
+            text-align: center;
+            color: #667781;
+            font-size: 14px;
+            padding: 40px 20px;
+            opacity: 0.7;
+        }
+
+        /* ===== ریسپانسیو ===== */
+        @media (max-width: 600px) {
+            body { padding: 0; }
+            .chat-container {
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+            .message-item { max-width: 85%; }
+            .message-input-area { padding: 10px 12px; }
+            .message-input-area button { padding: 12px 16px; }
+        }
+    </style>
 </head>
-<body>
+<body class="chat-page">
     <div class="chat-container">
         <header>
-            <h2>پیام‌رسان</h2>
-            <span class="user-badge">کاربر مهمان</span>
+            <h2>💬 پیام‌رسان</h2>
+            <span class="user-badge" id="user-badge">کاربر مهمان</span>
         </header>
+
         <div id="messages-list"></div>
+
         <div class="message-input-area">
             <input type="text" id="message-input" placeholder="پیام خود را بنویسید...">
             <button id="send-message-btn">ارسال</button>
@@ -20,99 +190,36 @@
     </div>
 
     <script type="module">
-        // ===================================================
-        // 🐛 نوار وضعیت (باگ‌یاب) - بالای صفحه
-        // ===================================================
-        const statusBar = document.createElement('div');
-        statusBar.style.cssText = `
-            background: #000;
-            color: #0f0;
-            padding: 8px 12px;
-            font-size: 13px;
-            direction: ltr;
-            text-align: left;
-            font-family: monospace;
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 9999;
-            border-bottom: 2px solid #0f0;
-        `;
-        statusBar.textContent = '🚀 شروع...';
-        document.body.appendChild(statusBar);
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-        function log(msg, color = '#0f0') {
-            console.log(msg);
-            statusBar.textContent = msg;
-            statusBar.style.color = color;
-            statusBar.style.borderBottomColor = color;
-        }
-
-        // ===================================================
-        // ۱. تست اولیه
-        // ===================================================
-        log('✅ HTML و اسکریپت اجرا شد');
-        console.log('🚀 شروع برنامه');
-
-        // ===================================================
-        // ۲. import Supabase
-        // ===================================================
-        log('⏳ در حال import کردن Supabase...');
-
-        let createClient;
-        try {
-            const mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
-            createClient = mod.createClient;
-            log('✅ Supabase import شد');
-        } catch (err) {
-            log('❌ خطا در import: ' + err.message, '#f00');
-            throw err;
-        }
-
-        // ===================================================
-        // ۳. ساخت کلاینت
-        // ===================================================
         const SUPABASE_URL = 'https://mjmzpbhflctxrkrkzebw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qbXpwYmhmbGN0eHJrcmt6ZWJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NzA3ODAsImV4cCI6MjEwNDU0Njc4MH0.AtV8I1RsdPG_I7hIMNlM489wjse6k4Jz0pEfRbQpYY4';
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        log('✅ کلاینت Supabase ساخته شد');
 
-        // ===================================================
-        // ۴. شناسه کاربر (کاربر نمی‌بیند)
-        // ===================================================
+        // ===== شناسه و نام کاربر =====
         let userId = localStorage.getItem('user_id');
         if (!userId) {
             userId = 'user-' + Math.random().toString(36).substring(2) + Date.now().toString(36);
             localStorage.setItem('user_id', userId);
         }
-        log('✅ شناسه: ' + userId.substring(0, 15) + '...');
 
-        // ===================================================
-        // ۵. پیدا کردن عناصر HTML
-        // ===================================================
+        const username = localStorage.getItem('username') || 'کاربر مهمان';
+        document.getElementById('user-badge').textContent = username;
+
+        // ===== عناصر =====
         const messagesList = document.getElementById('messages-list');
         const input = document.getElementById('message-input');
         const sendBtn = document.getElementById('send-message-btn');
 
-        if (!messagesList) log('❌ messages-list پیدا نشد', '#f00');
-        if (!input) log('❌ message-input پیدا نشد', '#f00');
-        if (!sendBtn) log('❌ send-message-btn پیدا نشد', '#f00');
-
-        if (!messagesList || !input || !sendBtn) {
-            log('❌ عناصر HTML کامل نیستند - متوقف شد', '#f00');
-            throw new Error('HTML elements missing');
-        }
-        log('✅ همه عناصر HTML پیدا شدند');
-
-        // ===================================================
-        // ۶. توابع کمکی
-        // ===================================================
+        // جلوگیری از XSS
         const escapeHtml = (text) => {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         };
 
+        // نمایش پیام
         const addMessage = (msg) => {
             const msgDiv = document.createElement('div');
             msgDiv.className = 'message-item';
@@ -122,93 +229,58 @@
             messagesList.scrollTop = messagesList.scrollHeight;
         };
 
-        // ===================================================
-        // ۷. بارگذاری پیام‌های قبلی
-        // ===================================================
-        log('⏳ در حال بارگذاری پیام‌های قبلی...');
-
-        try {
+        // بارگذاری پیام‌های قبلی
+        const loadMessages = async () => {
             const { data, error } = await supabase
                 .from('messages')
                 .select('*')
                 .order('created_at', { ascending: true });
 
             if (error) {
-                log('❌ خطای بارگذاری: ' + error.message, '#f00');
-                console.error(error);
-            } else {
-                log('✅ ' + data.length + ' پیام بارگذاری شد');
-                data.forEach(addMessage);
+                console.error('خطا در بارگذاری:', error);
+                return;
             }
-        } catch (err) {
-            log('❌ خطای غیرمنتظره: ' + err.message, '#f00');
-        }
+            messagesList.innerHTML = '';
+            data.forEach(addMessage);
+        };
 
-        // ===================================================
-        // ۸. Realtime
-        // ===================================================
-        log('⏳ در حال اتصال به Realtime...');
+        await loadMessages();
 
+        // Realtime
         supabase
             .channel('messages-channel')
             .on(
                 'postgres_changes',
                 { event: 'INSERT', schema: 'public', table: 'messages' },
-                (payload) => {
-                    log('🔔 پیام جدید رسید');
-                    addMessage(payload.new);
-                }
+                (payload) => addMessage(payload.new)
             )
             .subscribe((status) => {
-                if (status === 'SUBSCRIBED') {
-                    log('📡 Realtime متصل شد ✅');
-                } else {
-                    log('📡 وضعیت Realtime: ' + status, '#ff0');
-                }
+                console.log('وضعیت Realtime:', status);
             });
 
-        // ===================================================
-        // ۹. ارسال پیام
-        // ===================================================
-        sendBtn.addEventListener('click', async () => {
+        // ارسال پیام
+        const sendMessage = async () => {
             const content = input.value.trim();
-            if (!content) {
-                log('⚠️ متن خالی است', '#ff0');
-                return;
+            if (!content) return;
+
+            const { error } = await supabase.from('messages').insert({
+                content: content,
+                user_id: userId,
+            });
+
+            if (error) {
+                console.error('خطا در ارسال:', error);
+                alert('خطا: ' + error.message);
+            } else {
+                input.value = '';
+                input.focus();
             }
+        };
 
-            log('⏳ ارسال: ' + content);
-
-            try {
-                const { data, error } = await supabase
-                    .from('messages')
-                    .insert({
-                        content: content,
-                        user_id: userId,
-                    })
-                    .select();
-
-                if (error) {
-                    log('❌ خطای ارسال: ' + error.message, '#f00');
-                    console.error(error);
-                } else {
-                    log('✅ ارسال موفق - منتظر Realtime...');
-                    input.value = '';
-                }
-            } catch (err) {
-                log('❌ خطای غیرمنتظره: ' + err.message, '#f00');
-            }
-        });
-
-        // ارسال با Enter
+        sendBtn.addEventListener('click', sendMessage);
         input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendBtn.click();
+            if (e.key === 'Enter') sendMessage();
         });
-
-        // ===================================================
-        // ۱۰. پایان
-        // ===================================================
-        log('🎉 همه چیز آماده است - پیام بفرستید');
     </script>
 </body>
 </html>
