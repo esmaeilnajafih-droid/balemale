@@ -3,10 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ورود به پیام‌رسان</title>
+    <title>ورود به بله مله | Bale Melle</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { height: 100%; font-family: Tahoma, Arial, sans-serif; }
+        html, body {
+            height: 100%;
+            font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
         :root {
             --primary: #0088cc;
@@ -24,7 +30,8 @@
             overflow: hidden;
         }
 
-        /* پس‌زمینه تزئینی */
+        body.lang-en { direction: ltr; }
+
         body.auth-page::before {
             content: '';
             position: absolute;
@@ -79,6 +86,38 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
+        .lang-switch {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        body.lang-en .lang-switch {
+            left: auto;
+            right: 16px;
+        }
+
+        .lang-switch:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .lang-switch svg { width: 14px; height: 14px; fill: currentColor; }
+
         .auth-icon {
             width: 72px; height: 72px;
             margin: 0 auto 16px;
@@ -109,9 +148,38 @@
             line-height: 1.6;
         }
 
+        .auth-tabs {
+            display: flex;
+            gap: 4px;
+            background: #f0f2f5;
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .auth-tab.active {
+            background: #fff;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
         .auth-input-wrap {
             position: relative;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .auth-input-icon {
@@ -119,9 +187,14 @@
             right: 16px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 18px;
+            font-size: 16px;
             opacity: 0.6;
             pointer-events: none;
+        }
+
+        body.lang-en .auth-input-icon {
+            right: auto;
+            left: 16px;
         }
 
         .auth-card input {
@@ -130,13 +203,17 @@
             border: 2px solid #e4e8ec;
             background: #f8fafc;
             border-radius: 12px;
-            font-size: 15px;
+            font-size: 14.5px;
             outline: none;
             transition: all 0.2s;
             font-family: inherit;
             text-align: left;
             direction: ltr;
             color: var(--text);
+        }
+
+        body.lang-en .auth-card input {
+            padding: 14px 18px 14px 46px;
         }
 
         .auth-card input:focus {
@@ -149,7 +226,7 @@
             color: #adb5bd;
         }
 
-        .auth-card button {
+        .auth-card button.submit-btn {
             width: 100%;
             padding: 14px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -162,30 +239,18 @@
             cursor: pointer;
             transition: all 0.25s;
             box-shadow: 0 4px 15px rgba(0, 136, 204, 0.35);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            margin-top: 8px;
         }
 
-        .auth-card button::after {
-            content: '←';
-            font-size: 16px;
-            transition: transform 0.25s;
-        }
-
-        .auth-card button:hover {
+        .auth-card button.submit-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 136, 204, 0.45);
         }
 
-        .auth-card button:hover::after {
-            transform: translateX(-4px);
-        }
-
-        .auth-card button:active {
-            transform: translateY(0);
-            box-shadow: 0 4px 10px rgba(0, 136, 204, 0.35);
+        .auth-card button.submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         #message-area {
@@ -194,6 +259,7 @@
             min-height: 20px;
             transition: all 0.2s;
             font-weight: 600;
+            line-height: 1.7;
         }
 
         #message-area.error { color: #ef4444; }
@@ -217,71 +283,275 @@
         }
     </style>
 </head>
-<body class="auth-page">
+<body class="auth-page lang-fa">
     <div class="auth-card">
+        <button class="lang-switch" id="lang-btn" title="تغییر زبان">
+            <svg viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+            <span id="lang-label">EN</span>
+        </button>
+
         <div class="auth-icon">💬</div>
-        <h1>پیام‌رسان</h1>
-        <p class="auth-subtitle">ایمیل خود را وارد کنید و شروع کنید</p>
+        <h1 data-i18n="appName">بله مله</h1>
+        <p class="auth-subtitle" data-i18n="subtitle">وارد شوید یا ثبت‌نام کنید</p>
+
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tab-login" data-i18n="loginTab">ورود</button>
+            <button class="auth-tab" id="tab-signup" data-i18n="signupTab">ثبت‌نام</button>
+        </div>
 
         <div class="auth-input-wrap">
             <span class="auth-input-icon">📧</span>
-            <input
-                type="email"
-                id="email-input"
-                placeholder="you@example.com"
-                autocomplete="off"
-                autofocus
-            >
+            <input type="email" id="email-input" placeholder="you@example.com" autocomplete="off">
         </div>
 
-        <button id="enter-chat-btn">ورود به چت</button>
+        <div class="auth-input-wrap">
+            <span class="auth-input-icon">🔒</span>
+            <input type="password" id="password-input" placeholder="رمز عبور" autocomplete="off">
+        </div>
+
+        <button class="submit-btn" id="submit-btn" data-i18n="loginBtn">ورود</button>
 
         <p id="message-area"></p>
 
         <div class="auth-footer">
-            <span>✨ بدون ثبت‌نام، بدون رمز عبور</span>
+            <span data-i18n="footer">✨ امن و رایگان</span>
         </div>
     </div>
 
-    <script>
-        const input = document.getElementById('email-input');
-        const btn = document.getElementById('enter-chat-btn');
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        const SUPABASE_URL = 'https://mjmzpbhflctxrkrkzebw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qbXpwYmhmbGN0eHJrcmt6ZWJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NzA3ODAsImV4cCI6MjEwNDU0Njc4MH0.AtV8I1RsdPG_I7hIMNlM489wjse6k4Jz0pEfRbQpYY4';
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ============================================
+        // ترجمه‌ها
+        // ============================================
+        const translations = {
+            fa: {
+                appName: 'بله مله',
+                subtitle: 'وارد شوید یا ثبت‌نام کنید',
+                loginTab: 'ورود',
+                signupTab: 'ثبت‌نام',
+                loginBtn: 'ورود',
+                signupBtn: 'ثبت‌نام',
+                footer: '✨ امن و رایگان',
+                emptyEmail: '⚠️ لطفاً ایمیل خود را وارد کنید',
+                invalidEmail: '⚠️ فرمت ایمیل درست نیست',
+                emptyPassword: '⚠️ لطفاً رمز عبور را وارد کنید',
+                shortPassword: '⚠️ رمز عبور باید حداقل ۶ کاراکتر باشد',
+                loginSuccess: '✅ در حال ورود...',
+                signupSuccess: '✅ ثبت‌نام موفق! در حال ورود...',
+                loginError: '❌ ایمیل یا رمز عبور اشتباه است',
+                signupError: '❌ خطا در ثبت‌نام: ',
+                loading: '⏳ لطفاً صبر کنید...',
+                langTitle: 'تغییر زبان',
+                pageTitle: 'ورود به بله مله'
+            },
+            en: {
+                appName: 'Bale Melle',
+                subtitle: 'Sign in or sign up',
+                loginTab: 'Login',
+                signupTab: 'Sign Up',
+                loginBtn: 'Login',
+                signupBtn: 'Sign Up',
+                footer: '✨ Secure & Free',
+                emptyEmail: '⚠️ Please enter your email',
+                invalidEmail: '⚠️ Invalid email format',
+                emptyPassword: '⚠️ Please enter your password',
+                shortPassword: '⚠️ Password must be at least 6 characters',
+                loginSuccess: '✅ Logging in...',
+                signupSuccess: '✅ Signup successful! Logging in...',
+                loginError: '❌ Invalid email or password',
+                signupError: '❌ Signup error: ',
+                loading: '⏳ Please wait...',
+                langTitle: 'Change language',
+                pageTitle: 'Login to Bale Melle'
+            }
+        };
+
+        let currentLang = localStorage.getItem('lang') || 'fa';
+        const t = (key) => translations[currentLang][key] || key;
+
+        let currentMode = 'login'; // login | signup
+
+        const applyLanguage = () => {
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'fa' ? 'rtl' : 'ltr';
+            document.body.classList.remove('lang-fa', 'lang-en');
+            document.body.classList.add('lang-' + currentLang);
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                el.innerHTML = t(key);
+            });
+
+            document.getElementById('lang-label').textContent = currentLang === 'fa' ? 'EN' : 'FA';
+            document.getElementById('lang-btn').title = t('langTitle');
+            document.title = t('pageTitle');
+
+            updateSubmitButton();
+        };
+
+        const updateSubmitButton = () => {
+            const btn = document.getElementById('submit-btn');
+            btn.textContent = currentMode === 'login' ? t('loginBtn') : t('signupBtn');
+        };
+
+        // ============================================
+        // تب‌ها
+        // ============================================
+        document.getElementById('tab-login').addEventListener('click', () => {
+            currentMode = 'login';
+            document.getElementById('tab-login').classList.add('active');
+            document.getElementById('tab-signup').classList.remove('active');
+            updateSubmitButton();
+            document.getElementById('message-area').textContent = '';
+        });
+
+        document.getElementById('tab-signup').addEventListener('click', () => {
+            currentMode = 'signup';
+            document.getElementById('tab-signup').classList.add('active');
+            document.getElementById('tab-login').classList.remove('active');
+            updateSubmitButton();
+            document.getElementById('message-area').textContent = '';
+        });
+
+        // ============================================
+        // تغییر زبان
+        // ============================================
+        document.getElementById('lang-btn').addEventListener('click', () => {
+            currentLang = currentLang === 'fa' ? 'en' : 'fa';
+            localStorage.setItem('lang', currentLang);
+            applyLanguage();
+        });
+
+        // ============================================
+        // ورود / ثبت‌نام
+        // ============================================
+        const emailInput = document.getElementById('email-input');
+        const passwordInput = document.getElementById('password-input');
+        const submitBtn = document.getElementById('submit-btn');
         const messageArea = document.getElementById('message-area');
 
-        const savedEmail = localStorage.getItem('my_email');
-        if (savedEmail) {
-            window.location.href = 'chat.html';
-        }
+        // چک کردن نشست فعلی
+        const checkSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user?.email) {
+                localStorage.setItem('my_email', session.user.email);
+                window.location.href = 'chat.html';
+            }
+        };
 
-        function enterChat() {
-            const email = input.value.trim().toLowerCase();
+        await checkSession();
 
+        const handleSubmit = async () => {
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+
+            // اعتبارسنجی
             if (!email) {
-                messageArea.textContent = '⚠️ لطفاً ایمیل خود را وارد کنید';
+                messageArea.textContent = t('emptyEmail');
                 messageArea.className = 'error';
                 return;
             }
 
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                messageArea.textContent = '⚠️ فرمت ایمیل درست نیست';
+                messageArea.textContent = t('invalidEmail');
                 messageArea.className = 'error';
                 return;
             }
 
-            localStorage.setItem('my_email', email);
-            messageArea.textContent = '✅ در حال ورود...';
-            messageArea.className = 'success';
+            if (!password) {
+                messageArea.textContent = t('emptyPassword');
+                messageArea.className = 'error';
+                return;
+            }
 
-            setTimeout(() => {
-                window.location.href = 'chat.html';
-            }, 400);
-        }
+            if (password.length < 6) {
+                messageArea.textContent = t('shortPassword');
+                messageArea.className = 'error';
+                return;
+            }
 
-        btn.addEventListener('click', enterChat);
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') enterChat();
+            submitBtn.disabled = true;
+            messageArea.textContent = t('loading');
+            messageArea.className = '';
+
+            try {
+                if (currentMode === 'login') {
+                    // ورود
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email,
+                        password,
+                    });
+
+                    if (error) {
+                        messageArea.textContent = t('loginError');
+                        messageArea.className = 'error';
+                        submitBtn.disabled = false;
+                        return;
+                    }
+
+                    if (data.session?.user?.email) {
+                        localStorage.setItem('my_email', data.session.user.email);
+                        messageArea.textContent = t('loginSuccess');
+                        messageArea.className = 'success';
+
+                        setTimeout(() => {
+                            window.location.href = 'chat.html';
+                        }, 500);
+                    }
+                } else {
+                    // ثبت‌نام
+                    const { data, error } = await supabase.auth.signUp({
+                        email,
+                        password,
+                    });
+
+                    if (error) {
+                        messageArea.textContent = t('signupError') + error.message;
+                        messageArea.className = 'error';
+                        submitBtn.disabled = false;
+                        return;
+                    }
+
+                    if (data.session?.user?.email) {
+                        // چون Confirm email خاموشه، مستقیم وارد می‌شه
+                        localStorage.setItem('my_email', data.session.user.email);
+                        messageArea.textContent = t('signupSuccess');
+                        messageArea.className = 'success';
+
+                        setTimeout(() => {
+                            window.location.href = 'chat.html';
+                        }, 500);
+                    } else {
+                        messageArea.textContent = '✅ ثبت‌نام شد. لطفاً ایمیل خود را تایید کنید.';
+                        messageArea.className = 'success';
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                messageArea.textContent = '❌ ' + err.message;
+                messageArea.className = 'error';
+                submitBtn.disabled = false;
+            }
+        };
+
+        submitBtn.addEventListener('click', handleSubmit);
+
+        emailInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') passwordInput.focus();
         });
+
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSubmit();
+        });
+
+        applyLanguage();
     </script>
 </body>
 </html>
