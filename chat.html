@@ -211,6 +211,40 @@
             line-height: 1.5; word-break: break-word;
         }
 
+        /* ===== پیام صوتی ===== */
+        .voice-message {
+            display: flex; align-items: center; gap: 10px;
+            min-width: 220px;
+        }
+
+        .voice-play-btn {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: #0088cc; color: white;
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .voice-play-btn:hover { transform: scale(1.08); }
+        .voice-play-btn.playing { background: #ef4444; }
+
+        .voice-wave {
+            flex: 1; height: 30px;
+            display: flex; align-items: center; gap: 2px;
+        }
+
+        .voice-wave span {
+            width: 3px; background: #0088cc;
+            border-radius: 2px; opacity: 0.6;
+        }
+
+        .voice-duration {
+            font-size: 12px; color: #667781;
+            direction: ltr; flex-shrink: 0;
+        }
+
+        /* ===== ناحیه ورودی ===== */
         .message-input-area {
             display: flex; padding: 14px 20px; background: #fff;
             border-top: 1px solid #e0e0e0; gap: 10px; align-items: center;
@@ -230,17 +264,80 @@
             background: #f8f9fa; cursor: not-allowed;
         }
 
-        .message-input-area button {
+        .mic-btn {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: linear-gradient(135deg, #0088cc 0%, #006fa8 100%);
+            color: white; border: none; cursor: pointer;
+            font-size: 18px; flex-shrink: 0;
+            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .mic-btn:hover { transform: scale(1.05); }
+        .mic-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+        .mic-btn.recording {
+            background: #ef4444;
+            animation: pulse-record 1s infinite;
+        }
+
+        @keyframes pulse-record {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+            50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+        }
+
+        .send-btn {
             padding: 12px 22px;
             background: linear-gradient(135deg, #0088cc 0%, #006fa8 100%);
             color: white; border: none; border-radius: 24px;
             cursor: pointer; font-size: 14.5px;
             font-weight: 600; font-family: inherit;
+            flex-shrink: 0;
         }
 
-        .message-input-area button:disabled {
-            opacity: 0.5; cursor: not-allowed;
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ===== نوار ضبط ===== */
+        .recording-bar {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: #fef2f2;
+            border-top: 1px solid #fecaca;
         }
+
+        .recording-bar.show { display: flex; }
+
+        .recording-dot {
+            width: 12px; height: 12px; background: #ef4444;
+            border-radius: 50%; animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .recording-time {
+            font-size: 14px; font-weight: 700; color: #ef4444;
+            direction: ltr;
+        }
+
+        .recording-text {
+            flex: 1; font-size: 13px; color: #991b1b;
+        }
+
+        .recording-actions { display: flex; gap: 8px; }
+
+        .rec-btn {
+            padding: 8px 16px; border: none; border-radius: 20px;
+            cursor: pointer; font-family: inherit;
+            font-size: 13px; font-weight: 600;
+        }
+
+        .rec-cancel { background: #f0f2f5; color: #667781; }
+        .rec-send { background: #22c55e; color: white; }
 
         /* ===== مودال ===== */
         .modal-overlay {
@@ -251,7 +348,6 @@
         }
 
         .modal-overlay.show { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .modal {
             background: #fff; padding: 28px; border-radius: 20px;
@@ -278,7 +374,6 @@
 
         .modal input:focus, .modal textarea:focus {
             background: #fff; border-color: #0088cc;
-            box-shadow: 0 0 0 4px rgba(0, 136, 204, 0.12);
         }
 
         .modal textarea { resize: vertical; min-height: 70px; }
@@ -309,8 +404,6 @@
         }
 
         .btn-cancel { background: #f0f2f5; color: #667781; }
-        .btn-cancel:hover { background: #e0e0e0; }
-
         .btn-primary {
             background: linear-gradient(135deg, #0088cc 0%, #006fa8 100%);
             color: white;
@@ -388,12 +481,22 @@
 
             <div class="message-input-area" id="message-input-area" style="display:none;">
                 <input type="text" id="message-input" placeholder="پیام خود را بنویسید...">
-                <button id="send-message-btn">ارسال</button>
+                <button class="mic-btn" id="mic-btn" title="ضبط ویس">🎤</button>
+                <button class="send-btn" id="send-message-btn">ارسال</button>
+            </div>
+
+            <div class="recording-bar" id="recording-bar">
+                <div class="recording-dot"></div>
+                <div class="recording-time" id="recording-time">0:00</div>
+                <div class="recording-text">در حال ضبط...</div>
+                <div class="recording-actions">
+                    <button class="rec-btn rec-cancel" id="rec-cancel">لغو</button>
+                    <button class="rec-btn rec-send" id="rec-send">ارسال</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- مودال مخاطب -->
     <div class="modal-overlay" id="contact-modal">
         <div class="modal">
             <h3>👤 مخاطب جدید</h3>
@@ -406,7 +509,6 @@
         </div>
     </div>
 
-    <!-- مودال گروه/کانال -->
     <div class="modal-overlay" id="group-modal">
         <div class="modal">
             <h3 id="group-modal-title">👥 گروه جدید</h3>
@@ -448,7 +550,6 @@
 
         const myEmail = localStorage.getItem('my_email');
         if (!myEmail) window.location.href = 'index.html';
-
         document.getElementById('my-email-display').textContent = myEmail;
 
         let currentTab = 'private';
@@ -456,10 +557,18 @@
         let realtimeChannel = null;
         let selectedGroupType = 'group';
 
+        // ===== ضبط صدا =====
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordingStartTime = null;
+        let recordingTimer = null;
+        let currentAudio = null;
+
         const listContainer = document.getElementById('list-container');
         const messagesList = document.getElementById('messages-list');
         const messageInput = document.getElementById('message-input');
         const sendBtn = document.getElementById('send-message-btn');
+        const micBtn = document.getElementById('mic-btn');
         const chatHeader = document.getElementById('chat-header');
         const chatHeaderName = document.getElementById('chat-header-name');
         const chatHeaderSub = document.getElementById('chat-header-sub');
@@ -468,6 +577,8 @@
         const messageInputArea = document.getElementById('message-input-area');
         const channelNotice = document.getElementById('channel-notice');
         const sidebar = document.getElementById('sidebar');
+        const recordingBar = document.getElementById('recording-bar');
+        const recordingTime = document.getElementById('recording-time');
 
         // ===== توابع کمکی =====
         const escapeHtml = (text) => {
@@ -477,6 +588,12 @@
         };
 
         const getInitial = (str) => (str || '?').charAt(0).toUpperCase();
+
+        const formatTime = (seconds) => {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        };
 
         // ===== تب‌ها =====
         document.querySelectorAll('.tab').forEach(tab => {
@@ -488,7 +605,6 @@
             });
         });
 
-        // ===== رندر لیست =====
         const renderList = async () => {
             listContainer.innerHTML = '<div class="empty-list">در حال بارگذاری...</div>';
             if (currentTab === 'private') await renderPrivateList();
@@ -587,8 +703,8 @@
             });
         };
 
-        // ===== باز کردن چت خصوصی =====
         const openPrivateChat = async (email) => {
+            stopRecording(true);
             currentChat = { type: 'private', email, name: email.split('@')[0] };
 
             chatHeader.style.display = 'flex';
@@ -604,6 +720,7 @@
 
             messageInput.disabled = false;
             sendBtn.disabled = false;
+            micBtn.disabled = false;
             messageInput.placeholder = 'پیام خود را بنویسید...';
 
             if (window.innerWidth <= 700) sidebar.classList.add('hidden');
@@ -614,8 +731,8 @@
             await renderList();
         };
 
-        // ===== باز کردن گروه/کانال =====
         const openGroupChat = async (chat) => {
+            stopRecording(true);
             const { data: memberData } = await supabase
                 .from('chat_members')
                 .select('role')
@@ -646,11 +763,13 @@
                 channelNotice.style.display = 'block';
                 messageInput.disabled = true;
                 sendBtn.disabled = true;
+                micBtn.disabled = true;
                 messageInput.placeholder = 'فقط ادمین‌ها می‌توانند پیام بفرستند';
             } else {
                 channelNotice.style.display = 'none';
                 messageInput.disabled = false;
                 sendBtn.disabled = false;
+                micBtn.disabled = false;
                 messageInput.placeholder = 'پیام خود را بنویسید...';
             }
 
@@ -662,7 +781,6 @@
             await renderList();
         };
 
-        // ===== بارگذاری پیام‌های خصوصی =====
         const loadPrivateMessages = async () => {
             if (!currentChat || currentChat.type !== 'private') return;
             const email = currentChat.email;
@@ -682,7 +800,6 @@
             data.forEach(msg => addMessage(msg, false));
         };
 
-        // ===== بارگذاری پیام‌های گروه =====
         const loadGroupMessages = async () => {
             if (!currentChat || !currentChat.id) return;
 
@@ -697,7 +814,6 @@
             data.forEach(msg => addMessage(msg, true));
         };
 
-        // ===== نمایش پیام =====
         const addMessage = (msg, showSender) => {
             const msgDiv = document.createElement('div');
             msgDiv.className = 'message-item';
@@ -707,14 +823,61 @@
             if (showSender && msg.sender_email !== myEmail) {
                 html += `<div class="msg-sender">${escapeHtml(msg.sender_email)}</div>`;
             }
-            html += `<div class="msg-content">${escapeHtml(msg.content)}</div>`;
-            msgDiv.innerHTML = html;
 
+            if (msg.message_type === 'voice' && msg.audio_url) {
+                const duration = msg.audio_duration || 0;
+                html += `
+                    <div class="voice-message">
+                        <button class="voice-play-btn" data-url="${escapeHtml(msg.audio_url)}">▶</button>
+                        <div class="voice-wave">
+                            ${Array.from({length: 20}, () => `<span style="height:${Math.random()*20+8}px"></span>`).join('')}
+                        </div>
+                        <div class="voice-duration">${formatTime(duration)}</div>
+                    </div>
+                `;
+            } else {
+                html += `<div class="msg-content">${escapeHtml(msg.content || '')}</div>`;
+            }
+
+            msgDiv.innerHTML = html;
             messagesList.appendChild(msgDiv);
             messagesList.scrollTop = messagesList.scrollHeight;
         };
 
-        // ===== Realtime =====
+        // ===== پخش صوت (Event Delegation) =====
+        messagesList.addEventListener('click', (e) => {
+            const playBtn = e.target.closest('.voice-play-btn');
+            if (!playBtn) return;
+
+            const url = playBtn.dataset.url;
+
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+                document.querySelectorAll('.voice-play-btn').forEach(b => {
+                    b.textContent = '▶';
+                    b.classList.remove('playing');
+                });
+            }
+
+            if (playBtn.classList.contains('playing')) {
+                playBtn.textContent = '▶';
+                playBtn.classList.remove('playing');
+                return;
+            }
+
+            currentAudio = new Audio(url);
+            currentAudio.play();
+            playBtn.textContent = '⏸';
+            playBtn.classList.add('playing');
+
+            currentAudio.addEventListener('ended', () => {
+                playBtn.textContent = '▶';
+                playBtn.classList.remove('playing');
+                currentAudio = null;
+            });
+        });
+
         const setupRealtime = () => {
             if (realtimeChannel) supabase.removeChannel(realtimeChannel);
 
@@ -736,7 +899,7 @@
                 .subscribe();
         };
 
-        // ===== ارسال پیام =====
+        // ===== ارسال پیام متنی =====
         const sendMessage = async () => {
             const content = messageInput.value.trim();
             if (!content || !currentChat) return;
@@ -745,11 +908,13 @@
             if (currentChat.type === 'private') {
                 payload = {
                     content, sender_email: myEmail, receiver_email: currentChat.email,
+                    message_type: 'text'
                 };
             } else {
                 if (!currentChat.canSend) return;
                 payload = {
                     content, sender_email: myEmail, receiver_email: '', chat_id: currentChat.id,
+                    message_type: 'text'
                 };
             }
 
@@ -761,6 +926,132 @@
         sendBtn.addEventListener('click', sendMessage);
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
+        });
+
+        // ===== ضبط صدا =====
+        const startRecording = async () => {
+            if (!currentChat) return;
+            if (currentChat.type === 'channel' && !currentChat.isOwner) return;
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioChunks = [];
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) audioChunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    stream.getTracks().forEach(t => t.stop());
+                };
+
+                mediaRecorder.start();
+                recordingStartTime = Date.now();
+
+                micBtn.classList.add('recording');
+                micBtn.textContent = '⏹';
+                recordingBar.classList.add('show');
+                messageInputArea.style.display = 'none';
+
+                recordingTime.textContent = '0:00';
+                recordingTimer = setInterval(() => {
+                    const sec = Math.floor((Date.now() - recordingStartTime) / 1000);
+                    recordingTime.textContent = formatTime(sec);
+                    if (sec >= 60) stopRecording(false);
+                }, 500);
+
+            } catch (err) {
+                alert('دسترسی به میکروفون داده نشد: ' + err.message);
+                console.error(err);
+            }
+        };
+
+        const stopRecording = (cancel) => {
+            if (!mediaRecorder) return;
+
+            if (mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+
+            if (recordingTimer) {
+                clearInterval(recordingTimer);
+                recordingTimer = null;
+            }
+
+            micBtn.classList.remove('recording');
+            micBtn.textContent = '🎤';
+            recordingBar.classList.remove('show');
+            messageInputArea.style.display = 'flex';
+
+            if (cancel) {
+                audioChunks = [];
+                mediaRecorder = null;
+                recordingStartTime = null;
+            }
+        };
+
+        micBtn.addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                stopRecording(false);
+            } else {
+                startRecording();
+            }
+        });
+
+        document.getElementById('rec-cancel').addEventListener('click', () => {
+            stopRecording(true);
+        });
+
+        document.getElementById('rec-send').addEventListener('click', async () => {
+            const duration = Math.floor((Date.now() - recordingStartTime) / 1000);
+            stopRecording(false);
+
+            // کمی صبر تا onstop کامل شود
+            setTimeout(async () => {
+                if (audioChunks.length === 0) return;
+
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                audioChunks = [];
+                mediaRecorder = null;
+
+                const fileName = `${myEmail.replace(/[^a-z0-9]/gi, '_')}-${Date.now()}.webm`;
+
+                const { error: uploadError } = await supabase.storage
+                    .from('voice-messages')
+                    .upload(fileName, audioBlob, { contentType: 'audio/webm' });
+
+                if (uploadError) {
+                    alert('خطا در آپلود: ' + uploadError.message);
+                    console.error(uploadError);
+                    return;
+                }
+
+                const { data: urlData } = supabase.storage
+                    .from('voice-messages')
+                    .getPublicUrl(fileName);
+
+                const audioUrl = urlData.publicUrl;
+
+                let payload;
+                if (currentChat.type === 'private') {
+                    payload = {
+                        content: '', sender_email: myEmail, receiver_email: currentChat.email,
+                        message_type: 'voice', audio_url: audioUrl, audio_duration: duration
+                    };
+                } else {
+                    payload = {
+                        content: '', sender_email: myEmail, receiver_email: '', chat_id: currentChat.id,
+                        message_type: 'voice', audio_url: audioUrl, audio_duration: duration
+                    };
+                }
+
+                const { error: insertError } = await supabase.from('messages').insert(payload);
+                if (insertError) {
+                    alert('خطا در ارسال: ' + insertError.message);
+                    console.error(insertError);
+                }
+            }, 200);
         });
 
         // ===== مودال مخاطب =====
@@ -826,18 +1117,15 @@
 
             if (!name) { alert('نام را وارد کن'); return; }
 
-            // استخراج ایمیل‌های اعضا
             const members = membersRaw
                 .split(',')
                 .map(e => e.trim().toLowerCase())
                 .filter(e => e && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
 
-            // ساخت چت
             const { data: chatData, error: chatError } = await supabase
                 .from('chats')
                 .insert({
-                    name,
-                    description: desc,
+                    name, description: desc,
                     type: selectedGroupType,
                     owner_email: myEmail,
                 })
@@ -852,7 +1140,6 @@
 
             const chatId = chatData.id;
 
-            // ساخت لیست اعضا (خودم + بقیه)
             const allMembers = [
                 { chat_id: chatId, member_email: myEmail, role: 'owner' },
                 ...members
@@ -872,7 +1159,6 @@
 
             groupModal.classList.remove('show');
 
-            // برو به تب مربوطه
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             const targetTab = document.querySelector(`.tab[data-tab="${selectedGroupType}"]`);
             targetTab.classList.add('active');
@@ -895,18 +1181,15 @@
             });
         });
 
-        // ===== بازگشت (موبایل) =====
         document.getElementById('back-btn').addEventListener('click', () => {
             sidebar.classList.remove('hidden');
         });
 
-        // ===== خروج =====
         document.getElementById('logout-btn').addEventListener('click', () => {
             localStorage.removeItem('my_email');
             window.location.href = 'index.html';
         });
 
-        // ===== شروع =====
         await renderList();
     </script>
 </body>
