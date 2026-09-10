@@ -35,9 +35,6 @@
             display: flex; overflow: hidden;
         }
 
-        /* ============================================ */
-        /* ستون کناری                                    */
-        /* ============================================ */
         .sidebar {
             width: 340px; background: var(--sidebar-bg);
             border-left: 1px solid var(--border);
@@ -207,9 +204,6 @@
             opacity: 0.4;
         }
 
-        /* ============================================ */
-        /* ناحیه چت                                      */
-        /* ============================================ */
         .chat-area {
             flex: 1; display: flex; flex-direction: column;
             background: var(--bg-chat);
@@ -280,7 +274,6 @@
             background: rgba(0, 0, 0, 0.15); border-radius: 3px;
         }
 
-        /* ===== حباب پیام ===== */
         .message-item {
             max-width: 65%;
             padding: 8px 12px 8px 14px;
@@ -316,7 +309,6 @@
             line-height: 1.5; word-break: break-word;
         }
 
-        /* ===== پیام صوتی ===== */
         .voice-message {
             display: flex; align-items: center; gap: 12px;
             min-width: 220px; padding: 2px 0;
@@ -350,16 +342,33 @@
             direction: ltr; flex-shrink: 0; font-weight: 600;
         }
 
-        /* ===== ناحیه ورودی ===== */
+        /* ===== پیام عکس ===== */
+        .image-message {
+            max-width: 280px;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .image-message:hover { transform: scale(1.02); }
+
+        .image-message img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+        }
+
         .message-input-area {
             display: flex; padding: 12px 20px;
             background: #fff;
             border-top: 1px solid var(--border);
-            gap: 10px; align-items: center;
+            gap: 8px; align-items: center;
             position: relative; z-index: 2;
         }
 
-        .message-input-area input {
+        .message-input-area input[type="text"] {
             flex: 1; padding: 12px 20px;
             border: 2px solid transparent;
             background: #f0f2f5;
@@ -369,17 +378,17 @@
             transition: all 0.2s;
         }
 
-        .message-input-area input:focus {
+        .message-input-area input[type="text"]:focus {
             background: #fff;
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(0, 136, 204, 0.08);
         }
 
-        .message-input-area input:disabled {
+        .message-input-area input[type="text"]:disabled {
             background: #f8f9fa; cursor: not-allowed;
         }
 
-        .mic-btn {
+        .attach-btn, .mic-btn {
             width: 44px; height: 44px; border-radius: 50%;
             background: #f0f2f5; color: var(--primary);
             border: none; cursor: pointer;
@@ -388,8 +397,14 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        .mic-btn:hover { background: var(--primary-light); transform: scale(1.05); }
-        .mic-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .attach-btn:hover, .mic-btn:hover {
+            background: var(--primary-light);
+            transform: scale(1.05);
+        }
+
+        .attach-btn:disabled, .mic-btn:disabled {
+            opacity: 0.4; cursor: not-allowed; transform: none;
+        }
 
         .mic-btn.recording {
             background: #ef4444; color: white;
@@ -415,7 +430,6 @@
         .send-btn:hover { transform: scale(1.06); }
         .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-        /* ===== نوار ضبط ===== */
         .recording-bar {
             display: none;
             align-items: center; gap: 12px;
@@ -464,7 +478,6 @@
         }
         .rec-send:hover { transform: translateY(-1px); }
 
-        /* ===== مودال ===== */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(15, 23, 42, 0.6);
@@ -489,15 +502,8 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        .modal h3 {
-            font-size: 18px; color: var(--text);
-            margin-bottom: 8px;
-        }
-
-        .modal p {
-            font-size: 13px; color: var(--text-muted);
-            margin-bottom: 18px;
-        }
+        .modal h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
+        .modal p { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
 
         .modal label {
             display: block; font-size: 13px;
@@ -545,9 +551,7 @@
             font-size: 22px; display: block; margin-bottom: 4px;
         }
 
-        .modal-buttons {
-            display: flex; gap: 10px; margin-top: 8px;
-        }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 8px; }
 
         .modal-buttons button {
             flex: 1; padding: 12px;
@@ -574,7 +578,25 @@
             color: var(--primary); padding: 0 8px;
         }
 
-        /* ===== ریسپانسیو ===== */
+        .image-viewer {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center; align-items: center;
+            z-index: 2000;
+            cursor: zoom-out;
+            padding: 20px;
+        }
+
+        .image-viewer.show { display: flex; }
+
+        .image-viewer img {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
         @media (max-width: 700px) {
             body { padding: 0; }
             .app {
@@ -591,12 +613,13 @@
             .message-item { max-width: 85%; }
             .back-btn { display: flex; }
             #messages-list { padding: 16px 12px; }
+            .attach-btn, .mic-btn { width: 40px; height: 40px; font-size: 16px; }
+            .send-btn { width: 40px; height: 40px; font-size: 16px; }
         }
     </style>
 </head>
 <body class="chat-page">
     <div class="app">
-        <!-- ===== ستون کناری ===== -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h2>پیام‌رسان</h2>
@@ -632,7 +655,6 @@
             <div class="list-container" id="list-container"></div>
         </div>
 
-        <!-- ===== ناحیه چت ===== -->
         <div class="chat-area">
             <div class="chat-header" id="chat-header" style="display:none;">
                 <button class="back-btn" id="back-btn">→</button>
@@ -655,6 +677,7 @@
             <div id="messages-list" style="display:none;"></div>
 
             <div class="message-input-area" id="message-input-area" style="display:none;">
+                <button class="attach-btn" id="attach-btn" title="ارسال عکس">📎</button>
                 <input type="text" id="message-input" placeholder="پیام خود را بنویسید...">
                 <button class="mic-btn" id="mic-btn" title="ضبط ویس">🎤</button>
                 <button class="send-btn" id="send-message-btn" title="ارسال">➤</button>
@@ -672,7 +695,12 @@
         </div>
     </div>
 
-    <!-- ===== مودال مخاطب ===== -->
+    <input type="file" id="file-input" accept="image/*" style="display:none;">
+
+    <div class="image-viewer" id="image-viewer">
+        <img id="image-viewer-img" src="" alt="">
+    </div>
+
     <div class="modal-overlay" id="contact-modal">
         <div class="modal">
             <h3>👤 مخاطب جدید</h3>
@@ -685,7 +713,6 @@
         </div>
     </div>
 
-    <!-- ===== مودال گروه/کانال ===== -->
     <div class="modal-overlay" id="group-modal">
         <div class="modal">
             <h3 id="group-modal-title">👥 گروه جدید</h3>
@@ -748,6 +775,8 @@
         const messageInput = document.getElementById('message-input');
         const sendBtn = document.getElementById('send-message-btn');
         const micBtn = document.getElementById('mic-btn');
+        const attachBtn = document.getElementById('attach-btn');
+        const fileInput = document.getElementById('file-input');
         const chatHeader = document.getElementById('chat-header');
         const chatHeaderName = document.getElementById('chat-header-name');
         const chatHeaderSub = document.getElementById('chat-header-sub');
@@ -758,6 +787,8 @@
         const sidebar = document.getElementById('sidebar');
         const recordingBar = document.getElementById('recording-bar');
         const recordingTime = document.getElementById('recording-time');
+        const imageViewer = document.getElementById('image-viewer');
+        const imageViewerImg = document.getElementById('image-viewer-img');
 
         const escapeHtml = (text) => {
             const div = document.createElement('div');
@@ -898,6 +929,7 @@
             messageInput.disabled = false;
             sendBtn.disabled = false;
             micBtn.disabled = false;
+            attachBtn.disabled = false;
             messageInput.placeholder = 'پیام خود را بنویسید...';
 
             if (window.innerWidth <= 700) sidebar.classList.add('hidden');
@@ -941,12 +973,14 @@
                 messageInput.disabled = true;
                 sendBtn.disabled = true;
                 micBtn.disabled = true;
+                attachBtn.disabled = true;
                 messageInput.placeholder = 'فقط ادمین‌ها می‌توانند پیام بفرستند';
             } else {
                 channelNotice.style.display = 'none';
                 messageInput.disabled = false;
                 sendBtn.disabled = false;
                 micBtn.disabled = false;
+                attachBtn.disabled = false;
                 messageInput.placeholder = 'پیام خود را بنویسید...';
             }
 
@@ -1012,6 +1046,12 @@
                         <div class="voice-duration">${formatTime(duration)}</div>
                     </div>
                 `;
+            } else if (msg.message_type === 'image' && msg.file_url) {
+                html += `
+                    <div class="image-message">
+                        <img src="${escapeHtml(msg.file_url)}" alt="عکس" data-full="${escapeHtml(msg.file_url)}">
+                    </div>
+                `;
             } else {
                 html += `<div class="msg-content">${escapeHtml(msg.content || '')}</div>`;
             }
@@ -1023,35 +1063,46 @@
 
         messagesList.addEventListener('click', (e) => {
             const playBtn = e.target.closest('.voice-play-btn');
-            if (!playBtn) return;
+            if (playBtn) {
+                const url = playBtn.dataset.url;
 
-            const url = playBtn.dataset.url;
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio = null;
+                    document.querySelectorAll('.voice-play-btn').forEach(b => {
+                        b.textContent = '▶';
+                        b.classList.remove('playing');
+                    });
+                }
 
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
-                document.querySelectorAll('.voice-play-btn').forEach(b => {
-                    b.textContent = '▶';
-                    b.classList.remove('playing');
+                if (playBtn.classList.contains('playing')) {
+                    playBtn.textContent = '▶';
+                    playBtn.classList.remove('playing');
+                    return;
+                }
+
+                currentAudio = new Audio(url);
+                currentAudio.play();
+                playBtn.textContent = '⏸';
+                playBtn.classList.add('playing');
+
+                currentAudio.addEventListener('ended', () => {
+                    playBtn.textContent = '▶';
+                    playBtn.classList.remove('playing');
+                    currentAudio = null;
                 });
-            }
-
-            if (playBtn.classList.contains('playing')) {
-                playBtn.textContent = '▶';
-                playBtn.classList.remove('playing');
                 return;
             }
 
-            currentAudio = new Audio(url);
-            currentAudio.play();
-            playBtn.textContent = '⏸';
-            playBtn.classList.add('playing');
+            const img = e.target.closest('.image-message img');
+            if (img) {
+                imageViewerImg.src = img.dataset.full || img.src;
+                imageViewer.classList.add('show');
+            }
+        });
 
-            currentAudio.addEventListener('ended', () => {
-                playBtn.textContent = '▶';
-                playBtn.classList.remove('playing');
-                currentAudio = null;
-            });
+        imageViewer.addEventListener('click', () => {
+            imageViewer.classList.remove('show');
         });
 
         const setupRealtime = () => {
@@ -1101,6 +1152,82 @@
         sendBtn.addEventListener('click', sendMessage);
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
+        });
+
+        // ===== ارسال عکس =====
+        attachBtn.addEventListener('click', () => {
+            if (!currentChat) return;
+            if (currentChat.type === 'channel' && !currentChat.isOwner) return;
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+            fileInput.value = '';
+
+            if (!file.type.startsWith('image/')) {
+                alert('فقط عکس می‌توانی بفرستی');
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert('حجم عکس نباید بیشتر از ۵ مگابایت باشد');
+                return;
+            }
+
+            const tempDiv = document.createElement('div');
+            tempDiv.className = 'message-item my-message';
+            tempDiv.innerHTML = `<div class="msg-content">⏳ در حال آپلود عکس...</div>`;
+            messagesList.appendChild(tempDiv);
+            messagesList.scrollTop = messagesList.scrollHeight;
+
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('chat-files')
+                .upload(fileName, file, { contentType: file.type });
+
+            if (uploadError) {
+                tempDiv.remove();
+                alert('خطا در آپلود: ' + uploadError.message);
+                console.error(uploadError);
+                return;
+            }
+
+            const { data: urlData } = supabase.storage
+                .from('chat-files')
+                .getPublicUrl(fileName);
+
+            const fileUrl = urlData.publicUrl;
+
+            let payload;
+            if (currentChat.type === 'private') {
+                payload = {
+                    content: '', sender_email: myEmail, receiver_email: currentChat.email,
+                    message_type: 'image',
+                    file_url: fileUrl,
+                    file_name: file.name,
+                    file_size: file.size,
+                };
+            } else {
+                payload = {
+                    content: '', sender_email: myEmail, receiver_email: '', chat_id: currentChat.id,
+                    message_type: 'image',
+                    file_url: fileUrl,
+                    file_name: file.name,
+                    file_size: file.size,
+                };
+            }
+
+            const { error: insertError } = await supabase.from('messages').insert(payload);
+            tempDiv.remove();
+
+            if (insertError) {
+                alert('خطا در ارسال: ' + insertError.message);
+                console.error(insertError);
+            }
         });
 
         const startRecording = async () => {
