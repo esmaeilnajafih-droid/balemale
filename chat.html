@@ -2,16 +2,17 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>بله مله</title>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html, body {
             height: 100%;
             font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            overscroll-behavior: none;
         }
 
         :root {
@@ -47,6 +48,7 @@
             width: 340px; background: var(--sidebar-bg);
             border-left: 1px solid var(--border);
             display: flex; flex-direction: column;
+            flex-shrink: 0;
         }
 
         .sidebar-header {
@@ -609,13 +611,24 @@
             color: white;
         }
 
+        /* ===== دکمه برگشت (دسکتاپ مخفی) ===== */
         .back-btn {
-            display: none; background: transparent; border: none;
+            display: none;
+            background: var(--primary-light);
+            border: none;
             cursor: pointer;
-            color: var(--primary); padding: 0 8px;
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
         }
 
+        .back-btn:hover { background: var(--primary); color: white; }
+        .back-btn:active { transform: scale(0.9); }
         .back-btn svg { width: 22px; height: 22px; fill: currentColor; }
 
         .image-viewer {
@@ -641,23 +654,46 @@
         @media (max-width: 700px) {
             body { padding: 0; }
             .app {
-                height: 100vh; max-height: 100vh;
+                height: 100vh; height: 100dvh;
+                max-height: 100vh; max-height: 100dvh;
                 border-radius: 0; position: relative;
             }
             .sidebar {
                 position: absolute; top: 0; left: 0; bottom: 0;
                 width: 100%; z-index: 10;
-                transition: transform 0.3s;
+                transition: transform 0.3s ease;
             }
             .sidebar.hidden { transform: translateX(-100%); }
             .chat-area { width: 100%; }
             .message-item { max-width: 85%; }
-            .back-btn { display: flex; }
+            .back-btn { display: flex !important; }
             #messages-list { padding: 16px 12px; }
+
+            .chat-header {
+                padding: 8px 12px;
+                gap: 8px;
+            }
+
+            .chat-header .avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 15px;
+            }
+
+            .chat-header .avatar svg { width: 18px; height: 18px; }
+
+            .chat-header-name {
+                font-size: 14.5px;
+            }
+
+            .chat-header-sub {
+                font-size: 11px;
+            }
 
             .message-input-area {
                 padding: 8px 10px;
                 gap: 6px;
+                padding-bottom: max(8px, env(safe-area-inset-bottom));
             }
 
             .message-input-area input[type="text"] {
@@ -669,19 +705,31 @@
                 width: 40px; height: 40px;
             }
 
+            .attach-btn svg, .send-btn svg { width: 18px; height: 18px; }
+
             .attach-menu {
                 bottom: 60px;
                 right: 10px;
                 left: 10px;
                 min-width: auto;
             }
+
+            .sidebar-header h2 { font-size: 17px; }
+            .sidebar-header h2 svg { width: 30px; height: 30px; }
+        }
+
+        /* برای صفحه‌های خیلی کوچک */
+        @media (max-width: 380px) {
+            .chat-header-name { font-size: 13.5px; }
+            .chat-header-sub { font-size: 10.5px; }
+            .attach-btn, .send-btn { width: 38px; height: 38px; }
         }
     </style>
 </head>
 <body class="chat-page">
     <div class="app">
-        <!-- ===== ستون کناری ===== -->
-        <div class="sidebar" id="sidebar">
+        <!-- ===== ستون کناری (لیست مخاطبین) ===== -->
+        <div class="sidebar hidden-mobile" id="sidebar">
             <div class="sidebar-header">
                 <h2>
                     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
@@ -727,7 +775,7 @@
         <!-- ===== ناحیه چت ===== -->
         <div class="chat-area">
             <div class="chat-header" id="chat-header" style="display:none;">
-                <button class="back-btn" id="back-btn">
+                <button class="back-btn" id="back-btn" title="بازگشت">
                     <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
                 </button>
                 <div class="avatar" id="chat-header-avatar"></div>
@@ -902,6 +950,9 @@
             return `${m}:${s.toString().padStart(2, '0')}`;
         };
 
+        const isMobile = () => window.innerWidth <= 700;
+
+        // ===== منوی ضمیمه =====
         document.addEventListener('click', (e) => {
             if (!attachMenu.classList.contains('show')) return;
             if (e.target.closest('#attach-menu') || e.target.closest('#attach-btn')) return;
@@ -924,6 +975,7 @@
             startRecording();
         });
 
+        // ===== تب‌ها =====
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1052,11 +1104,11 @@
             attachBtn.disabled = false;
             messageInput.placeholder = 'پیام...';
 
-            if (window.innerWidth <= 700) sidebar.classList.add('hidden');
+            if (isMobile()) sidebar.classList.add('hidden');
 
             await loadPrivateMessages();
             setupRealtime();
-            messageInput.focus();
+            if (!isMobile()) messageInput.focus();
             await renderList();
         };
 
@@ -1102,11 +1154,11 @@
                 messageInput.placeholder = 'پیام...';
             }
 
-            if (window.innerWidth <= 700) sidebar.classList.add('hidden');
+            if (isMobile()) sidebar.classList.add('hidden');
 
             await loadGroupMessages();
             setupRealtime();
-            if (canSend) messageInput.focus();
+            if (!isMobile() && canSend) messageInput.focus();
             await renderList();
         };
 
@@ -1264,7 +1316,7 @@
 
             const { error } = await supabase.from('messages').insert(payload);
             if (error) { console.error(error); alert('خطا: ' + error.message); }
-            else { messageInput.value = ''; messageInput.focus(); }
+            else { messageInput.value = ''; if (!isMobile()) messageInput.focus(); }
         };
 
         sendBtn.addEventListener('click', sendMessage);
@@ -1272,6 +1324,7 @@
             if (e.key === 'Enter') sendMessage();
         });
 
+        // ===== ارسال عکس =====
         fileInput.addEventListener('change', async () => {
             const file = fileInput.files[0];
             if (!file) return;
@@ -1341,6 +1394,7 @@
             }
         });
 
+        // ===== ضبط صدا =====
         const startRecording = async () => {
             if (!currentChat) return;
             if (currentChat.type === 'channel' && !currentChat.isOwner) return;
@@ -1452,13 +1506,14 @@
             }, 200);
         });
 
+        // ===== مودال مخاطب =====
         const contactModal = document.getElementById('contact-modal');
         const newContactEmail = document.getElementById('new-contact-email');
 
         document.getElementById('new-contact-btn').addEventListener('click', () => {
             contactModal.classList.add('show');
             newContactEmail.value = '';
-            newContactEmail.focus();
+            setTimeout(() => newContactEmail.focus(), 100);
         });
 
         document.getElementById('contact-add').addEventListener('click', async () => {
@@ -1473,6 +1528,7 @@
             await openPrivateChat(email);
         });
 
+        // ===== مودال گروه/کانال =====
         const groupModal = document.getElementById('group-modal');
         const groupName = document.getElementById('group-name');
         const groupDesc = document.getElementById('group-desc');
@@ -1491,7 +1547,7 @@
                 opt.classList.toggle('active', opt.dataset.type === type);
             });
 
-            groupName.focus();
+            setTimeout(() => groupName.focus(), 100);
         };
 
         document.getElementById('new-group-btn').addEventListener('click', () => openGroupModal('group'));
@@ -1562,6 +1618,7 @@
             await openGroupChat(chatData);
         });
 
+        // ===== بستن مودال‌ها =====
         document.querySelectorAll('[data-close]').forEach(btn => {
             btn.addEventListener('click', () => {
                 btn.closest('.modal-overlay').classList.remove('show');
@@ -1574,14 +1631,23 @@
             });
         });
 
+        // ===== دکمه برگشت (موبایل) =====
         document.getElementById('back-btn').addEventListener('click', () => {
             sidebar.classList.remove('hidden');
+            attachMenu.classList.remove('show');
         });
 
+        // ===== خروج =====
         document.getElementById('logout-btn').addEventListener('click', () => {
             localStorage.removeItem('my_email');
             window.location.href = 'index.html';
         });
+
+        // ===== شروع =====
+        // در موبایل، سایدبار را نمایش بده
+        if (isMobile()) {
+            sidebar.classList.remove('hidden');
+        }
 
         await renderList();
     </script>
