@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>بله مله</title>
+    <title>بله مله | Bale Melle</title>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -29,6 +29,11 @@
             --hover: #f4f4f5;
         }
 
+        /* حالت LTR برای انگلیسی */
+        body.lang-en {
+            direction: ltr;
+        }
+
         body.chat-page {
             background: #0f172a;
             display: flex; justify-content: center; align-items: center;
@@ -51,9 +56,16 @@
             flex-shrink: 0;
         }
 
+        body.lang-en .sidebar {
+            border-left: none;
+            border-right: 1px solid var(--border);
+        }
+
         .sidebar-header {
             padding: 14px 16px;
             border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 8px;
         }
 
         .sidebar-header h2 {
@@ -70,6 +82,30 @@
             fill: white;
             flex-shrink: 0;
         }
+
+        .lang-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .lang-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .lang-btn svg { width: 14px; height: 14px; fill: currentColor; }
 
         .my-info {
             display: flex; align-items: center; gap: 8px;
@@ -195,6 +231,10 @@
             white-space: nowrap;
         }
 
+        body.lang-en .item-sub {
+            text-align: left;
+        }
+
         .item-badge {
             font-size: 9px; padding: 3px 8px;
             border-radius: 8px; font-weight: 700; flex-shrink: 0;
@@ -259,6 +299,10 @@
             white-space: nowrap;
         }
 
+        body.lang-en .chat-header-sub {
+            text-align: left;
+        }
+
         .channel-notice {
             background: #fef3c7; color: #92400e;
             padding: 10px 20px; font-size: 12.5px;
@@ -304,10 +348,18 @@
             margin-bottom: 4px;
         }
 
+        body.lang-en .message-item {
+            border-radius: 12px 12px 12px 4px;
+        }
+
         .message-item.my-message {
             background: var(--bubble-mine);
             align-self: flex-end;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+        }
+
+        body.lang-en .message-item.my-message {
+            border-radius: 12px 12px 4px 12px;
         }
 
         @keyframes bubbleIn {
@@ -320,6 +372,10 @@
             color: var(--primary);
             margin-bottom: 4px;
             direction: ltr; text-align: right;
+        }
+
+        body.lang-en .msg-sender {
+            text-align: left;
         }
 
         .msg-content {
@@ -445,6 +501,11 @@
             animation: menuIn 0.2s ease-out;
         }
 
+        body.lang-en .attach-menu {
+            right: auto;
+            left: 14px;
+        }
+
         .attach-menu.show { display: flex; }
 
         @keyframes menuIn {
@@ -464,6 +525,10 @@
             background: transparent;
             width: 100%;
             text-align: right;
+        }
+
+        body.lang-en .attach-menu-item {
+            text-align: left;
         }
 
         .attach-menu-item:hover { background: var(--primary-light); }
@@ -611,7 +676,7 @@
             color: white;
         }
 
-        /* ===== دکمه برگشت (دسکتاپ مخفی) ===== */
+        /* ===== دکمه برگشت ===== */
         .back-btn {
             display: none;
             background: var(--primary-light);
@@ -630,6 +695,8 @@
         .back-btn:hover { background: var(--primary); color: white; }
         .back-btn:active { transform: scale(0.9); }
         .back-btn svg { width: 22px; height: 22px; fill: currentColor; }
+
+        body.lang-en .back-btn svg { transform: scaleX(-1); }
 
         .image-viewer {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -663,7 +730,8 @@
                 width: 100%; z-index: 10;
                 transition: transform 0.3s ease;
             }
-            .sidebar.hidden { transform: translateX(-100%); }
+            body.lang-fa .sidebar.hidden { transform: translateX(-100%); }
+            body.lang-en .sidebar.hidden { transform: translateX(100%); }
             .chat-area { width: 100%; }
             .message-item { max-width: 85%; }
             .back-btn { display: flex !important; }
@@ -714,11 +782,15 @@
                 min-width: auto;
             }
 
+            body.lang-en .attach-menu {
+                right: 10px;
+                left: 10px;
+            }
+
             .sidebar-header h2 { font-size: 17px; }
             .sidebar-header h2 svg { width: 30px; height: 30px; }
         }
 
-        /* برای صفحه‌های خیلی کوچک */
         @media (max-width: 380px) {
             .chat-header-name { font-size: 13.5px; }
             .chat-header-sub { font-size: 10.5px; }
@@ -726,15 +798,19 @@
         }
     </style>
 </head>
-<body class="chat-page">
+<body class="chat-page lang-fa">
     <div class="app">
-        <!-- ===== ستون کناری (لیست مخاطبین) ===== -->
+        <!-- ===== ستون کناری ===== -->
         <div class="sidebar hidden-mobile" id="sidebar">
             <div class="sidebar-header">
                 <h2>
                     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-                    بله مله
+                    <span data-i18n="appName">بله مله</span>
                 </h2>
+                <button class="lang-btn" id="lang-btn" title="تغییر زبان">
+                    <svg viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+                    <span id="lang-label">EN</span>
+                </button>
             </div>
 
             <div class="my-info">
@@ -751,22 +827,22 @@
             <div class="action-buttons">
                 <button class="action-btn" id="new-contact-btn">
                     <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                    مخاطب
+                    <span data-i18n="contact">مخاطب</span>
                 </button>
                 <button class="action-btn" id="new-group-btn">
                     <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                    گروه
+                    <span data-i18n="group">گروه</span>
                 </button>
                 <button class="action-btn" id="new-channel-btn">
                     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>
-                    کانال
+                    <span data-i18n="channel">کانال</span>
                 </button>
             </div>
 
             <div class="tabs">
-                <div class="tab active" data-tab="private">خصوصی</div>
-                <div class="tab" data-tab="group">گروه‌ها</div>
-                <div class="tab" data-tab="channel">کانال‌ها</div>
+                <div class="tab active" data-tab="private" data-i18n="tabPrivate">خصوصی</div>
+                <div class="tab" data-tab="group" data-i18n="tabGroup">گروه‌ها</div>
+                <div class="tab" data-tab="channel" data-i18n="tabChannel">کانال‌ها</div>
             </div>
 
             <div class="list-container" id="list-container"></div>
@@ -785,13 +861,13 @@
                 </div>
             </div>
 
-            <div class="channel-notice" id="channel-notice" style="display:none;">
+            <div class="channel-notice" id="channel-notice" style="display:none;" data-i18n="channelNotice">
                 فقط ادمین‌ها می‌توانند پیام بفرستند
             </div>
 
             <div class="no-chat-selected" id="no-chat-selected">
                 <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-                <div>یک چت را انتخاب کن یا چت جدید بساز</div>
+                <div data-i18n="noChatSelected">یک چت را انتخاب کن یا چت جدید بساز</div>
             </div>
 
             <div id="messages-list" style="display:none;"></div>
@@ -800,7 +876,7 @@
                 <button class="attach-btn" id="attach-btn" title="ضمیمه">
                     <svg viewBox="0 0 24 24"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg>
                 </button>
-                <input type="text" id="message-input" placeholder="پیام...">
+                <input type="text" id="message-input" placeholder="پیام..." data-i18n-placeholder="messagePlaceholder">
                 <button class="send-btn" id="send-message-btn" title="ارسال">
                     <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
                 </button>
@@ -812,23 +888,23 @@
                     <span class="attach-menu-icon image">
                         <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
                     </span>
-                    ارسال عکس
+                    <span data-i18n="sendImage">ارسال عکس</span>
                 </button>
                 <button class="attach-menu-item" id="menu-voice">
                     <span class="attach-menu-icon voice">
                         <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
                     </span>
-                    ضبط ویس
+                    <span data-i18n="recordVoice">ضبط ویس</span>
                 </button>
             </div>
 
             <div class="recording-bar" id="recording-bar">
                 <div class="recording-dot"></div>
                 <div class="recording-time" id="recording-time">0:00</div>
-                <div class="recording-text">در حال ضبط...</div>
+                <div class="recording-text" data-i18n="recording">در حال ضبط...</div>
                 <div class="recording-actions">
-                    <button class="rec-btn rec-cancel" id="rec-cancel">لغو</button>
-                    <button class="rec-btn rec-send" id="rec-send">ارسال</button>
+                    <button class="rec-btn rec-cancel" id="rec-cancel" data-i18n="cancel">لغو</button>
+                    <button class="rec-btn rec-send" id="rec-send" data-i18n="send">ارسال</button>
                 </div>
             </div>
         </div>
@@ -842,45 +918,45 @@
 
     <div class="modal-overlay" id="contact-modal">
         <div class="modal">
-            <h3>مخاطب جدید</h3>
-            <p>ایمیل مخاطب را وارد کن</p>
+            <h3 data-i18n="newContact">مخاطب جدید</h3>
+            <p data-i18n="enterContactEmail">ایمیل مخاطب را وارد کن</p>
             <input type="email" id="new-contact-email" placeholder="friend@example.com">
             <div class="modal-buttons">
-                <button class="btn-cancel" data-close>انصراف</button>
-                <button class="btn-primary" id="contact-add">افزودن</button>
+                <button class="btn-cancel" data-close data-i18n="cancel">انصراف</button>
+                <button class="btn-primary" id="contact-add" data-i18n="add">افزودن</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="group-modal">
         <div class="modal">
-            <h3 id="group-modal-title">گروه جدید</h3>
-            <p>اطلاعات را وارد کن</p>
+            <h3 id="group-modal-title" data-i18n="newGroup">گروه جدید</h3>
+            <p data-i18n="enterGroupInfo">اطلاعات را وارد کن</p>
 
-            <label>نوع</label>
+            <label data-i18n="type">نوع</label>
             <div class="type-selector">
                 <div class="type-option active" data-type="group">
                     <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                    گروه
+                    <span data-i18n="group">گروه</span>
                 </div>
                 <div class="type-option" data-type="channel">
                     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>
-                    کانال
+                    <span data-i18n="channel">کانال</span>
                 </div>
             </div>
 
-            <label>نام</label>
-            <input type="text" id="group-name" placeholder="مثلاً: گروه دوستان">
+            <label data-i18n="name">نام</label>
+            <input type="text" id="group-name" placeholder="مثلاً: گروه دوستان" data-i18n-placeholder="groupNamePlaceholder">
 
-            <label>توضیحات (اختیاری)</label>
-            <textarea id="group-desc" placeholder="توضیح کوتاه..."></textarea>
+            <label data-i18n="description">توضیحات (اختیاری)</label>
+            <textarea id="group-desc" placeholder="توضیح کوتاه..." data-i18n-placeholder="groupDescPlaceholder"></textarea>
 
-            <label>ایمیل اعضا (با کاما جدا کن)</label>
+            <label data-i18n="membersLabel">ایمیل اعضا (با کاما جدا کن)</label>
             <textarea id="group-members" placeholder="ali@test.com, sara@test.com"></textarea>
 
             <div class="modal-buttons">
-                <button class="btn-cancel" data-close>انصراف</button>
-                <button class="btn-primary" id="group-create">ساخت</button>
+                <button class="btn-cancel" data-close data-i18n="cancel">انصراف</button>
+                <button class="btn-primary" id="group-create" data-i18n="create">ساخت</button>
             </div>
         </div>
     </div>
@@ -893,6 +969,175 @@
 
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // ============================================
+        // ترجمه‌ها
+        // ============================================
+        const translations = {
+            fa: {
+                appName: 'بله مله',
+                contact: 'مخاطب',
+                group: 'گروه',
+                channel: 'کانال',
+                tabPrivate: 'خصوصی',
+                tabGroup: 'گروه‌ها',
+                tabChannel: 'کانال‌ها',
+                noChatSelected: 'یک چت را انتخاب کن یا چت جدید بساز',
+                channelNotice: 'فقط ادمین‌ها می‌توانند پیام بفرستند',
+                messagePlaceholder: 'پیام...',
+                sendImage: 'ارسال عکس',
+                recordVoice: 'ضبط ویس',
+                recording: 'در حال ضبط...',
+                cancel: 'لغو',
+                send: 'ارسال',
+                newContact: 'مخاطب جدید',
+                enterContactEmail: 'ایمیل مخاطب را وارد کن',
+                add: 'افزودن',
+                newGroup: 'گروه جدید',
+                newChannel: 'کانال جدید',
+                enterGroupInfo: 'اطلاعات را وارد کن',
+                type: 'نوع',
+                name: 'نام',
+                description: 'توضیحات (اختیاری)',
+                membersLabel: 'ایمیل اعضا (با کاما جدا کن)',
+                create: 'ساخت',
+                groupNamePlaceholder: 'مثلاً: گروه دوستان',
+                groupDescPlaceholder: 'توضیح کوتاه...',
+                emptyContacts: 'هنوز مخاطبی نداری<br>روی «مخاطب» بزن',
+                emptyGroups: 'هنوز گروهی نداری<br>روی دکمه بالا بزن',
+                emptyChannels: 'هنوز کانالی نداری<br>روی دکمه بالا بزن',
+                loading: 'در حال بارگذاری...',
+                loadError: 'خطا در بارگذاری',
+                onlyAdmin: 'فقط ادمین‌ها',
+                uploadError: 'خطا در آپلود: ',
+                sendError: 'خطا در ارسال: ',
+                micError: 'دسترسی به میکروفون داده نشد',
+                onlyImage: 'فقط عکس',
+                imageTooLarge: 'حجم عکس نباید بیشتر از ۵ مگابایت باشد',
+                uploading: 'در حال آپلود...',
+                invalidEmail: 'ایمیل معتبر نیست',
+                cannotChatSelf: 'نمی‌توانی با خودت چت کنی!',
+                enterName: 'نام را وارد کن',
+                groupCreateError: 'خطا در ساخت: ',
+                groupMemberError: 'خطا در افزودن اعضا: ',
+                noContacts: 'هنوز مخاطبی نداری',
+                noGroups: 'هنوز گروهی نداری',
+                noChannels: 'هنوز کانالی نداری',
+                backTitle: 'بازگشت',
+                logoutTitle: 'خروج',
+                attachTitle: 'ضمیمه',
+                sendTitle: 'ارسال',
+                langTitle: 'تغییر زبان'
+            },
+            en: {
+                appName: 'Bale Melle',
+                contact: 'Contact',
+                group: 'Group',
+                channel: 'Channel',
+                tabPrivate: 'Private',
+                tabGroup: 'Groups',
+                tabChannel: 'Channels',
+                noChatSelected: 'Select a chat or create a new one',
+                channelNotice: 'Only admins can send messages',
+                messagePlaceholder: 'Message...',
+                sendImage: 'Send Image',
+                recordVoice: 'Record Voice',
+                recording: 'Recording...',
+                cancel: 'Cancel',
+                send: 'Send',
+                newContact: 'New Contact',
+                enterContactEmail: 'Enter contact email',
+                add: 'Add',
+                newGroup: 'New Group',
+                newChannel: 'New Channel',
+                enterGroupInfo: 'Enter the information',
+                type: 'Type',
+                name: 'Name',
+                description: 'Description (optional)',
+                membersLabel: 'Member emails (comma separated)',
+                create: 'Create',
+                groupNamePlaceholder: 'e.g. Friends Group',
+                groupDescPlaceholder: 'Short description...',
+                emptyContacts: 'No contacts yet<br>Click "Contact"',
+                emptyGroups: 'No groups yet<br>Click the button above',
+                emptyChannels: 'No channels yet<br>Click the button above',
+                loading: 'Loading...',
+                loadError: 'Load error',
+                onlyAdmin: 'Admins only',
+                uploadError: 'Upload error: ',
+                sendError: 'Send error: ',
+                micError: 'Microphone access denied',
+                onlyImage: 'Images only',
+                imageTooLarge: 'Image must be under 5 MB',
+                uploading: 'Uploading...',
+                invalidEmail: 'Invalid email',
+                cannotChatSelf: 'You cannot chat with yourself!',
+                enterName: 'Enter a name',
+                groupCreateError: 'Create error: ',
+                groupMemberError: 'Member add error: ',
+                noContacts: 'No contacts yet',
+                noGroups: 'No groups yet',
+                noChannels: 'No channels yet',
+                backTitle: 'Back',
+                logoutTitle: 'Logout',
+                attachTitle: 'Attach',
+                sendTitle: 'Send',
+                langTitle: 'Change language'
+            }
+        };
+
+        let currentLang = localStorage.getItem('lang') || 'fa';
+
+        const t = (key) => translations[currentLang][key] || key;
+
+        // ============================================
+        // اعمال زبان
+        // ============================================
+        const applyLanguage = () => {
+            // دایرکشن و کلاس
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'fa' ? 'rtl' : 'ltr';
+            document.body.classList.remove('lang-fa', 'lang-en');
+            document.body.classList.add('lang-' + currentLang);
+
+            // متن‌های data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                el.innerHTML = t(key);
+            });
+
+            // placeholderها
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.dataset.i18nPlaceholder;
+                el.placeholder = t(key);
+            });
+
+            // عنوان‌ها
+            document.getElementById('lang-label').textContent = currentLang === 'fa' ? 'EN' : 'FA';
+            document.getElementById('lang-btn').title = t('langTitle');
+            document.getElementById('back-btn').title = t('backTitle');
+            document.getElementById('logout-btn').title = t('logoutTitle');
+            document.getElementById('attach-btn').title = t('attachTitle');
+            document.getElementById('send-message-btn').title = t('sendTitle');
+
+            // عنوان صفحه
+            document.title = currentLang === 'fa' ? 'بله مله' : 'Bale Melle';
+
+            // رندر مجدد لیست (چون متن‌های خالی عوض می‌شوند)
+            renderList();
+        };
+
+        // ============================================
+        // دکمه تغییر زبان
+        // ============================================
+        document.getElementById('lang-btn').addEventListener('click', () => {
+            currentLang = currentLang === 'fa' ? 'en' : 'fa';
+            localStorage.setItem('lang', currentLang);
+            applyLanguage();
+        });
+
+        // ============================================
+        // بقیه کد
+        // ============================================
         const myEmail = localStorage.getItem('my_email');
         if (!myEmail) window.location.href = 'index.html';
 
@@ -986,7 +1231,7 @@
         });
 
         const renderList = async () => {
-            listContainer.innerHTML = '<div class="empty-list">در حال بارگذاری...</div>';
+            listContainer.innerHTML = `<div class="empty-list">${t('loading')}</div>`;
             if (currentTab === 'private') await renderPrivateList();
             else await renderGroupChannelList(currentTab);
         };
@@ -999,7 +1244,7 @@
                 .or(`sender_email.eq.${myEmail},receiver_email.eq.${myEmail}`);
 
             if (error) {
-                listContainer.innerHTML = '<div class="empty-list">خطا در بارگذاری</div>';
+                listContainer.innerHTML = `<div class="empty-list">${t('loadError')}</div>`;
                 return;
             }
 
@@ -1012,7 +1257,7 @@
             const contacts = Array.from(contactsSet);
 
             if (contacts.length === 0) {
-                listContainer.innerHTML = '<div class="empty-list">هنوز مخاطبی نداری<br>روی «مخاطب» بزن</div>';
+                listContainer.innerHTML = `<div class="empty-list">${t('emptyContacts')}</div>`;
                 return;
             }
 
@@ -1042,7 +1287,8 @@
                 .eq('member_email', myEmail);
 
             if (!memberships || memberships.length === 0) {
-                listContainer.innerHTML = `<div class="empty-list">هنوز ${type === 'group' ? 'گروهی' : 'کانالی'} نداری<br>روی دکمه بالا بزن</div>`;
+                const key = type === 'group' ? 'emptyGroups' : 'emptyChannels';
+                listContainer.innerHTML = `<div class="empty-list">${t(key)}</div>`;
                 return;
             }
 
@@ -1056,7 +1302,8 @@
                 .order('created_at', { ascending: false });
 
             if (!chats || chats.length === 0) {
-                listContainer.innerHTML = `<div class="empty-list">هنوز ${type === 'group' ? 'گروهی' : 'کانالی'} نداری</div>`;
+                const key = type === 'group' ? 'noGroups' : 'noChannels';
+                listContainer.innerHTML = `<div class="empty-list">${t(key)}</div>`;
                 return;
             }
 
@@ -1068,14 +1315,14 @@
                     item.classList.add('active');
                 }
                 const badge = type === 'group'
-                    ? '<span class="item-badge badge-group">گروه</span>'
-                    : '<span class="item-badge badge-channel">کانال</span>';
+                    ? `<span class="item-badge badge-group">${t('group')}</span>`
+                    : `<span class="item-badge badge-channel">${t('channel')}</span>`;
                 const avatarSvg = type === 'group' ? svgGroup : svgChannel;
                 item.innerHTML = `
                     <div class="avatar ${type}">${avatarSvg}</div>
                     <div class="item-info">
                         <div class="item-name">${escapeHtml(chat.name)}</div>
-                        <div class="item-sub">${escapeHtml(chat.description || 'بدون توضیحات')}</div>
+                        <div class="item-sub">${escapeHtml(chat.description || '—')}</div>
                     </div>
                     ${badge}
                 `;
@@ -1102,7 +1349,6 @@
             messageInput.disabled = false;
             sendBtn.disabled = false;
             attachBtn.disabled = false;
-            messageInput.placeholder = 'پیام...';
 
             if (isMobile()) sidebar.classList.add('hidden');
 
@@ -1145,13 +1391,11 @@
                 messageInput.disabled = true;
                 sendBtn.disabled = true;
                 attachBtn.disabled = true;
-                messageInput.placeholder = 'فقط ادمین‌ها';
             } else {
                 channelNotice.style.display = 'none';
                 messageInput.disabled = false;
                 sendBtn.disabled = false;
                 attachBtn.disabled = false;
-                messageInput.placeholder = 'پیام...';
             }
 
             if (isMobile()) sidebar.classList.add('hidden');
@@ -1219,7 +1463,7 @@
             } else if (msg.message_type === 'image' && msg.file_url) {
                 html += `
                     <div class="image-message">
-                        <img src="${escapeHtml(msg.file_url)}" alt="عکس" data-full="${escapeHtml(msg.file_url)}">
+                        <img src="${escapeHtml(msg.file_url)}" alt="image" data-full="${escapeHtml(msg.file_url)}">
                     </div>
                 `;
             } else {
@@ -1315,7 +1559,7 @@
             }
 
             const { error } = await supabase.from('messages').insert(payload);
-            if (error) { console.error(error); alert('خطا: ' + error.message); }
+            if (error) { console.error(error); alert(t('sendError') + error.message); }
             else { messageInput.value = ''; if (!isMobile()) messageInput.focus(); }
         };
 
@@ -1331,18 +1575,18 @@
             fileInput.value = '';
 
             if (!file.type.startsWith('image/')) {
-                alert('فقط عکس');
+                alert(t('onlyImage'));
                 return;
             }
 
             if (file.size > 5 * 1024 * 1024) {
-                alert('حجم عکس نباید بیشتر از ۵ مگابایت باشد');
+                alert(t('imageTooLarge'));
                 return;
             }
 
             const tempDiv = document.createElement('div');
             tempDiv.className = 'message-item my-message';
-            tempDiv.innerHTML = `<div class="msg-content">در حال آپلود...</div>`;
+            tempDiv.innerHTML = `<div class="msg-content">${t('uploading')}</div>`;
             messagesList.appendChild(tempDiv);
             messagesList.scrollTop = messagesList.scrollHeight;
 
@@ -1355,7 +1599,7 @@
 
             if (uploadError) {
                 tempDiv.remove();
-                alert('خطا در آپلود: ' + uploadError.message);
+                alert(t('uploadError') + uploadError.message);
                 console.error(uploadError);
                 return;
             }
@@ -1389,7 +1633,7 @@
             tempDiv.remove();
 
             if (insertError) {
-                alert('خطا در ارسال: ' + insertError.message);
+                alert(t('sendError') + insertError.message);
                 console.error(insertError);
             }
         });
@@ -1426,7 +1670,7 @@
                 }, 500);
 
             } catch (err) {
-                alert('دسترسی به میکروفون داده نشد');
+                alert(t('micError'));
                 console.error(err);
             }
         };
@@ -1475,7 +1719,7 @@
                     .upload(fileName, audioBlob, { contentType: 'audio/webm' });
 
                 if (uploadError) {
-                    alert('خطا در آپلود: ' + uploadError.message);
+                    alert(t('uploadError') + uploadError.message);
                     return;
                 }
 
@@ -1500,7 +1744,7 @@
 
                 const { error: insertError } = await supabase.from('messages').insert(payload);
                 if (insertError) {
-                    alert('خطا در ارسال: ' + insertError.message);
+                    alert(t('sendError') + insertError.message);
                     console.error(insertError);
                 }
             }, 200);
@@ -1520,8 +1764,8 @@
             const email = newContactEmail.value.trim().toLowerCase();
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-            if (!emailRegex.test(email)) { alert('ایمیل معتبر نیست'); return; }
-            if (email === myEmail) { alert('نمی‌توانی با خودت چت کنی!'); return; }
+            if (!emailRegex.test(email)) { alert(t('invalidEmail')); return; }
+            if (email === myEmail) { alert(t('cannotChatSelf')); return; }
 
             contactModal.classList.remove('show');
             await renderList();
@@ -1541,7 +1785,7 @@
             groupName.value = '';
             groupDesc.value = '';
             groupMembers.value = '';
-            groupModalTitle.textContent = type === 'group' ? 'گروه جدید' : 'کانال جدید';
+            groupModalTitle.textContent = type === 'group' ? t('newGroup') : t('newChannel');
 
             document.querySelectorAll('.type-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.type === type);
@@ -1558,7 +1802,7 @@
                 document.querySelectorAll('.type-option').forEach(o => o.classList.remove('active'));
                 opt.classList.add('active');
                 selectedGroupType = opt.dataset.type;
-                groupModalTitle.textContent = selectedGroupType === 'group' ? 'گروه جدید' : 'کانال جدید';
+                groupModalTitle.textContent = selectedGroupType === 'group' ? t('newGroup') : t('newChannel');
             });
         });
 
@@ -1567,7 +1811,7 @@
             const desc = groupDesc.value.trim();
             const membersRaw = groupMembers.value.trim();
 
-            if (!name) { alert('نام را وارد کن'); return; }
+            if (!name) { alert(t('enterName')); return; }
 
             const members = membersRaw
                 .split(',')
@@ -1585,7 +1829,7 @@
                 .single();
 
             if (chatError) {
-                alert('خطا در ساخت: ' + chatError.message);
+                alert(t('groupCreateError') + chatError.message);
                 return;
             }
 
@@ -1603,7 +1847,7 @@
                 .insert(allMembers);
 
             if (memError) {
-                alert('خطا در افزودن اعضا: ' + memError.message);
+                alert(t('groupMemberError') + memError.message);
                 return;
             }
 
@@ -1631,7 +1875,7 @@
             });
         });
 
-        // ===== دکمه برگشت (موبایل) =====
+        // ===== دکمه برگشت =====
         document.getElementById('back-btn').addEventListener('click', () => {
             sidebar.classList.remove('hidden');
             attachMenu.classList.remove('show');
@@ -1644,10 +1888,12 @@
         });
 
         // ===== شروع =====
-        // در موبایل، سایدبار را نمایش بده
         if (isMobile()) {
             sidebar.classList.remove('hidden');
         }
+
+        // اعمال زبان اولیه
+        applyLanguage();
 
         await renderList();
     </script>
