@@ -1467,22 +1467,23 @@
                 max-height: 150px;
             }
 
+            /* دکمه مداد کوچک‌تر در موبایل */
             .message-actions {
                 display: flex !important;
-                width: 42px;
-                height: 42px;
-                font-size: 22px;
-                top: -14px;
-                left: -14px;
-                border-width: 2.5px;
+                width: 28px;
+                height: 28px;
+                font-size: 15px;
+                top: -9px;
+                left: -9px;
+                border-width: 2px;
                 background: var(--primary);
                 color: #fff;
-                box-shadow: 0 3px 12px rgba(0, 136, 204, 0.4);
+                box-shadow: 0 2px 8px rgba(0, 136, 204, 0.4);
             }
 
             body.lang-en .message-actions {
                 left: auto;
-                right: -14px;
+                right: -9px;
             }
 
             .message-menu-item {
@@ -2085,7 +2086,6 @@
             return currentLang === 'fa' ? `${day} روز پیش` : `${day}d ago`;
         };
 
-        // گرفتن متن مناسب برای پیش‌نمایش پاسخ
         const getReplyPreviewText = async (msgId, msgType) => {
             if (msgType === 'voice') {
                 const { data } = await supabase
@@ -2108,7 +2108,6 @@
             return null;
         };
 
-        // ===== استوری‌ها =====
         const loadStories = async () => {
             const { data, error } = await supabase
                 .from('stories')
@@ -2440,7 +2439,6 @@
             }
         });
 
-        // ===== منوی عملیات پیام =====
         const closeMessageMenu = () => {
             messageMenu.classList.remove('show');
             messageMenuTarget = null;
@@ -2519,7 +2517,6 @@
                     setTimeout(() => document.getElementById('edit-input').focus(), 100);
                 }
             } else if (action === 'reply') {
-                // گرفتن متن مناسب برای پیش‌نمایش
                 let replyContent = msgContent;
                 if (msgType !== 'text') {
                     replyContent = await getReplyPreviewText(msgId, msgType);
@@ -2574,13 +2571,11 @@
             if (e.key === 'Enter') document.getElementById('edit-save').click();
         });
 
-        // بستن نوار پاسخ
         document.getElementById('reply-bar-close')?.addEventListener('click', () => {
             replyingTo = null;
             document.getElementById('reply-bar').classList.remove('show');
         });
 
-        // کلیک روی پیش‌نمایش پاسخ
         messagesList.addEventListener('click', (e) => {
             const replyPreview = e.target.closest('.reply-preview');
             if (replyPreview) {
@@ -2599,7 +2594,6 @@
             }
         });
 
-        // ===== منوی ضمیمه =====
         document.addEventListener('click', (e) => {
             if (!attachMenu.classList.contains('show')) return;
             if (e.target.closest('#attach-menu') || e.target.closest('#attach-btn')) return;
@@ -2870,7 +2864,6 @@
                 const replyType = msg.reply_to_type || 'text';
                 let replyText = msg.reply_to_content;
                 
-                // اگه متن خالی بود یا نوع غیرمتنی بود
                 if (!replyText || replyText.trim() === '') {
                     if (replyType === 'voice') replyText = `🎤 ${t('voiceLabel')}`;
                     else if (replyType === 'image') replyText = `🖼️ ${t('imageLabel')}`;
