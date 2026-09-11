@@ -332,14 +332,14 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <div id="edu-list"></div>
 </div>
 
-<!-- صفحه پنل مدیریت کلاس -->
+<!-- صفحه پنل کلاس (معلم: پنل مدیریت - دانش‌آموز: کلاس) -->
 <div class="page" id="page-class-panel">
 <div class="top-bar">
 <button class="icon-btn" onclick="closeClassPanel()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
 <div class="app-title"><h1 id="cp-title">📚 کلاس</h1><p id="cp-sub">پنل مدیریت</p></div>
-<button class="icon-btn" onclick="openClassChat()"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></button>
+<div style="width:44px"></div>
 </div>
-<div class="welcome-card" style="margin-bottom:12px">
+<div class="welcome-card" id="cp-code-card" style="margin-bottom:12px">
 <div class="welcome-avatar" style="font-size:22px">🔑</div>
 <div class="welcome-text"><h2>کد کلاس</h2><p style="font-size:18px;font-weight:900;letter-spacing:6px;direction:ltr;color:var(--p)" id="cp-code">------</p></div>
 <button class="lang-btn" onclick="copyCpCode()">کپی</button>
@@ -349,7 +349,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <button class="tab" data-cp="members" onclick="switchCpTab('members')">👥 اعضا</button>
 </div>
 <div id="cp-videos">
-<button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="openAddVideoModal()">➕ افزودن ویدیو</button>
+<button class="btn-primary" id="cp-add-video-btn" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="openAddVideoModal()">➕ افزودن ویدیو</button>
 <div id="cp-videos-list"></div>
 </div>
 <div id="cp-members" style="display:none">
@@ -868,7 +868,6 @@ list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
 const{data,error}=await sb.from('education').select('*').order('created_at',{ascending:false});
 if(error){list.innerHTML='<div class="empty-state"><div class="icon">❌</div><h3>خطا</h3></div>';return}
 if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">📚</div><h3>هنوز کلاسی نیست</h3><p style="font-size:12px;margin-top:6px">با دکمه بالا یکی بساز یا با کد وارد شو</p></div>';return}
-// ✅ فیلتر: فقط کلاس‌های خودم یا عضوشده
 const myClasses=data.filter(c=>c.owner_email===myEmail||(c.members||[]).includes(myEmail));
 if(!myClasses.length){
 list.innerHTML='<div class="empty-state"><div class="icon">🔒</div><h3>هنوز عضو هیچ کلاسی نیستی</h3><p style="font-size:12px;margin-top:6px;line-height:1.6">با دکمه <b>🔑 ورود با کد</b> کد کلاس رو وارد کن<br>یا اگه معلمی، با دکمه <b>➕ ساخت کلاس</b> کلاس بساز</p></div>';
@@ -911,7 +910,6 @@ document.getElementById('edu-show-code').textContent=code;
 document.getElementById('edu-code-modal').classList.add('show');
 };
 window.openEduJoin=()=>{document.getElementById('edu-join-code').value='';document.getElementById('edu-join-modal').classList.add('show');setTimeout(()=>document.getElementById('edu-join-code').focus(),200)};
-// ✅ ورود با RPC امن
 document.getElementById('edu-join-btn').onclick=async()=>{
 const code=document.getElementById('edu-join-code').value.trim();
 if(!/^\d{6}$/.test(code)){alert('کد باید ۶ رقم عددی باشه');return}
@@ -941,15 +939,30 @@ if(navigator.clipboard){navigator.clipboard.writeText(c).then(()=>alert('✅ ک�
 };
 
 // ============================================
-// ===== پنل مدیریت کلاس =====
+// ===== پنل مدیریت/کلاس (با دسترسی معلم/دانش‌آموز) =====
 // ============================================
 window.openClassPanel=async(clsId)=>{
 const{data,error}=await sb.from('education').select('*').eq('id',clsId).single();
 if(error||!data){alert('کلاس پیدا نشد');return}
 curClass=data;
+const isOwner=data.owner_email===myEmail;
+
 document.getElementById('cp-title').textContent='📚 '+data.name;
-document.getElementById('cp-sub').textContent=data.description||'پنل مدیریت';
+document.getElementById('cp-sub').textContent=isOwner?'پنل مدیریت':'کلاس آموزشی';
 document.getElementById('cp-code').textContent=data.code||'—';
+
+// تب اعضا فقط برای معلم
+const membersTab=document.querySelector('[data-cp="members"]');
+if(membersTab)membersTab.style.display=isOwner?'block':'none';
+
+// دکمه افزودن ویدیو فقط برای معلم
+const addVideoBtn=document.getElementById('cp-add-video-btn');
+if(addVideoBtn)addVideoBtn.style.display=isOwner?'block':'none';
+
+// کارت کد کلاس فقط برای معلم
+const codeCard=document.getElementById('cp-code-card');
+if(codeCard)codeCard.style.display=isOwner?'flex':'none';
+
 showPage('class-panel');
 switchCpTab('videos');
 };
@@ -963,6 +976,9 @@ curCpTab=t;
 document.querySelectorAll('[data-cp]').forEach(x=>x.classList.toggle('active',x.dataset.cp===t));
 document.getElementById('cp-videos').style.display=t==='videos'?'block':'none';
 document.getElementById('cp-members').style.display=t==='members'?'block':'none';
+// آپدیت دکمه افزودن ویدیو بر اساس دسترسی
+const addVideoBtn=document.getElementById('cp-add-video-btn');
+if(addVideoBtn)addVideoBtn.style.display=(curClass?.owner_email===myEmail)?'block':'none';
 if(t==='videos')loadClassVideos();
 if(t==='members')loadClassMembers();
 };
@@ -973,6 +989,7 @@ document.getElementById('v-upload-section').style.display=m==='upload'?'block':'
 document.getElementById('v-link-section').style.display=m==='link'?'block':'none';
 };
 window.openAddVideoModal=()=>{
+if(!curClass||curClass.owner_email!==myEmail){alert('فقط معلم می‌تونه ویدیو اضافه کنه');return}
 vFile=null;vMode='upload';
 document.getElementById('v-title').value='';
 document.getElementById('v-desc').value='';
@@ -997,6 +1014,7 @@ p.innerHTML=`<video src="${u}" controls style="max-width:100%;max-height:180px;b
 };
 document.getElementById('v-add-btn').onclick=async()=>{
 if(!curClass){alert('کلاس انتخاب نشده');return}
+if(curClass.owner_email!==myEmail){alert('فقط معلم می‌تونه ویدیو اضافه کنه');return}
 const t=document.getElementById('v-title').value.trim();
 const d=document.getElementById('v-desc').value.trim();
 if(!t){alert('عنوان رو وارد کن');return}
@@ -1058,17 +1076,19 @@ const list=document.getElementById('cp-videos-list');
 list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
 const{data}=await sb.from('edu_videos').select('*').eq('class_id',curClass.id).order('created_at',{ascending:false});
 if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">🎬</div><h3>هنوز ویدیویی نیست</h3></div>';return}
+const isOwner=curClass.owner_email===myEmail;
 list.innerHTML='';data.forEach(v=>{
 const it=document.createElement('div');it.className='list-item';
 const isUploaded=v.storage_path&&v.mime_type!=='link';
 const badge=isUploaded?`<span style="font-size:9px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:2px 6px;border-radius:6px;font-weight:700">آپلود شده</span>`:`<span style="font-size:9px;background:linear-gradient(135deg,#00d4ff,#7b3ff2);color:#fff;padding:2px 6px;border-radius:6px;font-weight:700">لینک</span>`;
-it.innerHTML=`<div class="list-avatar" style="font-size:22px">🎬</div><div class="list-info"><div class="list-name">${esc(v.title)} ${badge}</div><div class="list-sub">${esc(v.description||'—')}${v.file_size?' • '+fmtSz(v.file_size):''}</div></div>${v.owner_email===myEmail?'<button class="bot-del" style="padding:6px 12px;border:none;border-radius:8px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.2);color:#fca5a5">حذف</button>':''}`;
+const delBtn=(isOwner&&v.owner_email===myEmail)?`<button class="bot-del" style="padding:6px 12px;border:none;border-radius:8px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.2);color:#fca5a5">حذف</button>`:'';
+it.innerHTML=`<div class="list-avatar" style="font-size:22px">🎬</div><div class="list-info"><div class="list-name">${esc(v.title)} ${badge}</div><div class="list-sub">${esc(v.description||'—')}${v.file_size?' • '+fmtSz(v.file_size):''}</div></div>${delBtn}`;
 it.querySelector('.list-info').onclick=()=>{
 const w=window.open('','_blank');
 w.document.write(`<html dir="rtl"><head><title>${esc(v.title)}</title><style>body{margin:0;background:#000;color:#fff;font-family:Vazirmatn,Tahoma,sans-serif}video{width:100%;height:100vh;background:#000}h2{padding:14px;margin:0;font-size:16px;background:#0a0e28}p{padding:0 14px 14px;color:#8b9dc3;font-size:13px}</style></head><body><h2>${esc(v.title)}</h2><video src="${esc(v.video_url)}" autoplay controls></video>${v.description?`<p>${esc(v.description)}</p>`:''}</body></html>`);
 };
-const delBtn=it.querySelector('.bot-del');
-if(delBtn)delBtn.onclick=async(ev)=>{
+const delBtnEl=it.querySelector('.bot-del');
+if(delBtnEl)delBtnEl.onclick=async(ev)=>{
 ev.stopPropagation();
 if(!confirm('این ویدیو حذف شود؟'))return;
 if(v.storage_path){await sb.storage.from('edu-videos').remove([v.storage_path])}
@@ -1080,6 +1100,7 @@ list.appendChild(it);
 }
 async function loadClassMembers(){
 if(!curClass)return;
+if(curClass.owner_email!==myEmail){return}
 const list=document.getElementById('cp-members-list');
 list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
 const members=curClass.members||[];
@@ -1107,23 +1128,6 @@ loadClassMembers();
 list.appendChild(it);
 });
 }
-window.openClassChat=async()=>{
-if(!curClass){alert('کلاس انتخاب نشده');return}
-const{data:existing}=await sb.from('chats').select('*').eq('class_id',curClass.id).maybeSingle();
-let chatId;
-if(existing){chatId=existing.id}
-else{
-const{data:newChat,error}=await sb.from('chats').insert({name:'💬 '+curClass.name,description:'چت کلاس',type:'group',owner_email:curClass.owner_email,class_id:curClass.id}).select().single();
-if(error){alert('خطا در ساخت چت: '+error.message);return}
-chatId=newChat.id;
-const allMembers=[curClass.owner_email,...(curClass.members||[])];
-const mems=allMembers.map(em=>({chat_id:chatId,member_email:em,role:em===curClass.owner_email?'owner':'member'}));
-await sb.from('chat_members').insert(mems);
-}
-closeClassPanel();
-const{data:chatData}=await sb.from('chats').select('*').eq('id',chatId).single();
-openRoom('group',chatData);
-};
 
 // ===== کیف پول =====
 async function loadWallet(){
