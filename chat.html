@@ -861,18 +861,26 @@ if(error){alert('خطا: '+error.message);return}
 closeModal('bot-modal');loadBots();
 };
 
-// ===== آموزش =====
+// ===== آموزش (فیلتر شده) =====
 async function loadEdu(){
 const list=document.getElementById('edu-list');
 list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
-const{data}=await sb.from('education').select('*').order('created_at',{ascending:false});
+const{data,error}=await sb.from('education').select('*').order('created_at',{ascending:false});
+if(error){list.innerHTML='<div class="empty-state"><div class="icon">❌</div><h3>خطا</h3></div>';return}
 if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">📚</div><h3>هنوز کلاسی نیست</h3><p style="font-size:12px;margin-top:6px">با دکمه بالا یکی بساز یا با کد وارد شو</p></div>';return}
-list.innerHTML='';data.forEach(c=>{
+// ✅ فیلتر: فقط کلاس‌های خودم یا عضوشده
+const myClasses=data.filter(c=>c.owner_email===myEmail||(c.members||[]).includes(myEmail));
+if(!myClasses.length){
+list.innerHTML='<div class="empty-state"><div class="icon">🔒</div><h3>هنوز عضو هیچ کلاسی نیستی</h3><p style="font-size:12px;margin-top:6px;line-height:1.6">با دکمه <b>🔑 ورود با کد</b> کد کلاس رو وارد کن<br>یا اگه معلمی، با دکمه <b>➕ ساخت کلاس</b> کلاس بساز</p></div>';
+return;
+}
+list.innerHTML='';
+myClasses.forEach(c=>{
 const it=document.createElement('div');it.className='edu-class';
 const isOwner=c.owner_email===myEmail;
 const codeValid=/^\d{6}$/.test(c.code||'');
 const codeDisplay=codeValid?esc(c.code):'<span style="color:#ef4444">نامعتبر</span>';
-it.innerHTML=`<div class="edu-head"><div class="edu-avatar">📚</div><div class="edu-name">${esc(c.name)}</div>${isOwner?'<span style="font-size:10px;background:var(--p);color:#000;padding:2px 8px;border-radius:8px;font-weight:700">معلم</span>':''}</div><div class="edu-info">${esc(c.description||'—')}</div><div class="edu-info" style="margin-top:6px;color:var(--p);font-size:11px">👥 ${(c.members||[]).length+1} عضو${isOwner?` • کد: <b style="direction:ltr;display:inline-block">${codeDisplay}</b>`:''}</div><div style="margin-top:8px"><button class="edu-enter-btn" style="width:100%;padding:8px;border:none;border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#00d4ff,#7b3ff2);color:#fff">${isOwner?'⚙️ پنل مدیریت':'📖 ورود به کلاس'}</button></div>`;
+it.innerHTML=`<div class="edu-head"><div class="edu-avatar">📚</div><div class="edu-name">${esc(c.name)}</div>${isOwner?'<span style="font-size:10px;background:var(--p);color:#000;padding:2px 8px;border-radius:8px;font-weight:700">معلم</span>':'<span style="font-size:10px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:2px 8px;border-radius:8px;font-weight:700">دانش‌آموز</span>'}</div><div class="edu-info">${esc(c.description||'—')}</div><div class="edu-info" style="margin-top:6px;color:var(--p);font-size:11px">👥 ${(c.members||[]).length+1} عضو${isOwner?` • کد: <b style="direction:ltr;display:inline-block">${codeDisplay}</b>`:''}</div><div style="margin-top:8px"><button class="edu-enter-btn" style="width:100%;padding:8px;border:none;border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#00d4ff,#7b3ff2);color:#fff">${isOwner?'⚙️ پنل مدیریت':'📖 ورود به کلاس'}</button></div>`;
 it.querySelector('.edu-enter-btn').onclick=(ev)=>{ev.stopPropagation();openClassPanel(c.id)};
 list.appendChild(it);
 });
@@ -903,22 +911,29 @@ document.getElementById('edu-show-code').textContent=code;
 document.getElementById('edu-code-modal').classList.add('show');
 };
 window.openEduJoin=()=>{document.getElementById('edu-join-code').value='';document.getElementById('edu-join-modal').classList.add('show');setTimeout(()=>document.getElementById('edu-join-code').focus(),200)};
+// ✅ ورود با RPC امن
 document.getElementById('edu-join-btn').onclick=async()=>{
 const code=document.getElementById('edu-join-code').value.trim();
 if(!/^\d{6}$/.test(code)){alert('کد باید ۶ رقم عددی باشه');return}
 const btn=document.getElementById('edu-join-btn');btn.disabled=true;btn.textContent='...';
-const{data,error}=await sb.from('education').select('*').eq('code',code).maybeSingle();
+try{
+const{data,error}=await sb.rpc('join_edu_class',{p_code:code});
 btn.disabled=false;btn.textContent='ورود';
-if(error){alert('خطا: '+error.message);return}
-if(!data){alert('❌ کلاسی با این کد پیدا نشد');return}
-if(data.owner_email===myEmail){alert('این کلاس خودته! ✅');closeModal('edu-join-modal');loadEdu();return}
-if((data.members||[]).includes(myEmail)){alert('قبلاً عضو این کلاسی! ✅');closeModal('edu-join-modal');loadEdu();return}
-const newMembers=[...(data.members||[]),myEmail];
-const{error:ue}=await sb.from('education').update({members:newMembers}).eq('id',data.id);
-if(ue){alert('خطا در عضویت: '+ue.message);return}
+if(error){alert('❌ '+(error.message||'خطا در عضویت'));return}
+if(!data){alert('خطای نامشخص');return}
+if(!data.ok){
+alert(data.msg||'خطا');
+if(data.owner){closeModal('edu-join-modal');loadEdu()}
+return;
+}
 closeModal('edu-join-modal');
-alert('🎉 به کلاس "'+data.name+'" خوش آمدی!');
+if(data.msg==='قبلاً عضو بودی'){alert('✅ قبلاً عضو این کلاس بودی!')}
+else{alert('🎉 به کلاس "'+data.name+'" خوش آمدی!')}
 loadEdu();
+}catch(e){
+btn.disabled=false;btn.textContent='ورود';
+alert('خطا: '+e.message);
+}
 };
 window.copyEduCode=()=>{
 const c=document.getElementById('edu-show-code').textContent;
