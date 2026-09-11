@@ -103,7 +103,6 @@
 
         .lang-btn svg { width: 14px; height: 14px; fill: currentColor; }
 
-        /* ===== بخش استوری ===== */
         .stories-section {
             padding: 12px 16px;
             background: #fff;
@@ -191,7 +190,6 @@
             font-weight: 600;
         }
 
-        /* ===== نمایش استوری ===== */
         .story-viewer {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -337,7 +335,6 @@
         .story-nav-prev { left: 16px; }
         .story-nav-next { right: 16px; }
 
-        /* ===== مودال ساخت استوری ===== */
         .story-create-preview {
             width: 100%;
             max-height: 250px;
@@ -645,24 +642,24 @@
             line-height: 1.6; word-break: break-word;
         }
 
-        /* ===== دکمه‌های عملیات پیام ===== */
+        /* ===== دکمه ویرایش (بزرگ‌تر) ===== */
         .message-actions {
             position: absolute;
-            top: -10px;
-            left: -10px;
+            top: -12px;
+            left: -12px;
             background: #fff;
             border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            width: 28px;
-            height: 28px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            width: 36px;
+            height: 36px;
             display: none;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 5;
-            border: 1.5px solid var(--border);
-            color: var(--text-muted);
-            font-size: 16px;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-size: 18px;
             font-weight: 700;
             transition: all 0.2s;
             user-select: none;
@@ -670,7 +667,7 @@
 
         body.lang-en .message-actions {
             left: auto;
-            right: -10px;
+            right: -12px;
         }
 
         .message-item:hover .message-actions,
@@ -680,10 +677,9 @@
 
         .message-actions:hover {
             background: var(--primary-light);
-            color: var(--primary);
+            transform: scale(1.1);
         }
 
-        /* ===== منوی عملیات ===== */
         .message-menu {
             position: fixed;
             background: #fff;
@@ -706,11 +702,11 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 9px 12px;
+            padding: 11px 14px;
             border-radius: 8px;
             cursor: pointer;
             font-family: inherit;
-            font-size: 13.5px;
+            font-size: 14px;
             color: var(--text);
             border: none;
             background: transparent;
@@ -726,35 +722,19 @@
             background: var(--primary-light);
         }
 
-        .message-menu-item.danger {
-            color: #ef4444;
-        }
-
-        .message-menu-item.danger:hover {
-            background: #fef2f2;
-        }
-
         .message-menu-item svg {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             fill: currentColor;
             flex-shrink: 0;
         }
 
-        /* ===== ویرایش شده ===== */
         .msg-edited {
             font-size: 11px;
             color: var(--text-muted);
             margin-top: 3px;
             opacity: 0.8;
             font-style: italic;
-        }
-
-        /* ===== پیام حذف شده ===== */
-        .message-item.deleted .msg-content {
-            font-style: italic;
-            opacity: 0.5;
-            text-decoration: line-through;
         }
 
         .voice-message {
@@ -1376,18 +1356,33 @@
                 max-height: 150px;
             }
 
+            /* دکمه ویرایش بزرگ‌تر در موبایل */
             .message-actions {
                 display: flex !important;
-                width: 24px;
-                height: 24px;
-                font-size: 14px;
-                top: -8px;
-                left: -8px;
+                width: 42px;
+                height: 42px;
+                font-size: 22px;
+                top: -14px;
+                left: -14px;
+                border-width: 2.5px;
+                background: var(--primary);
+                color: #fff;
+                box-shadow: 0 3px 12px rgba(0, 136, 204, 0.4);
             }
 
             body.lang-en .message-actions {
                 left: auto;
-                right: -8px;
+                right: -14px;
+            }
+
+            .message-menu-item {
+                padding: 14px 16px;
+                font-size: 15px;
+            }
+
+            .message-menu-item svg {
+                width: 20px;
+                height: 20px;
             }
         }
 
@@ -1724,13 +1719,9 @@
                 editDesc: 'متن جدید را وارد کن',
                 editPlaceholder: 'متن جدید...',
                 save: 'ذخیره',
-                editAction: 'ویرایش',
-                deleteAction: 'حذف',
-                deleteConfirm: 'این پیام حذف شود؟',
+                editAction: '✏️ ویرایش',
                 edited: 'ویرایش شده',
-                deleted: 'این پیام حذف شد',
                 editError: 'خطا در ویرایش: ',
-                deleteError: 'خطا در حذف: ',
                 editEmpty: 'متن نمی‌تواند خالی باشد'
             },
             en: {
@@ -1808,13 +1799,9 @@
                 editDesc: 'Enter new text',
                 editPlaceholder: 'New text...',
                 save: 'Save',
-                editAction: 'Edit',
-                deleteAction: 'Delete',
-                deleteConfirm: 'Delete this message?',
+                editAction: '✏️ Edit',
                 edited: 'edited',
-                deleted: 'This message was deleted',
                 editError: 'Edit error: ',
-                deleteError: 'Delete error: ',
                 editEmpty: 'Text cannot be empty'
             }
         };
@@ -1928,6 +1915,7 @@
         const svgChannel = '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>';
         const svgFile = '<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>';
         const svgDownload = '<svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>';
+        const svgEdit = '<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
 
         const escapeHtml = (text) => {
             const div = document.createElement('div');
@@ -2298,37 +2286,28 @@
             }
         });
 
-        // ===== منوی عملیات پیام =====
+        // ===== منوی ویرایش پیام =====
         const closeMessageMenu = () => {
             messageMenu.classList.remove('show');
             messageMenuTarget = null;
         };
 
         const openMessageMenu = (msgId, msgType, x, y) => {
+            if (msgType !== 'text') return;
+            
             messageMenuTarget = { msgId, msgType };
             
-            let html = '';
-            
-            if (msgType === 'text') {
-                html += `
-                    <button class="message-menu-item" data-action="edit">
-                        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                        ${t('editAction')}
-                    </button>
-                `;
-            }
-            
-            html += `
-                <button class="message-menu-item danger" data-action="delete">
-                    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                    ${t('deleteAction')}
+            const html = `
+                <button class="message-menu-item" data-action="edit">
+                    ${svgEdit}
+                    ${t('editAction')}
                 </button>
             `;
             
             messageMenu.innerHTML = html;
             
             const menuWidth = 180;
-            const menuHeight = 120;
+            const menuHeight = 60;
             const posX = Math.min(Math.max(10, x), window.innerWidth - menuWidth - 10);
             const posY = Math.min(Math.max(10, y), window.innerHeight - menuHeight - 10);
             
@@ -2337,7 +2316,6 @@
             messageMenu.classList.add('show');
         };
 
-        // کلیک روی دکمه عملیات
         messagesList.addEventListener('click', (e) => {
             const actionBtn = e.target.closest('.message-actions');
             if (actionBtn) {
@@ -2352,7 +2330,6 @@
             }
         });
 
-        // کلیک روی آیتم‌های منو
         messageMenu?.addEventListener('click', async (e) => {
             const item = e.target.closest('.message-menu-item');
             if (!item || !messageMenuTarget) return;
@@ -2376,24 +2353,9 @@
                     document.getElementById('edit-modal').classList.add('show');
                     setTimeout(() => document.getElementById('edit-input').focus(), 100);
                 }
-            } else if (action === 'delete') {
-                if (!confirm(t('deleteConfirm'))) return;
-                
-                const { error } = await supabase
-                    .from('messages')
-                    .update({ 
-                        deleted: true, 
-                        deleted_at: new Date().toISOString() 
-                    })
-                    .eq('id', msgId);
-                
-                if (error) {
-                    alert(t('deleteError') + error.message);
-                }
             }
         });
 
-        // بستن منو با کلیک بیرون
         document.addEventListener('click', (e) => {
             if (!messageMenu.classList.contains('show')) return;
             if (e.target.closest('#message-menu')) return;
@@ -2401,7 +2363,6 @@
             closeMessageMenu();
         });
 
-        // ذخیره ویرایش
         document.getElementById('edit-save')?.addEventListener('click', async () => {
             const newContent = document.getElementById('edit-input').value.trim();
             if (!newContent) {
@@ -2683,16 +2644,13 @@
             msgDiv.dataset.senderEmail = msg.sender_email;
             
             if (msg.sender_email === myEmail) msgDiv.classList.add('my-message');
-            if (msg.deleted) msgDiv.classList.add('deleted');
 
             let html = '';
             if (showSender && msg.sender_email !== myEmail) {
                 html += `<div class="msg-sender">${escapeHtml(msg.sender_email)}</div>`;
             }
 
-            if (msg.deleted) {
-                html += `<div class="msg-content">${t('deleted')}</div>`;
-            } else if (msg.message_type === 'voice' && msg.audio_url) {
+            if (msg.message_type === 'voice' && msg.audio_url) {
                 const duration = msg.audio_duration || 0;
                 html += `
                     <div class="voice-message">
@@ -2726,12 +2684,13 @@
                 html += `<div class="msg-content">${escapeHtml(msg.content || '')}</div>`;
             }
 
-            if (msg.edited_at && !msg.deleted) {
+            if (msg.edited_at) {
                 html += `<div class="msg-edited">${t('edited')}</div>`;
             }
 
-            if (msg.sender_email === myEmail && !msg.deleted) {
-                html += `<div class="message-actions" data-msg-id="${msg.id}">⋯</div>`;
+            // دکمه ویرایش فقط برای پیام‌های متنی خودم
+            if (msg.sender_email === myEmail && msg.message_type === 'text') {
+                html += `<div class="message-actions" data-msg-id="${msg.id}">✏️</div>`;
             }
 
             msgDiv.innerHTML = html;
