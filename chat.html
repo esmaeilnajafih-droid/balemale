@@ -642,7 +642,114 @@
             line-height: 1.6; word-break: break-word;
         }
 
-        /* ===== دکمه ویرایش (بزرگ‌تر) ===== */
+        .reply-preview {
+            background: rgba(0, 136, 204, 0.1);
+            border-right: 3px solid var(--primary);
+            border-radius: 8px;
+            padding: 6px 10px;
+            margin-bottom: 6px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            cursor: pointer;
+            transition: background 0.15s;
+            overflow: hidden;
+        }
+
+        .reply-preview:hover {
+            background: rgba(0, 136, 204, 0.2);
+        }
+
+        .reply-preview .reply-to-name {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 11.5px;
+            direction: ltr;
+            text-align: right;
+        }
+
+        body.lang-en .reply-preview .reply-to-name {
+            text-align: left;
+        }
+
+        .reply-preview .reply-to-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            opacity: 0.85;
+        }
+
+        .reply-bar {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            border-bottom: 2px solid var(--primary);
+            position: relative;
+            z-index: 2;
+        }
+
+        .reply-bar.show {
+            display: flex;
+        }
+
+        .reply-bar-icon {
+            color: var(--primary);
+            font-size: 20px;
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+
+        .reply-bar-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .reply-bar-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 2px;
+            direction: ltr;
+            text-align: right;
+        }
+
+        body.lang-en .reply-bar-name {
+            text-align: left;
+        }
+
+        .reply-bar-text {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .reply-bar-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f0f2f5;
+            color: var(--text-muted);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .reply-bar-close:hover {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+
         .message-actions {
             position: absolute;
             top: -12px;
@@ -720,6 +827,10 @@
 
         .message-menu-item:hover {
             background: var(--primary-light);
+        }
+
+        .message-menu-item.reply {
+            color: var(--primary);
         }
 
         .message-menu-item svg {
@@ -1356,7 +1467,6 @@
                 max-height: 150px;
             }
 
-            /* دکمه ویرایش بزرگ‌تر در موبایل */
             .message-actions {
                 display: flex !important;
                 width: 42px;
@@ -1466,6 +1576,15 @@
             </div>
 
             <div id="messages-list" style="display:none;"></div>
+
+            <div class="reply-bar" id="reply-bar">
+                <span class="reply-bar-icon">↩</span>
+                <div class="reply-bar-info">
+                    <div class="reply-bar-name" id="reply-bar-name"></div>
+                    <div class="reply-bar-text" id="reply-bar-text"></div>
+                </div>
+                <button class="reply-bar-close" id="reply-bar-close">✕</button>
+            </div>
 
             <div class="message-input-area" id="message-input-area" style="display:none;">
                 <button class="attach-btn" id="attach-btn" title="ضمیمه">
@@ -1720,9 +1839,14 @@
                 editPlaceholder: 'متن جدید...',
                 save: 'ذخیره',
                 editAction: '✏️ ویرایش',
+                replyAction: '↩️ پاسخ',
                 edited: 'ویرایش شده',
                 editError: 'خطا در ویرایش: ',
-                editEmpty: 'متن نمی‌تواند خالی باشد'
+                editEmpty: 'متن نمی‌تواند خالی باشد',
+                voiceLabel: 'پیام صوتی',
+                imageLabel: 'عکس',
+                fileLabel: 'فایل',
+                repliedTo: 'پاسخ به'
             },
             en: {
                 appName: 'Bale Melle',
@@ -1800,9 +1924,14 @@
                 editPlaceholder: 'New text...',
                 save: 'Save',
                 editAction: '✏️ Edit',
+                replyAction: '↩️ Reply',
                 edited: 'edited',
                 editError: 'Edit error: ',
-                editEmpty: 'Text cannot be empty'
+                editEmpty: 'Text cannot be empty',
+                voiceLabel: 'Voice message',
+                imageLabel: 'Image',
+                fileLabel: 'File',
+                repliedTo: 'Reply to'
             }
         };
 
@@ -1875,6 +2004,7 @@
 
         let editingMessageId = null;
         let messageMenuTarget = null;
+        let replyingTo = null;
 
         const listContainer = document.getElementById('list-container');
         const messagesList = document.getElementById('messages-list');
@@ -1916,6 +2046,7 @@
         const svgFile = '<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>';
         const svgDownload = '<svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>';
         const svgEdit = '<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+        const svgReply = '<svg viewBox="0 0 24 24"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>';
 
         const escapeHtml = (text) => {
             const div = document.createElement('div');
@@ -1952,6 +2083,29 @@
             if (min < 60) return currentLang === 'fa' ? `${min} دقیقه پیش` : `${min}m ago`;
             if (hr < 24) return currentLang === 'fa' ? `${hr} ساعت پیش` : `${hr}h ago`;
             return currentLang === 'fa' ? `${day} روز پیش` : `${day}d ago`;
+        };
+
+        // گرفتن متن مناسب برای پیش‌نمایش پاسخ
+        const getReplyPreviewText = async (msgId, msgType) => {
+            if (msgType === 'voice') {
+                const { data } = await supabase
+                    .from('messages')
+                    .select('audio_duration')
+                    .eq('id', msgId)
+                    .single();
+                const duration = data?.audio_duration || 0;
+                return `🎤 ${t('voiceLabel')} (${formatTime(duration)})`;
+            } else if (msgType === 'image') {
+                return `🖼️ ${t('imageLabel')}`;
+            } else if (msgType === 'file') {
+                const { data } = await supabase
+                    .from('messages')
+                    .select('file_name')
+                    .eq('id', msgId)
+                    .single();
+                return `📄 ${data?.file_name || t('fileLabel')}`;
+            }
+            return null;
         };
 
         // ===== استوری‌ها =====
@@ -2286,28 +2440,35 @@
             }
         });
 
-        // ===== منوی ویرایش پیام =====
+        // ===== منوی عملیات پیام =====
         const closeMessageMenu = () => {
             messageMenu.classList.remove('show');
             messageMenuTarget = null;
         };
 
-        const openMessageMenu = (msgId, msgType, x, y) => {
-            if (msgType !== 'text') return;
+        const openMessageMenu = (msgId, msgType, msgContent, msgSender, x, y) => {
+            messageMenuTarget = { msgId, msgType, msgContent, msgSender };
             
-            messageMenuTarget = { msgId, msgType };
-            
-            const html = `
-                <button class="message-menu-item" data-action="edit">
-                    ${svgEdit}
-                    ${t('editAction')}
+            let html = `
+                <button class="message-menu-item reply" data-action="reply">
+                    ${svgReply}
+                    ${t('replyAction')}
                 </button>
             `;
+            
+            if (msgType === 'text' && msgSender === myEmail) {
+                html += `
+                    <button class="message-menu-item" data-action="edit">
+                        ${svgEdit}
+                        ${t('editAction')}
+                    </button>
+                `;
+            }
             
             messageMenu.innerHTML = html;
             
             const menuWidth = 180;
-            const menuHeight = 60;
+            const menuHeight = (msgType === 'text' && msgSender === myEmail) ? 120 : 60;
             const posX = Math.min(Math.max(10, x), window.innerWidth - menuWidth - 10);
             const posY = Math.min(Math.max(10, y), window.innerHeight - menuHeight - 10);
             
@@ -2323,9 +2484,13 @@
                 const msgId = actionBtn.dataset.msgId;
                 const msgDiv = actionBtn.closest('.message-item');
                 const msgType = msgDiv.dataset.msgType;
+                const msgSender = msgDiv.dataset.senderEmail;
+                
+                const contentEl = msgDiv.querySelector('.msg-content');
+                const msgContent = contentEl ? contentEl.textContent : '';
                 
                 const rect = actionBtn.getBoundingClientRect();
-                openMessageMenu(msgId, msgType, rect.right - 180, rect.bottom + 5);
+                openMessageMenu(msgId, msgType, msgContent, msgSender, rect.right - 180, rect.bottom + 5);
                 return;
             }
         });
@@ -2335,7 +2500,7 @@
             if (!item || !messageMenuTarget) return;
             
             const action = item.dataset.action;
-            const { msgId } = messageMenuTarget;
+            const { msgId, msgType, msgContent, msgSender } = messageMenuTarget;
             
             closeMessageMenu();
             
@@ -2353,6 +2518,25 @@
                     document.getElementById('edit-modal').classList.add('show');
                     setTimeout(() => document.getElementById('edit-input').focus(), 100);
                 }
+            } else if (action === 'reply') {
+                // گرفتن متن مناسب برای پیش‌نمایش
+                let replyContent = msgContent;
+                if (msgType !== 'text') {
+                    replyContent = await getReplyPreviewText(msgId, msgType);
+                }
+                
+                replyingTo = {
+                    id: msgId,
+                    sender: msgSender,
+                    content: replyContent,
+                    type: msgType
+                };
+                
+                document.getElementById('reply-bar-name').textContent = msgSender.split('@')[0];
+                document.getElementById('reply-bar-text').textContent = replyContent;
+                document.getElementById('reply-bar').classList.add('show');
+                
+                messageInput.focus();
             }
         });
 
@@ -2388,6 +2572,31 @@
 
         document.getElementById('edit-input')?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') document.getElementById('edit-save').click();
+        });
+
+        // بستن نوار پاسخ
+        document.getElementById('reply-bar-close')?.addEventListener('click', () => {
+            replyingTo = null;
+            document.getElementById('reply-bar').classList.remove('show');
+        });
+
+        // کلیک روی پیش‌نمایش پاسخ
+        messagesList.addEventListener('click', (e) => {
+            const replyPreview = e.target.closest('.reply-preview');
+            if (replyPreview) {
+                e.stopPropagation();
+                const replyId = replyPreview.dataset.replyId;
+                const targetMsg = messagesList.querySelector(`[data-msg-id="${replyId}"]`);
+                if (targetMsg) {
+                    targetMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const originalBg = targetMsg.style.background;
+                    targetMsg.style.transition = 'background 0.5s';
+                    targetMsg.style.background = '#fff3cd';
+                    setTimeout(() => {
+                        targetMsg.style.background = originalBg;
+                    }, 1500);
+                }
+            }
         });
 
         // ===== منوی ضمیمه =====
@@ -2530,6 +2739,7 @@
 
         const openPrivateChat = async (email) => {
             stopRecording(true);
+            cancelReply();
             currentChat = { type: 'private', email, name: email.split('@')[0] };
 
             chatHeader.style.display = 'flex';
@@ -2557,6 +2767,7 @@
 
         const openGroupChat = async (chat) => {
             stopRecording(true);
+            cancelReply();
             const { data: memberData } = await supabase
                 .from('chat_members')
                 .select('role')
@@ -2601,6 +2812,11 @@
             setupRealtime();
             if (!isMobile() && canSend) messageInput.focus();
             await renderList();
+        };
+
+        const cancelReply = () => {
+            replyingTo = null;
+            document.getElementById('reply-bar')?.classList.remove('show');
         };
 
         const loadPrivateMessages = async () => {
@@ -2649,6 +2865,26 @@
             if (showSender && msg.sender_email !== myEmail) {
                 html += `<div class="msg-sender">${escapeHtml(msg.sender_email)}</div>`;
             }
+            
+            if (msg.reply_to_id) {
+                const replyType = msg.reply_to_type || 'text';
+                let replyText = msg.reply_to_content;
+                
+                // اگه متن خالی بود یا نوع غیرمتنی بود
+                if (!replyText || replyText.trim() === '') {
+                    if (replyType === 'voice') replyText = `🎤 ${t('voiceLabel')}`;
+                    else if (replyType === 'image') replyText = `🖼️ ${t('imageLabel')}`;
+                    else if (replyType === 'file') replyText = `📄 ${t('fileLabel')}`;
+                    else replyText = '...';
+                }
+                
+                html += `
+                    <div class="reply-preview" data-reply-id="${escapeHtml(msg.reply_to_id)}">
+                        <div class="reply-to-name">${escapeHtml((msg.reply_to_sender || '').split('@')[0])}</div>
+                        <div class="reply-to-text">${escapeHtml(replyText)}</div>
+                    </div>
+                `;
+            }
 
             if (msg.message_type === 'voice' && msg.audio_url) {
                 const duration = msg.audio_duration || 0;
@@ -2688,10 +2924,7 @@
                 html += `<div class="msg-edited">${t('edited')}</div>`;
             }
 
-            // دکمه ویرایش فقط برای پیام‌های متنی خودم
-            if (msg.sender_email === myEmail && msg.message_type === 'text') {
-                html += `<div class="message-actions" data-msg-id="${msg.id}">✏️</div>`;
-            }
+            html += `<div class="message-actions" data-msg-id="${msg.id}">⋯</div>`;
 
             msgDiv.innerHTML = html;
             messagesList.appendChild(msgDiv);
@@ -2799,10 +3032,23 @@
                     message_type: 'text'
                 };
             }
+            
+            if (replyingTo) {
+                payload.reply_to_id = replyingTo.id;
+                payload.reply_to_content = replyingTo.content;
+                payload.reply_to_sender = replyingTo.sender;
+                payload.reply_to_type = replyingTo.type;
+            }
 
             const { error } = await supabase.from('messages').insert(payload);
-            if (error) { console.error(error); alert(t('sendError') + error.message); }
-            else { messageInput.value = ''; if (!isMobile()) messageInput.focus(); }
+            if (error) { 
+                console.error(error); 
+                alert(t('sendError') + error.message); 
+            } else { 
+                messageInput.value = ''; 
+                cancelReply();
+                if (!isMobile()) messageInput.focus(); 
+            }
         };
 
         sendBtn.addEventListener('click', sendMessage);
@@ -2869,9 +3115,17 @@
                     file_size: file.size,
                 };
             }
+            
+            if (replyingTo) {
+                payload.reply_to_id = replyingTo.id;
+                payload.reply_to_content = replyingTo.content;
+                payload.reply_to_sender = replyingTo.sender;
+                payload.reply_to_type = replyingTo.type;
+            }
 
             const { error: insertError } = await supabase.from('messages').insert(payload);
             tempDiv.remove();
+            cancelReply();
 
             if (insertError) {
                 alert(t('sendError') + insertError.message);
@@ -2938,9 +3192,17 @@
                     file_size: file.size,
                 };
             }
+            
+            if (replyingTo) {
+                payload.reply_to_id = replyingTo.id;
+                payload.reply_to_content = replyingTo.content;
+                payload.reply_to_sender = replyingTo.sender;
+                payload.reply_to_type = replyingTo.type;
+            }
 
             const { error: insertError } = await supabase.from('messages').insert(payload);
             tempDiv.remove();
+            cancelReply();
 
             if (insertError) {
                 alert(t('sendError') + insertError.message);
@@ -3050,8 +3312,17 @@
                         message_type: 'voice', audio_url: audioUrl, audio_duration: duration
                     };
                 }
+                
+                if (replyingTo) {
+                    payload.reply_to_id = replyingTo.id;
+                    payload.reply_to_content = replyingTo.content;
+                    payload.reply_to_sender = replyingTo.sender;
+                    payload.reply_to_type = replyingTo.type;
+                }
 
                 const { error: insertError } = await supabase.from('messages').insert(payload);
+                cancelReply();
+                
                 if (insertError) {
                     alert(t('sendError') + insertError.message);
                     console.error(insertError);
