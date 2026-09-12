@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>بله مله | Bale Melle</title>
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;font-family:'Vazirmatn',Tahoma,sans-serif;background:#05061a;overflow:hidden;color:#fff}
+html,body{height:100%;font-family:'Vazirmatn',Tahoma,sans-serif;background:#05061a;overflow:hidden;color:#fff;transition:font-family .3s}
+body.lang-en{font-family:'Segoe UI',Tahoma,sans-serif}
 :root{--p:#00d4ff;--pu:#7b3ff2;--bd:rgba(0,212,255,.4);--card:rgba(15,20,60,.5);--card2:rgba(15,20,60,.7);--mut:#8b9dc3}
 body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(2px 2px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 60% 70%,#fff,transparent),radial-gradient(1px 1px at 50% 50%,#fff,transparent),radial-gradient(2px 2px at 80% 10%,#fff,transparent),radial-gradient(1px 1px at 90% 60%,#fff,transparent);background-size:200% 200%;opacity:.5;pointer-events:none;z-index:0;animation:tw 4s ease-in-out infinite}
 @keyframes tw{0%,100%{opacity:.5}50%{opacity:.8}}
@@ -23,7 +25,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .app-title h1{font-size:23px;font-weight:800;background:linear-gradient(135deg,#00d4ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:flex;align-items:center;justify-content:center;gap:6px}
 .app-title p{font-size:11px;color:var(--mut);margin-top:2px}
 .welcome-card{background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(123,63,242,.15));border:2px solid var(--bd);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:14px;box-shadow:0 0 25px rgba(0,212,255,.2);backdrop-filter:blur(10px);flex-shrink:0}
-.welcome-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 0 20px rgba(0,212,255,.6)}
+.welcome-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 0 20px rgba(0,212,255,.6);cursor:pointer;background-size:cover;background-position:center}
 .welcome-text{flex:1}
 .welcome-text h2{font-size:15px;font-weight:700;margin-bottom:4px}
 .welcome-text p{font-size:12px;color:#c7d2fe}
@@ -86,8 +88,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .chat-room.active{display:flex}
 .chat-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card2);border:2px solid var(--bd);border-radius:14px;margin-bottom:10px;flex-shrink:0}
 .back-btn{width:36px;height:36px;border-radius:50%;background:rgba(0,212,255,.15);border:2px solid var(--bd);color:var(--p);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit}
-.room-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
-.room-info{flex:1;min-width:0}
+.room-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;background-size:cover;background-position:center;cursor:pointer}
+.room-info{flex:1;min-width:0;cursor:pointer}
 .room-name{font-size:14px;font-weight:700;margin-bottom:2px}
 .room-sub{font-size:11px;color:var(--mut);direction:ltr;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .messages-area{flex:1;overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:6px}
@@ -141,6 +143,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 [dir="ltr"] .attach-menu{right:auto;left:14px}
 .attach-menu.show{display:flex}
 .menu-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:13.5px;color:#fff;border:none;background:transparent;width:100%;text-align:right}
+[dir="ltr"] .menu-item{text-align:left}
 .menu-item:hover{background:rgba(0,212,255,.15)}
 .menu-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .menu-icon.img{background:linear-gradient(135deg,#00d4ff,#7b3ff2)}
@@ -149,6 +152,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .msg-menu{position:fixed;background:#0a0e28;border:2px solid var(--bd);border-radius:12px;padding:6px;display:none;flex-direction:column;gap:2px;z-index:5000;min-width:160px}
 .msg-menu.show{display:flex}
 .msg-menu-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13.5px;color:#fff;border:none;background:transparent;width:100%;text-align:right}
+[dir="ltr"] .msg-menu-item{text-align:left}
 .msg-menu-item:hover{background:rgba(0,212,255,.15)}
 .msg-menu-item.reply{color:var(--p)}
 .modal-overlay{position:fixed;inset:0;background:rgba(5,6,26,.8);backdrop-filter:blur(6px);display:none;justify-content:center;align-items:center;z-index:1000;padding:16px;overflow-y:auto}
@@ -169,7 +173,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .story-prog{position:absolute;top:12px;left:12px;right:12px;height:3px;background:rgba(255,255,255,.3);border-radius:3px;z-index:10;overflow:hidden}
 .story-prog-bar{height:100%;background:linear-gradient(90deg,#00d4ff,#a855f7);border-radius:3px;width:0%;transition:width .1s linear}
 .story-head{position:absolute;top:24px;left:16px;right:16px;z-index:10;display:flex;align-items:center;gap:10px;color:#fff}
-.story-head-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.story-head-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;background-size:cover;background-position:center}
 .story-head-info{flex:1}
 .story-head-name{font-size:13px;font-weight:600;direction:ltr;text-align:right}
 .story-head-time{font-size:11px;opacity:.8}
@@ -187,7 +191,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .contact-chk{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;margin-bottom:3px;background:rgba(0,212,255,.05);border:1.5px solid transparent}
 .contact-chk.selected{background:rgba(0,212,255,.2);border-color:var(--p)}
 .contact-chk input{width:16px;height:16px;accent-color:var(--p);flex-shrink:0}
-.chk-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.chk-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;background-size:cover;background-position:center}
 .chk-info{flex:1;min-width:0}
 .chk-name{font-size:12.5px;font-weight:600;margin-bottom:1px}
 .chk-email{font-size:10.5px;color:var(--mut);direction:ltr;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -222,6 +226,61 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .operator-logo.rightel{background:linear-gradient(135deg,#a855f7,#7b3ff2)}
 .operator-name{font-size:14px;font-weight:700}
 .operator-desc{font-size:11px;color:var(--mut)}
+
+/* ===== پروفایل ===== */
+.profile-card{text-align:center;padding:24px 16px;background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(123,63,242,.1));border:2px solid var(--bd);border-radius:20px;margin-bottom:14px;backdrop-filter:blur(10px)}
+.profile-avatar-wrap{position:relative;display:inline-block;margin-bottom:12px}
+.profile-avatar{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:800;border:4px solid rgba(0,212,255,.3);box-shadow:0 0 30px rgba(0,212,255,.5);background-size:cover;background-position:center}
+.profile-avatar-edit{position:absolute;bottom:5px;right:5px;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:3px solid #05061a}
+.profile-name{font-size:20px;font-weight:800;margin-bottom:4px}
+.profile-username{font-size:13px;color:var(--p);direction:ltr;margin-bottom:10px;font-weight:600}
+.profile-bio{font-size:12.5px;color:var(--mut);line-height:1.6;padding:0 20px}
+.profile-info{display:flex;flex-direction:column;gap:8px}
+.profile-info-item{background:var(--card);border:2px solid var(--bd);border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(10px)}
+.profile-info-label{font-size:12px;color:var(--p);font-weight:600}
+.profile-info-value{font-size:12.5px;color:#e0e7ff;direction:ltr;font-weight:500}
+
+/* ===== تنظیمات ===== */
+.settings-section{margin-bottom:20px}
+.settings-section h3{font-size:13px;font-weight:700;color:var(--p);margin-bottom:10px;padding:0 4px}
+.settings-item{background:var(--card);border:2px solid var(--bd);border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;backdrop-filter:blur(10px);transition:background .2s}
+.settings-item:active{background:rgba(0,212,255,.15)}
+.settings-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.settings-info{flex:1;min-width:0}
+.settings-title{font-size:13.5px;font-weight:600;margin-bottom:2px}
+.settings-desc{font-size:11px;color:var(--mut)}
+.settings-arrow{font-size:20px;color:var(--mut);flex-shrink:0;transform:scaleX(-1)}
+[dir="ltr"] .settings-arrow{transform:none}
+.settings-select{background:rgba(0,212,255,.1);border:2px solid var(--bd);border-radius:10px;padding:6px 10px;font-family:inherit;font-size:12px;color:var(--p);cursor:pointer;outline:none;flex-shrink:0}
+.settings-select option{background:#0a0e28;color:#fff}
+.session-card{background:rgba(0,212,255,.05);border:2px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:8px}
+.session-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.session-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:18px}
+.session-info{flex:1;min-width:0}
+.session-device{font-size:13px;font-weight:600;margin-bottom:2px}
+.session-time{font-size:11px;color:var(--mut)}
+.session-current{font-size:10px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:2px 8px;border-radius:8px;font-weight:700}
+
+/* ===== تماس ===== */
+.call-modal{position:fixed;inset:0;background:linear-gradient(135deg,#05061a,#0a0e28);z-index:5000;display:none;flex-direction:column;padding:20px;color:#fff}
+.call-modal.show{display:flex}
+.call-header{text-align:center;margin-bottom:20px}
+.call-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.call-sub{font-size:13px;color:var(--mut)}
+.call-participants{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;align-content:start;overflow-y:auto;padding:10px 0}
+.participant{background:rgba(15,20,60,.6);border:2px solid var(--bd);border-radius:16px;padding:16px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;backdrop-filter:blur(10px);transition:all .2s}
+.participant.speaking{border-color:#22c55e;box-shadow:0 0 20px rgba(34,197,94,.5);transform:scale(1.02)}
+.participant-avatar{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;position:relative}
+.participant-muted{position:absolute;bottom:-4px;right:-4px;width:22px;height:22px;border-radius:50%;background:#ef4444;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid #05061a}
+.participant-name{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;direction:ltr}
+.call-controls{display:flex;gap:12px;justify-content:center;padding:16px 0;flex-wrap:wrap}
+.call-btn{width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;transition:all .2s;font-family:inherit}
+.call-btn.mic{background:linear-gradient(135deg,#00d4ff,#7b3ff2);color:#fff}
+.call-btn.mic.muted{background:#ef4444}
+.call-btn.end{background:#ef4444;color:#fff;width:70px;height:70px;font-size:26px}
+.call-btn:active{transform:scale(.92)}
+.call-status{text-align:center;font-size:12px;color:var(--mut);padding:8px;min-height:20px}
+.call-start-btn{background:linear-gradient(135deg,#22c55e,#16a34a)!important;color:#fff!important;border:none!important;margin-right:auto}
 </style>
 </head>
 <body>
@@ -229,27 +288,30 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <div class="page active" id="page-home">
 <div class="top-bar">
 <button class="icon-btn" onclick="showNotif()"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></button>
-<div class="app-title"><h1>بله مله <span>✈</span></h1><p>سوپر اپلیکیشن</p></div>
+<div class="app-title"><h1><span data-i18n="appName">بله مله</span> <span>✈</span></h1><p data-i18n="appTagline">سوپر اپلیکیشن</p></div>
 <button class="lang-btn" onclick="toggleLang()"><span id="lang-lbl">EN</span></button>
 </div>
-<div class="welcome-card"><div class="welcome-avatar">✈</div><div class="welcome-text"><h2>سلام!</h2><p>به بله مله خوش آمدید</p></div></div>
-<div class="quick-actions">
-<button class="quick-btn" onclick="goTab('group')"><div class="quick-icon g">👥</div><div class="quick-label">گروه‌ها</div></button>
-<button class="quick-btn" onclick="goTab('channel')"><div class="quick-icon ch">📢</div><div class="quick-label">کانال‌ها</div></button>
-<button class="quick-btn" onclick="goTab('private')"><div class="quick-icon ct">👤</div><div class="quick-label">مخاطبین</div></button>
-<button class="quick-btn" onclick="goTab('private')"><div class="quick-icon cv">💬</div><div class="quick-label">گفتگوها</div></button>
+<div class="welcome-card">
+<div class="welcome-avatar" id="home-avatar" onclick="openMyProfile()">✈</div>
+<div class="welcome-text"><h2 id="home-greeting" data-i18n="welcome">سلام!</h2><p data-i18n="welcomeSub">به بله مله خوش آمدید</p></div>
 </div>
 <div class="quick-actions">
-<button class="quick-btn" onclick="showPage('library')"><div class="quick-icon lb">🎬</div><div class="quick-label">کتابخانه</div></button>
-<button class="quick-btn" onclick="showPage('bots')"><div class="quick-icon bot">🤖</div><div class="quick-label">ربات‌ها</div></button>
-<button class="quick-btn" onclick="showPage('payments')"><div class="quick-icon pay">💰</div><div class="quick-label">مالی</div></button>
-<button class="quick-btn" onclick="showPage('education')"><div class="quick-icon edu">📚</div><div class="quick-label">آموزش</div></button>
+<button class="quick-btn" onclick="goTab('group')"><div class="quick-icon g">👥</div><div class="quick-label" data-i18n="groups">گروه‌ها</div></button>
+<button class="quick-btn" onclick="goTab('channel')"><div class="quick-icon ch">📢</div><div class="quick-label" data-i18n="channels">کانال‌ها</div></button>
+<button class="quick-btn" onclick="goTab('private')"><div class="quick-icon ct">👤</div><div class="quick-label" data-i18n="contacts">مخاطبین</div></button>
+<button class="quick-btn" onclick="goTab('private')"><div class="quick-icon cv">💬</div><div class="quick-label" data-i18n="chats">گفتگوها</div></button>
+</div>
+<div class="quick-actions">
+<button class="quick-btn" onclick="showPage('library')"><div class="quick-icon lb">🎬</div><div class="quick-label" data-i18n="library">کتابخانه</div></button>
+<button class="quick-btn" onclick="showPage('bots')"><div class="quick-icon bot">🤖</div><div class="quick-label" data-i18n="bots">ربات‌ها</div></button>
+<button class="quick-btn" onclick="showPage('payments')"><div class="quick-icon pay">💰</div><div class="quick-label" data-i18n="financeShort">مالی</div></button>
+<button class="quick-btn" onclick="showPage('education')"><div class="quick-icon edu">📚</div><div class="quick-label" data-i18n="education">آموزش</div></button>
 </div>
 <div class="features-grid">
-<div class="feature-card"><div class="feature-icon sec">🔒</div><div class="feature-text"><h4>امنیت بالا</h4><p>با رمزنگاری پیشرفته</p></div></div>
-<div class="feature-card"><div class="feature-icon spd">⚡</div><div class="feature-text"><h4>سرعت بالا</h4><p>ارسال و دریافت سریع</p></div></div>
-<div class="feature-card"><div class="feature-icon cld">☁️</div><div class="feature-text"><h4>فضای ابری</h4><p>دسترسی از همه جا</p></div></div>
-<div class="feature-card"><div class="feature-icon fre">⭐</div><div class="feature-text"><h4>رایگان</h4><p>بدون هزینه، همیشه</p></div></div>
+<div class="feature-card"><div class="feature-icon sec">🔒</div><div class="feature-text"><h4 data-i18n="secTitle">امنیت بالا</h4><p data-i18n="secSub">با رمزنگاری پیشرفته</p></div></div>
+<div class="feature-card"><div class="feature-icon spd">⚡</div><div class="feature-text"><h4 data-i18n="spdTitle">سرعت بالا</h4><p data-i18n="spdSub">ارسال و دریافت سریع</p></div></div>
+<div class="feature-card"><div class="feature-icon cld">☁️</div><div class="feature-text"><h4 data-i18n="cldTitle">فضای ابری</h4><p data-i18n="cldSub">دسترسی از همه جا</p></div></div>
+<div class="feature-card"><div class="feature-icon fre">⭐</div><div class="feature-text"><h4 data-i18n="freTitle">رایگان</h4><p data-i18n="freSub">بدون هزینه، همیشه</p></div></div>
 </div>
 </div>
 
@@ -257,19 +319,19 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <div class="page" id="page-chats">
 <div class="top-bar">
 <button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1>گفتگوها</h1><p id="my-email-lbl">...</p></div>
+<div class="app-title"><h1 data-i18n="chats">گفتگوها</h1><p id="my-email-lbl">...</p></div>
 <button class="icon-btn" onclick="logout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button>
 </div>
 <div class="stories-bar" id="stories-bar"></div>
 <div class="action-buttons">
-<button class="action-btn" onclick="openNewContact()"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>مخاطب</span></button>
-<button class="action-btn" onclick="openNewGroup('group')"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span>گروه</span></button>
-<button class="action-btn" onclick="openNewGroup('channel')"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg><span>کانال</span></button>
+<button class="action-btn" onclick="openNewContact()"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span data-i18n="newContact">مخاطب</span></button>
+<button class="action-btn" onclick="openNewGroup('group')"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span data-i18n="newGroup">گروه</span></button>
+<button class="action-btn" onclick="openNewGroup('channel')"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg><span data-i18n="newChannel">کانال</span></button>
 </div>
 <div class="tabs">
-<button class="tab active" data-tab="private" onclick="switchTab('private')">خصوصی</button>
-<button class="tab" data-tab="group" onclick="switchTab('group')">گروه‌ها</button>
-<button class="tab" data-tab="channel" onclick="switchTab('channel')">کانال‌ها</button>
+<button class="tab active" data-tab="private" onclick="switchTab('private')" data-i18n="privateTab">خصوصی</button>
+<button class="tab" data-tab="group" onclick="switchTab('group')" data-i18n="groups">گروه‌ها</button>
+<button class="tab" data-tab="channel" onclick="switchTab('channel')" data-i18n="channels">کانال‌ها</button>
 </div>
 <div class="list-container" id="list-container"></div>
 </div>
@@ -278,7 +340,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <div class="page" id="page-library">
 <div class="top-bar">
 <button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1>🎬 کتابخانه</h1><p>ویدیوها و محتوا</p></div>
+<div class="app-title"><h1>🎬 <span data-i18n="library">کتابخانه</span></h1><p data-i18n="librarySub">ویدیوها و محتوا</p></div>
 <button class="icon-btn" onclick="openLibModal()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
 </div>
 <div id="lib-list"></div>
@@ -288,68 +350,67 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <div class="page" id="page-bots">
 <div class="top-bar">
 <button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1>🤖 ربات‌ها</h1><p>پاسخ خودکار</p></div>
+<div class="app-title"><h1>🤖 <span data-i18n="bots">ربات‌ها</span></h1><p data-i18n="botsSub">پاسخ خودکار</p></div>
 <button class="icon-btn" onclick="openBotModal()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
 </div>
 <div id="bots-list"></div>
 </div>
 
-<!-- صفحه خدمات مالی -->
+<!-- صفحه مالی -->
 <div class="page" id="page-payments">
 <div class="top-bar">
 <button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1>💰 خدمات مالی</h1><p>شارژ، بسته، پرداخت</p></div>
+<div class="app-title"><h1>💰 <span data-i18n="finance">خدمات مالی</span></h1><p data-i18n="financeSub">شارژ، بسته، پرداخت</p></div>
 <div style="width:44px"></div>
 </div>
-<div class="welcome-card"><div class="welcome-avatar">💰</div><div class="welcome-text"><h2>کیف پول</h2><p>موجودی: <b id="wallet-bal">۰ تومان</b></p></div></div>
-<h3 style="font-size:14px;margin:14px 0 10px;color:var(--p)">📱 شارژ و بسته اینترنت</h3>
+<div class="welcome-card"><div class="welcome-avatar">💰</div><div class="welcome-text"><h2 data-i18n="wallet">کیف پول</h2><p><span data-i18n="balance">موجودی</span>: <b id="wallet-bal">۰ تومان</b></p></div></div>
+<h3 style="font-size:14px;margin:14px 0 10px;color:var(--p)" data-i18n="chargeSection">📱 شارژ و بسته اینترنت</h3>
 <div class="pay-grid">
-<a href="https://shop.mci.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo mci">M</div><div class="operator-name">همراه اول</div><div class="operator-desc">شارژ / بسته اینترنت</div></a>
-<a href="https://shop.irancell.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo irancell">I</div><div class="operator-name">ایرانسل</div><div class="operator-desc">شارژ / بسته اینترنت</div></a>
-<a href="https://shop.rightel.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo rightel">R</div><div class="operator-name">رایتل</div><div class="operator-desc">شارژ / بسته اینترنت</div></a>
-<a href="https://shad.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo mci">📞</div><div class="operator-name">سایر اپراتورها</div><div class="operator-desc">سامانه خدمات</div></a>
+<a href="https://shop.mci.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo mci">M</div><div class="operator-name" data-i18n="mci">همراه اول</div><div class="operator-desc" data-i18n="chargeDesc">شارژ / بسته اینترنت</div></a>
+<a href="https://shop.irancell.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo irancell">I</div><div class="operator-name" data-i18n="irancell">ایرانسل</div><div class="operator-desc" data-i18n="chargeDesc">شارژ / بسته اینترنت</div></a>
+<a href="https://shop.rightel.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo rightel">R</div><div class="operator-name" data-i18n="rightel">رایتل</div><div class="operator-desc" data-i18n="chargeDesc">شارژ / بسته اینترنت</div></a>
+<a href="https://shad.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo mci">📞</div><div class="operator-name" data-i18n="otherOperators">سایر اپراتورها</div><div class="operator-desc" data-i18n="servicePortal">سامانه خدمات</div></a>
 </div>
-<h3 style="font-size:14px;margin:14px 0 10px;color:var(--p)">🧾 خدمات دیگر</h3>
+<h3 style="font-size:14px;margin:14px 0 10px;color:var(--p)" data-i18n="otherServices">🧾 خدمات دیگر</h3>
 <div class="pay-grid">
-<a href="https://www.tavanir.org.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">💡</div><div class="pay-title">پرداخت برق</div></a>
-<a href="https://www.nigc.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">🔥</div><div class="pay-title">پرداخت گاز</div></a>
-<a href="https://www.abfa.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">💧</div><div class="pay-title">پرداخت آب</div></a>
-<a href="https://epay.bankmellat.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">📞</div><div class="pay-title">پرداخت تلفن</div></a>
+<a href="https://www.tavanir.org.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">💡</div><div class="pay-title" data-i18n="payElectricity">پرداخت برق</div></a>
+<a href="https://www.nigc.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">🔥</div><div class="pay-title" data-i18n="payGas">پرداخت گاز</div></a>
+<a href="https://www.abfa.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">💧</div><div class="pay-title" data-i18n="payWater">پرداخت آب</div></a>
+<a href="https://epay.bankmellat.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">📞</div><div class="pay-title" data-i18n="payPhone">پرداخت تلفن</div></a>
 </div>
 </div>
-
 <!-- صفحه آموزش -->
 <div class="page" id="page-education">
 <div class="top-bar">
 <button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1>📚 آموزش</h1><p>کلاس‌ها</p></div>
+<div class="app-title"><h1>📚 <span data-i18n="education">آموزش</span></h1><p data-i18n="classes">کلاس‌ها</p></div>
 <button class="icon-btn" onclick="openEduModal()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
 </div>
 <div style="display:flex;gap:8px;margin-bottom:12px">
-<button class="action-btn" style="flex:1" onclick="openEduJoin()"><span style="font-size:18px">🔑</span><span>ورود با کد</span></button>
-<button class="action-btn" style="flex:1" onclick="openEduModal()"><span style="font-size:18px">➕</span><span>ساخت کلاس</span></button>
+<button class="action-btn" style="flex:1" onclick="openEduJoin()"><span style="font-size:18px">🔑</span><span data-i18n="joinWithCode">ورود با کد</span></button>
+<button class="action-btn" style="flex:1" onclick="openEduModal()"><span style="font-size:18px">➕</span><span data-i18n="createClass">ساخت کلاس</span></button>
 </div>
 <div id="edu-list"></div>
 </div>
 
-<!-- صفحه پنل کلاس (معلم: پنل مدیریت - دانش‌آموز: کلاس) -->
+<!-- صفحه پنل کلاس -->
 <div class="page" id="page-class-panel">
 <div class="top-bar">
 <button class="icon-btn" onclick="closeClassPanel()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1 id="cp-title">📚 کلاس</h1><p id="cp-sub">پنل مدیریت</p></div>
+<div class="app-title"><h1 id="cp-title">📚 <span data-i18n="classes">کلاس</span></h1><p id="cp-sub" data-i18n="classPanel">پنل مدیریت</p></div>
 <div style="width:44px"></div>
 </div>
 <div class="welcome-card" id="cp-code-card" style="margin-bottom:12px">
 <div class="welcome-avatar" style="font-size:22px">🔑</div>
-<div class="welcome-text"><h2>کد کلاس</h2><p style="font-size:18px;font-weight:900;letter-spacing:6px;direction:ltr;color:var(--p)" id="cp-code">------</p></div>
-<button class="lang-btn" onclick="copyCpCode()">کپی</button>
+<div class="welcome-text"><h2 data-i18n="classCode">کد کلاس</h2><p style="font-size:18px;font-weight:900;letter-spacing:6px;direction:ltr;color:var(--p)" id="cp-code">------</p></div>
+<button class="lang-btn" onclick="copyCpCode()" data-i18n="copy">کپی</button>
 </div>
 <div class="tabs" style="margin-bottom:12px">
-<button class="tab active" data-cp="videos" onclick="switchCpTab('videos')">🎬 ویدیوها</button>
-<button class="tab" data-cp="members" onclick="switchCpTab('members')">👥 اعضا</button>
+<button class="tab active" data-cp="videos" onclick="switchCpTab('videos')" data-i18n="videos">🎬 ویدیوها</button>
+<button class="tab" data-cp="members" onclick="switchCpTab('members')" data-i18n="members">👥 اعضا</button>
 </div>
 <div id="cp-videos">
-<button class="btn-primary" id="cp-add-video-btn" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="openAddVideoModal()">➕ افزودن ویدیو</button>
+<button class="btn-primary" id="cp-add-video-btn" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="openAddVideoModal()" data-i18n="addVideo">➕ افزودن ویدیو</button>
 <div id="cp-videos-list"></div>
 </div>
 <div id="cp-members" style="display:none">
@@ -362,7 +423,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <div class="chat-header">
 <button class="back-btn" onclick="closeRoom()">→</button>
 <div class="room-avatar" id="room-avatar">?</div>
-<div class="room-info"><div class="room-name" id="room-name"></div><div class="room-sub" id="room-sub"></div></div>
+<div class="room-info" id="room-info-click"><div class="room-name" id="room-name"></div><div class="room-sub" id="room-sub"></div></div>
+<button class="back-btn call-start-btn" id="call-start-btn" style="display:none" onclick="startCallFromChat()">📞</button>
 </div>
 <div class="messages-area" id="messages-area"></div>
 <div class="reply-bar" id="reply-bar">
@@ -372,23 +434,23 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 </div>
 <div class="input-area" id="input-area">
 <button class="attach" id="attach-btn">📎</button>
-<input type="text" class="msg-input" id="msg-input" placeholder="پیام...">
+<input type="text" class="msg-input" id="msg-input" placeholder="پیام..." data-i18n-ph="msgPlaceholder">
 <button class="send-btn" id="send-btn">➤</button>
 </div>
 <div class="rec-bar" id="rec-bar">
 <div class="rec-dot"></div>
 <div class="rec-time" id="rec-time">0:00</div>
-<div class="rec-text">در حال ضبط...</div>
-<button class="rec-btn rec-cancel" id="rec-cancel">لغو</button>
-<button class="rec-btn rec-send" id="rec-send">ارسال</button>
+<div class="rec-text" data-i18n="recording">در حال ضبط...</div>
+<button class="rec-btn rec-cancel" id="rec-cancel" data-i18n="cancel">لغو</button>
+<button class="rec-btn rec-send" id="rec-send" data-i18n="send">ارسال</button>
 </div>
 </div>
 
 <!-- منوی ضمیمه -->
 <div class="attach-menu" id="attach-menu">
-<button class="menu-item" onclick="pickImage()"><span class="menu-icon img">🖼️</span><span>ارسال عکس</span></button>
-<button class="menu-item" onclick="pickFile()"><span class="menu-icon fl">📄</span><span>ارسال فایل</span></button>
-<button class="menu-item" onclick="startRec()"><span class="menu-icon vc">🎤</span><span>ضبط ویس</span></button>
+<button class="menu-item" onclick="pickImage()"><span class="menu-icon img">🖼️</span><span data-i18n="sendImage">ارسال عکس</span></button>
+<button class="menu-item" onclick="pickFile()"><span class="menu-icon fl">📄</span><span data-i18n="sendFile">ارسال فایل</span></button>
+<button class="menu-item" onclick="startRec()"><span class="menu-icon vc">🎤</span><span data-i18n="sendVoice">ضبط ویس</span></button>
 </div>
 
 <input type="file" id="file-img" accept="image/*" style="display:none">
@@ -407,54 +469,50 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 </div>
 
 <!-- مودال مخاطب -->
-<div class="modal-overlay" id="contact-modal"><div class="modal"><h3>👤 مخاطب جدید</h3><p>ایمیل مخاطب را وارد کن</p><input type="email" id="contact-email" placeholder="friend@example.com"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('contact-modal')">انصراف</button><button class="btn-primary" id="contact-add">افزودن</button></div></div></div>
+<div class="modal-overlay" id="contact-modal"><div class="modal"><h3 data-i18n="newContactTitle">👤 مخاطب جدید</h3><p data-i18n="newContactDesc">ایمیل مخاطب را وارد کن</p><input type="email" id="contact-email" placeholder="friend@example.com"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('contact-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="contact-add" data-i18n="add">افزودن</button></div></div></div>
 
 <!-- مودال گروه -->
-<div class="modal-overlay" id="group-modal"><div class="modal"><h3 id="group-title">گروه جدید</h3><p>اطلاعات را وارد کن</p><label>نام</label><input type="text" id="group-name"><label>توضیحات</label><textarea id="group-desc"></textarea><label>انتخاب اعضا</label><input type="text" class="search-inp" id="search-contacts" placeholder="جستجو..."><div class="contacts-picker" id="contacts-picker"></div><div class="selected-count" id="selected-count"></div><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('group-modal')">انصراف</button><button class="btn-primary" id="group-create">ساخت</button></div></div></div>
+<div class="modal-overlay" id="group-modal"><div class="modal"><h3 id="group-title" data-i18n="newGroupTitle">گروه جدید</h3><p data-i18n="newGroupDesc">اطلاعات را وارد کن</p><label data-i18n="nameLbl">نام</label><input type="text" id="group-name"><label data-i18n="descLbl">توضیحات</label><textarea id="group-desc"></textarea><label data-i18n="selectMembers">انتخاب اعضا</label><input type="text" class="search-inp" id="search-contacts" placeholder="جستجو..." data-i18n-ph="searchPlaceholder"><div class="contacts-picker" id="contacts-picker"></div><div class="selected-count" id="selected-count"></div><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('group-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="group-create" data-i18n="create">ساخت</button></div></div></div>
 
 <!-- مودال استوری -->
-<div class="modal-overlay" id="story-modal"><div class="modal"><h3>📸 استوری جدید</h3><p>عکس یا ویدیو انتخاب کن</p><div class="story-preview empty" id="story-preview">چیزی انتخاب نشده</div><button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="document.getElementById('file-story').click()">📷 انتخاب فایل</button><label>کپشن</label><input type="text" id="story-cap-inp"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('story-modal')">انصراف</button><button class="btn-primary" id="story-pub">انتشار</button></div></div></div>
+<div class="modal-overlay" id="story-modal"><div class="modal"><h3 data-i18n="newStoryTitle">📸 استوری جدید</h3><p data-i18n="newStoryDesc">عکس یا ویدیو انتخاب کن</p><div class="story-preview empty" id="story-preview" data-i18n="nothingSelected">چیزی انتخاب نشده</div><button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="document.getElementById('file-story').click()" data-i18n="pickFile">📷 انتخاب فایل</button><label data-i18n="captionLbl">کپشن</label><input type="text" id="story-cap-inp"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('story-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="story-pub" data-i18n="publish">انتشار</button></div></div></div>
 
 <!-- مودال لیست استوری -->
-<div class="modal-overlay" id="stories-list-modal"><div class="modal"><h3>📸 استوری‌ها</h3><p>یک کاربر انتخاب کن</p><div id="stories-list-content" style="max-height:60vh;overflow-y:auto;margin-bottom:12px"></div><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('stories-list-modal')">بستن</button><button class="btn-primary" onclick="closeModal('stories-list-modal');openStoryModal()">افزودن استوری</button></div></div></div>
+<div class="modal-overlay" id="stories-list-modal"><div class="modal"><h3 data-i18n="storiesListTitle">📸 استوری‌ها</h3><p data-i18n="pickUser">یک کاربر انتخاب کن</p><div id="stories-list-content" style="max-height:60vh;overflow-y:auto;margin-bottom:12px"></div><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('stories-list-modal')" data-i18n="close">بستن</button><button class="btn-primary" onclick="closeModal('stories-list-modal');openStoryModal()" data-i18n="addStory">افزودن استوری</button></div></div></div>
 
 <!-- مودال ویرایش -->
-<div class="modal-overlay" id="edit-modal"><div class="modal"><h3>✏️ ویرایش پیام</h3><p>متن جدید را وارد کن</p><input type="text" id="edit-inp"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('edit-modal')">انصراف</button><button class="btn-primary" id="edit-save">ذخیره</button></div></div></div>
+<div class="modal-overlay" id="edit-modal"><div class="modal"><h3 data-i18n="editMsgTitle">✏️ ویرایش پیام</h3><p data-i18n="editMsgDesc">متن جدید را وارد کن</p><input type="text" id="edit-inp"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('edit-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="edit-save" data-i18n="save">ذخیره</button></div></div></div>
 
 <!-- مودال کتابخانه -->
-<div class="modal-overlay" id="lib-modal"><div class="modal"><h3>🎬 افزودن به کتابخانه</h3><label>عنوان</label><input type="text" id="lib-title"><label>توضیحات</label><textarea id="lib-desc"></textarea><div class="story-preview empty" id="lib-preview">چیزی انتخاب نشده</div><button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="document.getElementById('file-lib').click()">📷 انتخاب فایل</button><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('lib-modal')">انصراف</button><button class="btn-primary" id="lib-pub">افزودن</button></div></div></div>
+<div class="modal-overlay" id="lib-modal"><div class="modal"><h3 data-i18n="libAddTitle">🎬 افزودن به کتابخانه</h3><label data-i18n="titleLbl">عنوان</label><input type="text" id="lib-title"><label data-i18n="descLbl">توضیحات</label><textarea id="lib-desc"></textarea><div class="story-preview empty" id="lib-preview" data-i18n="nothingSelected">چیزی انتخاب نشده</div><button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="document.getElementById('file-lib').click()" data-i18n="pickFile">📷 انتخاب فایل</button><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('lib-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="lib-pub" data-i18n="add">افزودن</button></div></div></div>
 
 <!-- مودال ربات -->
-<div class="modal-overlay" id="bot-modal"><div class="modal"><h3>🤖 ربات جدید</h3><label>نام</label><input type="text" id="bot-name"><label>توضیحات</label><textarea id="bot-desc"></textarea><label>پاسخ خودکار</label><textarea id="bot-reply"></textarea><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('bot-modal')">انصراف</button><button class="btn-primary" id="bot-create">ساخت</button></div></div></div>
+<div class="modal-overlay" id="bot-modal"><div class="modal"><h3 data-i18n="botNewTitle">🤖 ربات جدید</h3><label data-i18n="nameLbl">نام</label><input type="text" id="bot-name"><label data-i18n="descLbl">توضیحات</label><textarea id="bot-desc"></textarea><label data-i18n="autoReplyLbl">پاسخ خودکار</label><textarea id="bot-reply"></textarea><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('bot-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="bot-create" data-i18n="create">ساخت</button></div></div></div>
 
 <!-- مودال کلاس -->
-<div class="modal-overlay" id="edu-modal"><div class="modal"><h3>📚 کلاس جدید</h3><label>نام کلاس</label><input type="text" id="edu-name"><label>توضیحات</label><textarea id="edu-desc"></textarea><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('edu-modal')">انصراف</button><button class="btn-primary" id="edu-create">ساخت</button></div></div></div>
+<div class="modal-overlay" id="edu-modal"><div class="modal"><h3 data-i18n="newClassTitle">📚 کلاس جدید</h3><label data-i18n="classNameLbl">نام کلاس</label><input type="text" id="edu-name"><label data-i18n="descLbl">توضیحات</label><textarea id="edu-desc"></textarea><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('edu-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="edu-create" data-i18n="create">ساخت</button></div></div></div>
 
 <!-- مودال ورود با کد -->
-<div class="modal-overlay" id="edu-join-modal"><div class="modal"><h3>🔑 ورود به کلاس</h3><p>کد ۶ رقمی که معلم داده رو وارد کن</p><input type="text" id="edu-join-code" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="123456" style="text-align:center;font-size:24px;letter-spacing:8px;font-weight:800;direction:ltr"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('edu-join-modal')">انصراف</button><button class="btn-primary" id="edu-join-btn">ورود</button></div></div></div>
+<div class="modal-overlay" id="edu-join-modal"><div class="modal"><h3 data-i18n="joinTitle">🔑 ورود به کلاس</h3><p data-i18n="joinDesc">کد ۶ رقمی که معلم داده رو وارد کن</p><input type="text" id="edu-join-code" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="123456" style="text-align:center;font-size:24px;letter-spacing:8px;font-weight:800;direction:ltr"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('edu-join-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="edu-join-btn" data-i18n="enter">ورود</button></div></div></div>
 
 <!-- مودال نمایش کد کلاس -->
-<div class="modal-overlay" id="edu-code-modal"><div class="modal"><h3>✅ کلاس ساخته شد!</h3><p>این کد رو به دانش‌آموزان بده:</p><div style="background:linear-gradient(135deg,rgba(0,212,255,.2),rgba(123,63,242,.2));border:2px dashed var(--p);border-radius:14px;padding:18px;text-align:center;font-size:34px;font-weight:900;letter-spacing:10px;direction:ltr;color:var(--p);margin:14px 0" id="edu-show-code">------</div><button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:8px" onclick="copyEduCode()">📋 کپی کد</button><div class="modal-btns"><button class="btn-primary" onclick="closeModal('edu-code-modal');loadEdu()">باشه</button></div></div></div>
+<div class="modal-overlay" id="edu-code-modal"><div class="modal"><h3 data-i18n="classCreated">✅ کلاس ساخته شد!</h3><p data-i18n="giveCodeDesc">این کد رو به دانش‌آموزان بده:</p><div style="background:linear-gradient(135deg,rgba(0,212,255,.2),rgba(123,63,242,.2));border:2px dashed var(--p);border-radius:14px;padding:18px;text-align:center;font-size:34px;font-weight:900;letter-spacing:10px;direction:ltr;color:var(--p);margin:14px 0" id="edu-show-code">------</div><button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:8px" onclick="copyEduCode()" data-i18n="copyCode">📋 کپی کد</button><div class="modal-btns"><button class="btn-primary" onclick="closeModal('edu-code-modal');loadEdu()" data-i18n="ok">باشه</button></div></div></div>
 
 <!-- مودال افزودن ویدیو -->
-<div class="modal-overlay" id="add-video-modal"><div class="modal"><h3>🎬 افزودن ویدیو</h3>
-
+<div class="modal-overlay" id="add-video-modal"><div class="modal"><h3 data-i18n="addVideoTitle">🎬 افزودن ویدیو</h3>
 <div class="tabs" style="margin-bottom:12px">
-<button class="tab active" data-vmode="upload" onclick="switchVideoMode('upload')">📤 آپلود از دستگاه</button>
-<button class="tab" data-vmode="link" onclick="switchVideoMode('link')">🔗 لینک</button>
+<button class="tab active" data-vmode="upload" onclick="switchVideoMode('upload')" data-i18n="uploadFromDevice">📤 آپلود از دستگاه</button>
+<button class="tab" data-vmode="link" onclick="switchVideoMode('link')" data-i18n="linkTab">🔗 لینک</button>
 </div>
-
-<label>عنوان ویدیو</label>
-<input type="text" id="v-title" placeholder="مثلاً: جلسه ۱ - مقدمه">
-
-<label>توضیحات (اختیاری)</label>
-<textarea id="v-desc" placeholder="توضیح کوتاه..."></textarea>
-
+<label data-i18n="videoTitleLbl">عنوان ویدیو</label>
+<input type="text" id="v-title" placeholder="مثلاً: جلسه ۱ - مقدمه" data-i18n-ph="videoTitlePh">
+<label data-i18n="descOptional">توضیحات (اختیاری)</label>
+<textarea id="v-desc" placeholder="توضیح کوتاه..." data-i18n-ph="descPh"></textarea>
 <div id="v-upload-section">
-<div class="story-preview empty" id="v-preview" style="height:180px">ویدیویی انتخاب نشده</div>
+<div class="story-preview empty" id="v-preview" style="height:180px" data-i18n="nothingSelected">ویدیویی انتخاب نشده</div>
 <input type="file" id="v-file" accept="video/*" style="display:none">
-<button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="document.getElementById('v-file').click()">📹 انتخاب ویدیو از دستگاه</button>
-<p style="font-size:11px;color:var(--mut);margin-top:-6px;margin-bottom:12px">حداکثر حجم: ۵۰ مگابایت</p>
+<button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="document.getElementById('v-file').click()" data-i18n="pickVideo">📹 انتخاب ویدیو از دستگاه</button>
+<p style="font-size:11px;color:var(--mut);margin-top:-6px;margin-bottom:12px" data-i18n="maxSize">حداکثر حجم: ۵۰ مگابایت</p>
 <div id="v-upload-progress" style="display:none;margin-bottom:12px">
 <div style="background:rgba(0,212,255,.1);border-radius:10px;height:8px;overflow:hidden;margin-bottom:6px">
 <div id="v-progress-bar" style="height:100%;background:linear-gradient(90deg,#00d4ff,#7b3ff2);width:0%;transition:width .3s"></div>
@@ -462,26 +520,240 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <div style="font-size:11px;color:var(--p);text-align:center" id="v-progress-text">۰٪</div>
 </div>
 </div>
-
 <div id="v-link-section" style="display:none">
-<label>لینک ویدیو (URL)</label>
+<label data-i18n="videoUrlLbl">لینک ویدیو (URL)</label>
 <input type="url" id="v-url" placeholder="https://..." style="direction:ltr">
-<p style="font-size:11px;color:var(--mut);margin-top:-6px;margin-bottom:12px">میتونی از یوتیوب، آپارات یا هر لینک mp4 استفاده کنی</p>
+<p style="font-size:11px;color:var(--mut);margin-top:-6px;margin-bottom:12px" data-i18n="linkHint">میتونی از یوتیوب، آپارات یا هر لینک mp4 استفاده کنی</p>
 </div>
-
-<div class="modal-btns"><button class="btn-cancel" onclick="closeModal('add-video-modal')">انصراف</button><button class="btn-primary" id="v-add-btn">افزودن</button></div></div></div>
+<div class="modal-btns"><button class="btn-cancel" onclick="closeModal('add-video-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="v-add-btn" data-i18n="add">افزودن</button></div></div></div>
 
 <div class="msg-menu" id="msg-menu"></div>
+<!-- صفحه پروفایل -->
+<div class="page" id="page-profile">
+<div class="top-bar">
+<button class="icon-btn" onclick="closeProfile()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+<div class="app-title"><h1 data-i18n="profile">پروفایل</h1><p id="profile-email-lbl">...</p></div>
+<button class="icon-btn" id="profile-edit-btn" onclick="openEditProfile()"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+</div>
+
+<div class="profile-card">
+<div class="profile-avatar-wrap">
+<div class="profile-avatar" id="profile-avatar">?</div>
+<div class="profile-avatar-edit" onclick="document.getElementById('avatar-file').click()">📷</div>
+</div>
+<h2 class="profile-name" id="profile-name">...</h2>
+<p class="profile-username" id="profile-username">@...</p>
+<p class="profile-bio" id="profile-bio">—</p>
+</div>
+
+<div class="profile-info">
+<div class="profile-info-item">
+<span class="profile-info-label" data-i18n="phoneLbl">📱 شماره تماس</span>
+<span class="profile-info-value" id="profile-phone">—</span>
+</div>
+<div class="profile-info-item">
+<span class="profile-info-label" data-i18n="emailLbl">✉️ ایمیل</span>
+<span class="profile-info-value" id="profile-email-txt">—</span>
+</div>
+</div>
+
+<input type="file" id="avatar-file" accept="image/*" style="display:none">
+</div>
+
+<!-- صفحه تنظیمات -->
+<div class="page" id="page-settings">
+<div class="top-bar">
+<button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+<div class="app-title"><h1 data-i18n="settings">تنظیمات</h1></div>
+<div style="width:44px"></div>
+</div>
+
+<!-- حساب کاربری -->
+<div class="settings-section">
+<h3 data-i18n="accountSection">👤 حساب کاربری</h3>
+<div class="settings-item" onclick="openMyProfile()">
+<div class="settings-icon">👤</div>
+<div class="settings-info">
+<div class="settings-title" data-i18n="profile">پروفایل</div>
+<div class="settings-desc" data-i18n="profileDesc">نام، عکس، بیوگرافی</div>
+</div>
+<div class="settings-arrow">‹</div>
+</div>
+</div>
+
+<!-- زبان -->
+<div class="settings-section">
+<h3 data-i18n="languageSection">🌐 زبان</h3>
+<div class="settings-item">
+<div class="settings-icon">🌐</div>
+<div class="settings-info">
+<div class="settings-title" data-i18n="language">زبان</div>
+<div class="settings-desc" data-i18n="languageDesc">فارسی یا انگلیسی</div>
+</div>
+<select class="settings-select" id="lang-select" onchange="changeLang(this.value)">
+<option value="fa">فارسی</option>
+<option value="en">English</option>
+</select>
+</div>
+</div>
+
+<!-- امنیت -->
+<div class="settings-section">
+<h3 data-i18n="securitySection">🔒 امنیت</h3>
+<div class="settings-item" onclick="openTwoFA()">
+<div class="settings-icon">🔐</div>
+<div class="settings-info">
+<div class="settings-title" data-i18n="twoFA">رمز دو مرحله‌ای</div>
+<div class="settings-desc" id="twofa-status" data-i18n="twoFADesc">محافظت بیشتر از حساب</div>
+</div>
+<div class="settings-arrow">‹</div>
+</div>
+<div class="settings-item" onclick="showSessions()">
+<div class="settings-icon">📱</div>
+<div class="settings-info">
+<div class="settings-title" data-i18n="activeSessions">نشست‌های فعال</div>
+<div class="settings-desc" data-i18n="activeSessionsDesc">دستگاه‌های متصل</div>
+</div>
+<div class="settings-arrow">‹</div>
+</div>
+<div class="settings-item" onclick="changePassword()">
+<div class="settings-icon">🔑</div>
+<div class="settings-info">
+<div class="settings-title" data-i18n="changePassword">تغییر رمز عبور</div>
+<div class="settings-desc" data-i18n="changePasswordDesc">رمز جدید تنظیم کن</div>
+</div>
+<div class="settings-arrow">‹</div>
+</div>
+</div>
+
+<!-- درباره -->
+<div class="settings-section">
+<h3 data-i18n="aboutSection">ℹ️ درباره</h3>
+<div class="settings-item" onclick="alert('بله مله - نسخه ۱.۰\nساخته شده توسط استودیو MMA')">
+<div class="settings-icon">📱</div>
+<div class="settings-info">
+<div class="settings-title" data-i18n="appVersion">نسخه برنامه</div>
+<div class="settings-desc">1.0.0</div>
+</div>
+<div class="settings-arrow">‹</div>
+</div>
+<div class="settings-item" onclick="logout()">
+<div class="settings-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)">🚪</div>
+<div class="settings-info">
+<div class="settings-title" style="color:#ef4444" data-i18n="logoutBtn">خروج از حساب</div>
+<div class="settings-desc" data-i18n="logoutDesc">خارج شدن از این دستگاه</div>
+</div>
+<div class="settings-arrow">‹</div>
+</div>
+</div>
+</div>
+
+<!-- مودال ویرایش پروفایل -->
+<div class="modal-overlay" id="edit-profile-modal">
+<div class="modal">
+<h3 data-i18n="editProfileTitle">✏️ ویرایش پروفایل</h3>
+<label data-i18n="nameLbl">نام</label>
+<input type="text" id="ep-name" placeholder="مثلاً: سبحان">
+<label data-i18n="usernameLbl">نام کاربری</label>
+<input type="text" id="ep-username" placeholder="sobhann" style="direction:ltr">
+<p style="font-size:10px;color:var(--mut);margin-top:-6px;margin-bottom:12px" data-i18n="usernameHint">فقط حروف انگلیسی، اعداد و _ (بدون @)</p>
+<label data-i18n="bioLbl">درباره من</label>
+<textarea id="ep-bio" placeholder="یه توضیح کوتاه..."></textarea>
+<label data-i18n="phoneLbl2">شماره تماس (اختیاری)</label>
+<input type="tel" id="ep-phone" placeholder="09123456789" style="direction:ltr">
+<div class="modal-btns">
+<button class="btn-cancel" onclick="closeModal('edit-profile-modal')" data-i18n="cancel">انصراف</button>
+<button class="btn-primary" id="ep-save" data-i18n="save">ذخیره</button>
+</div>
+</div>
+</div>
+
+<!-- مودال نمایش پروفایل بقیه -->
+<div class="modal-overlay" id="view-profile-modal">
+<div class="modal">
+<div style="text-align:center;margin-bottom:14px">
+<div class="profile-avatar" id="vp-avatar" style="width:80px;height:80px;font-size:32px;margin:0 auto 12px">?</div>
+<h3 id="vp-name" style="margin-bottom:4px">...</h3>
+<p id="vp-username" style="font-size:12px;color:var(--p);margin-bottom:10px">@...</p>
+<p id="vp-bio" style="font-size:12px;color:var(--mut);line-height:1.5">—</p>
+</div>
+<div class="modal-btns">
+<button class="btn-primary" id="vp-chat-btn" data-i18n="startChat">شروع گفتگو</button>
+<button class="btn-cancel" onclick="closeModal('view-profile-modal')" data-i18n="close">بستن</button>
+</div>
+</div>
+</div>
+
+<!-- مودال 2FA -->
+<div class="modal-overlay" id="twofa-modal">
+<div class="modal">
+<h3 data-i18n="twoFATitle">🔐 رمز دو مرحله‌ای</h3>
+<p data-i18n="twoFADesc2">با فعال‌سازی، هنگام ورود یک کد ۶ رقمی به ایمیلت فرستاده می‌شود.</p>
+<div id="twofa-step1">
+<button class="btn-primary" style="width:100%;padding:12px;border-radius:12px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px" id="twofa-enable-btn" data-i18n="twoFAEnable">فعال‌سازی</button>
+</div>
+<div id="twofa-step2" style="display:none">
+<label data-i18n="twoFACodeLbl">کد ۶ رقمی</label>
+<input type="text" id="twofa-code-inp" maxlength="6" inputmode="numeric" placeholder="123456" style="text-align:center;font-size:20px;letter-spacing:6px;direction:ltr">
+<p style="font-size:11px;color:var(--mut);text-align:center;margin-top:-6px;margin-bottom:12px" id="twofa-hint"></p>
+<button class="btn-primary" style="width:100%;padding:12px;border-radius:12px;font-family:inherit;font-weight:700;cursor:pointer" id="twofa-verify-btn" data-i18n="verify">تأیید</button>
+</div>
+<div class="modal-btns" style="margin-top:8px">
+<button class="btn-cancel" onclick="closeModal('twofa-modal')" data-i18n="cancel">انصراف</button>
+</div>
+</div>
+</div>
+
+<!-- مودال نشست‌های فعال -->
+<div class="modal-overlay" id="sessions-modal">
+<div class="modal">
+<h3 data-i18n="sessionsTitle">📱 نشست‌های فعال</h3>
+<p data-i18n="sessionsDesc">دستگاه‌هایی که با حساب تو لاگین کردن:</p>
+<div id="sessions-list" style="max-height:50vh;overflow-y:auto;margin-bottom:12px"></div>
+<div class="modal-btns">
+<button class="btn-cancel" style="background:rgba(239,68,68,.2);color:#fca5a5" onclick="logoutAll()" data-i18n="logoutAll">خروج از همه</button>
+<button class="btn-primary" onclick="closeModal('sessions-modal')" data-i18n="close">بستن</button>
+</div>
+</div>
+</div>
+
+<!-- مودال تغییر رمز -->
+<div class="modal-overlay" id="password-modal">
+<div class="modal">
+<h3 data-i18n="changePasswordTitle">🔑 تغییر رمز عبور</h3>
+<label data-i18n="newPassword">رمز جدید</label>
+<input type="password" id="new-password" placeholder="••••••••">
+<label data-i18n="confirmPassword">تکرار رمز جدید</label>
+<input type="password" id="confirm-password" placeholder="••••••••">
+<div class="modal-btns">
+<button class="btn-cancel" onclick="closeModal('password-modal')" data-i18n="cancel">انصراف</button>
+<button class="btn-primary" id="password-save" data-i18n="save">ذخیره</button>
+</div>
+</div>
+</div>
+
+<!-- مودال تماس صوتی گروهی -->
+<div class="call-modal" id="call-modal">
+<div class="call-header">
+<div class="call-title" id="call-title">📞 تماس گروهی</div>
+<div class="call-sub" id="call-sub">در حال اتصال...</div>
+</div>
+<div class="call-participants" id="call-participants"></div>
+<div class="call-status" id="call-status"></div>
+<div class="call-controls">
+<button class="call-btn mic" id="call-mic-btn">🎤</button>
+<button class="call-btn end" id="call-end-btn">📞</button>
+</div>
+</div>
 
 <!-- نوار پایین -->
 <div class="bottom-nav">
-<button class="nav-item active" id="nav-home" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>خانه</span></button>
-<button class="nav-item" id="nav-chats" onclick="showPage('chats')"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>چت‌ها</span></button>
+<button class="nav-item active" id="nav-home" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span data-i18n="home">خانه</span></button>
+<button class="nav-item" id="nav-chats" onclick="showPage('chats')"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span data-i18n="chats">چت‌ها</span></button>
 <button class="nav-item center" onclick="showPage('chats')"><div class="center-circle">✈</div></button>
-<button class="nav-item" id="nav-library" onclick="showPage('library')"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg><span>کتابخانه</span></button>
-<button class="nav-item" id="nav-more" onclick="showPage('bots')"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg><span>بیشتر</span></button>
+<button class="nav-item" id="nav-library" onclick="showPage('library')"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg><span data-i18n="library">کتابخانه</span></button>
+<button class="nav-item" id="nav-more" onclick="showPage('settings')"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><span data-i18n="settings">تنظیمات</span></button>
 </div>
-
 <script type="module">
 import{createClient}from'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 const SB='https://sgjrwmnfvrpjtshlabva.supabase.co';
@@ -497,7 +769,84 @@ const esc=s=>{const d=document.createElement('div');d.textContent=s||'';return d
 const ini=s=>(s||'?').charAt(0).toUpperCase();
 const fmtT=s=>{const m=Math.floor(s/60),ss=Math.floor(s%60);return`${m}:${ss.toString().padStart(2,'0')}`};
 const fmtSz=b=>{if(!b)return'0 B';if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';if(b<1073741824)return(b/1048576).toFixed(1)+' MB';return(b/1073741824).toFixed(2)+' GB'};
-const ago=d=>{const s=Math.floor((Date.now()-d.getTime())/1000),m=Math.floor(s/60),h=Math.floor(m/60),dd=Math.floor(h/24);if(s<60)return'الان';if(m<60)return`${m} دقیقه پیش`;if(h<24)return`${h} ساعت پیش`;return`${dd} روز پیش`};
+const ago=d=>{const s=Math.floor((Date.now()-d.getTime())/1000),m=Math.floor(s/60),h=Math.floor(m/60),dd=Math.floor(h/24);if(s<60)return t('justNow');if(m<60)return m+' '+t('minAgo');if(h<24)return h+' '+t('hrAgo');return dd+' '+t('dayAgo')};
+
+// ============ دیکشنری ============
+const I18N={
+fa:{
+appName:'بله مله',appTagline:'سوپر اپلیکیشن',welcome:'سلام!',welcomeSub:'به بله مله خوش آمدید',
+groups:'گروه‌ها',channels:'کانال‌ها',contacts:'مخاطبین',chats:'گفتگوها',library:'کتابخانه',bots:'ربات‌ها',finance:'خدمات مالی',financeShort:'مالی',education:'آموزش',home:'خانه',more:'بیشتر',privateTab:'خصوصی',
+secTitle:'امنیت بالا',secSub:'با رمزنگاری پیشرفته',spdTitle:'سرعت بالا',spdSub:'ارسال و دریافت سریع',cldTitle:'فضای ابری',cldSub:'دسترسی از همه جا',freTitle:'رایگان',freSub:'بدون هزینه، همیشه',
+librarySub:'ویدیوها و محتوا',botsSub:'پاسخ خودکار',financeSub:'شارژ، بسته، پرداخت',classes:'کلاس‌ها',classPanel:'پنل مدیریت',
+wallet:'کیف پول',balance:'موجودی',chargeSection:'📱 شارژ و بسته اینترنت',mci:'همراه اول',irancell:'ایرانسل',rightel:'رایتل',otherOperators:'سایر اپراتورها',chargeDesc:'شارژ / بسته اینترنت',servicePortal:'سامانه خدمات',otherServices:'🧾 خدمات دیگر',payElectricity:'پرداخت برق',payGas:'پرداخت گاز',payWater:'پرداخت آب',payPhone:'پرداخت تلفن',
+newContact:'مخاطب',newGroup:'گروه',newChannel:'کانال',joinWithCode:'ورود با کد',createClass:'ساخت کلاس',
+newContactTitle:'👤 مخاطب جدید',newContactDesc:'ایمیل مخاطب را وارد کن',
+newGroupTitle:'گروه جدید',newGroupDesc:'اطلاعات را وارد کن',nameLbl:'نام',descLbl:'توضیحات',selectMembers:'انتخاب اعضا',searchPlaceholder:'جستجو...',
+newStoryTitle:'📸 استوری جدید',newStoryDesc:'عکس یا ویدیو انتخاب کن',nothingSelected:'چیزی انتخاب نشده',pickFile:'📷 انتخاب فایل',captionLbl:'کپشن',publish:'انتشار',
+storiesListTitle:'📸 استوری‌ها',pickUser:'یک کاربر انتخاب کن',close:'بستن',addStory:'افزودن استوری',
+editMsgTitle:'✏️ ویرایش پیام',editMsgDesc:'متن جدید را وارد کن',libAddTitle:'🎬 افزودن به کتابخانه',titleLbl:'عنوان',
+botNewTitle:'🤖 ربات جدید',autoReplyLbl:'پاسخ خودکار',newClassTitle:'📚 کلاس جدید',classNameLbl:'نام کلاس',
+joinTitle:'🔑 ورود به کلاس',joinDesc:'کد ۶ رقمی که معلم داده رو وارد کن',enter:'ورود',
+classCreated:'✅ کلاس ساخته شد!',giveCodeDesc:'این کد رو به دانش‌آموزان بده:',copyCode:'📋 کپی کد',
+addVideoTitle:'🎬 افزودن ویدیو',uploadFromDevice:'📤 آپلود از دستگاه',linkTab:'🔗 لینک',videoTitleLbl:'عنوان ویدیو',videoTitlePh:'مثلاً: جلسه ۱ - مقدمه',descOptional:'توضیحات (اختیاری)',descPh:'توضیح کوتاه...',pickVideo:'📹 انتخاب ویدیو از دستگاه',maxSize:'حداکثر حجم: ۵۰ مگابایت',videoUrlLbl:'لینک ویدیو (URL)',linkHint:'میتونی از یوتیوب، آپارات یا هر لینک mp4 استفاده کنی',
+msgPlaceholder:'پیام...',sendImage:'ارسال عکس',sendFile:'ارسال فایل',sendVoice:'ضبط ویس',recording:'در حال ضبط...',
+send:'ارسال',cancel:'انصراف',save:'ذخیره',delete:'حذف',add:'افزودن',create:'ساخت',ok:'باشه',copy:'کپی',
+videos:'🎬 ویدیوها',members:'👥 اعضا',addVideo:'➕ افزودن ویدیو',classCode:'کد کلاس',
+loading:'در حال بارگذاری...',noClasses:'هنوز کلاسی نیست',noContacts:'هنوز مخاطبی نداری',error:'خطا',
+teacher:'معلم',student:'دانش‌آموز',emptyChat:'هنوز پیامی نیست',emptyVideo:'هنوز ویدیویی نیست',emptyMembers:'هنوز دانش‌آموزی نیست',
+logoutConfirm:'خارج می‌شوی؟',justNow:'الان',minAgo:'دقیقه پیش',hrAgo:'ساعت پیش',dayAgo:'روز پیش',
+you:'شما',replyLabel:'پاسخ',editLabel:'✏️ ویرایش',voiceMsg:'🎤 ویس',imageMsg:'🖼️ عکس',fileMsg:'📄 فایل',
+edited:'ویرایش شده',invalidEmail:'ایمیل معتبر نیست',cantChatSelf:'نمی‌تونی با خودت چت کنی!',
+onlyTeacher:'فقط معلم می‌تونه ویدیو اضافه کنه',deleteVideo:'این ویدیو حذف شود؟',deleteStudent:'این دانش‌آموز از کلاس حذف شود؟',copySuccess:'کد کپی شد',
+profile:'پروفایل',editProfileTitle:'✏️ ویرایش پروفایل',usernameLbl:'نام کاربری',usernameHint:'فقط حروف انگلیسی، اعداد و _ (بدون @)',bioLbl:'درباره من',phoneLbl:'📱 شماره تماس',phoneLbl2:'شماره تماس (اختیاری)',emailLbl:'✉️ ایمیل',startChat:'شروع گفتگو',noBio:'درباره من چیزی ننوشتی',
+settings:'تنظیمات',accountSection:'👤 حساب کاربری',profileDesc:'نام، عکس، بیوگرافی',languageSection:'🌐 زبان',language:'زبان',languageDesc:'فارسی یا انگلیسی',securitySection:'🔒 امنیت',twoFA:'رمز دو مرحله‌ای',twoFADesc:'محافظت بیشتر از حساب',twoFATitle:'🔐 رمز دو مرحله‌ای',twoFADesc2:'با فعال‌سازی، هنگام ورود یک کد ۶ رقمی به ایمیلت فرستاده می‌شود.',twoFAEnable:'فعال‌سازی',twoFACodeLbl:'کد ۶ رقمی',verify:'تأیید',activeSessions:'نشست‌های فعال',activeSessionsDesc:'دستگاه‌های متصل',sessionsTitle:'📱 نشست‌های فعال',sessionsDesc:'دستگاه‌هایی که با حساب تو لاگین کردن:',logoutAll:'خروج از همه',changePassword:'تغییر رمز عبور',changePasswordDesc:'رمز جدید تنظیم کن',changePasswordTitle:'🔑 تغییر رمز عبور',newPassword:'رمز جدید',confirmPassword:'تکرار رمز جدید',aboutSection:'ℹ️ درباره',appVersion:'نسخه برنامه',logoutBtn:'خروج از حساب',logoutDesc:'خارج شدن از این دستگاه',
+callStart:'شروع تماس',callGroup:'تماس گروهی',callConnecting:'در حال اتصال...',callConnected:'متصل شد',callError:'خطا در تماس',
+},
+en:{
+appName:'Bale Melle',appTagline:'Super App',welcome:'Hello!',welcomeSub:'Welcome to Bale Melle',
+groups:'Groups',channels:'Channels',contacts:'Contacts',chats:'Chats',library:'Library',bots:'Bots',finance:'Finance',financeShort:'Finance',education:'Education',home:'Home',more:'More',privateTab:'Private',
+secTitle:'High Security',secSub:'Advanced encryption',spdTitle:'High Speed',spdSub:'Fast send & receive',cldTitle:'Cloud Space',cldSub:'Access anywhere',freTitle:'Free',freSub:'No cost, always',
+librarySub:'Videos & content',botsSub:'Auto reply',financeSub:'Top-up, packages, payments',classes:'Classes',classPanel:'Admin Panel',
+wallet:'Wallet',balance:'Balance',chargeSection:'📱 Top-up & Internet',mci:'MCI',irancell:'Irancell',rightel:'Rightel',otherOperators:'Other operators',chargeDesc:'Top-up / Internet',servicePortal:'Service portal',otherServices:'🧾 Other Services',payElectricity:'Pay Electricity',payGas:'Pay Gas',payWater:'Pay Water',payPhone:'Pay Phone',
+newContact:'Contact',newGroup:'Group',newChannel:'Channel',joinWithCode:'Join with Code',createClass:'Create Class',
+newContactTitle:'👤 New Contact',newContactDesc:'Enter the contact email',
+newGroupTitle:'New Group',newGroupDesc:'Enter the information',nameLbl:'Name',descLbl:'Description',selectMembers:'Select members',searchPlaceholder:'Search...',
+newStoryTitle:'📸 New Story',newStoryDesc:'Pick an image or video',nothingSelected:'Nothing selected',pickFile:'📷 Pick a file',captionLbl:'Caption',publish:'Publish',
+storiesListTitle:'📸 Stories',pickUser:'Pick a user',close:'Close',addStory:'Add Story',
+editMsgTitle:'✏️ Edit Message',editMsgDesc:'Enter new text',libAddTitle:'🎬 Add to Library',titleLbl:'Title',
+botNewTitle:'🤖 New Bot',autoReplyLbl:'Auto reply',newClassTitle:'📚 New Class',classNameLbl:'Class Name',
+joinTitle:'🔑 Join Class',joinDesc:'Enter the 6-digit code from your teacher',enter:'Enter',
+classCreated:'✅ Class Created!',giveCodeDesc:'Give this code to students:',copyCode:'📋 Copy Code',
+addVideoTitle:'🎬 Add Video',uploadFromDevice:'📤 Upload from device',linkTab:'🔗 Link',videoTitleLbl:'Video title',videoTitlePh:'E.g. Session 1 - Intro',descOptional:'Description (optional)',descPh:'Short description...',pickVideo:'📹 Pick video from device',maxSize:'Max size: 50 MB',videoUrlLbl:'Video URL',linkHint:'You can use YouTube, Aparat or any mp4 link',
+msgPlaceholder:'Message...',sendImage:'Send image',sendFile:'Send file',sendVoice:'Record voice',recording:'Recording...',
+send:'Send',cancel:'Cancel',save:'Save',delete:'Delete',add:'Add',create:'Create',ok:'OK',copy:'Copy',
+videos:'🎬 Videos',members:'👥 Members',addVideo:'➕ Add Video',classCode:'Class Code',
+loading:'Loading...',noClasses:'No classes yet',noContacts:'No contacts yet',error:'Error',
+teacher:'Teacher',student:'Student',emptyChat:'No messages yet',emptyVideo:'No videos yet',emptyMembers:'No students yet',
+logoutConfirm:'Log out?',justNow:'Just now',minAgo:'min ago',hrAgo:'hr ago',dayAgo:'day ago',
+you:'You',replyLabel:'Reply',editLabel:'✏️ Edit',voiceMsg:'🎤 Voice',imageMsg:'🖼️ Image',fileMsg:'📄 File',
+edited:'edited',invalidEmail:'Invalid email',cantChatSelf:"You can't chat with yourself!",
+onlyTeacher:'Only the teacher can add videos',deleteVideo:'Delete this video?',deleteStudent:'Remove this student from class?',copySuccess:'Code copied',
+profile:'Profile',editProfileTitle:'✏️ Edit Profile',usernameLbl:'Username',usernameHint:'Only a-z, 0-9, _ (no @)',bioLbl:'About me',phoneLbl:'📱 Phone',phoneLbl2:'Phone (optional)',emailLbl:'✉️ Email',startChat:'Start Chat',noBio:'No bio yet',
+settings:'Settings',accountSection:'👤 Account',profileDesc:'Name, photo, bio',languageSection:'🌐 Language',language:'Language',languageDesc:'Persian or English',securitySection:'🔒 Security',twoFA:'Two-Factor Auth',twoFADesc:'Extra account protection',twoFATitle:'🔐 Two-Factor Auth',twoFADesc2:'When enabled, a 6-digit code is sent to your email on login.',twoFAEnable:'Enable',twoFACodeLbl:'6-digit code',verify:'Verify',activeSessions:'Active Sessions',activeSessionsDesc:'Connected devices',sessionsTitle:'📱 Active Sessions',sessionsDesc:'Devices logged into your account:',logoutAll:'Log out all',changePassword:'Change Password',changePasswordDesc:'Set a new password',changePasswordTitle:'🔑 Change Password',newPassword:'New password',confirmPassword:'Confirm new password',aboutSection:'ℹ️ About',appVersion:'App Version',logoutBtn:'Log out',logoutDesc:'Sign out from this device',
+callStart:'Start Call',callGroup:'Group Call',callConnecting:'Connecting...',callConnected:'Connected',callError:'Call error',
+}
+};
+
+let lang=localStorage.getItem('lang')||'fa';
+function t(k){return(I18N[lang]&&I18N[lang][k])||(I18N.fa[k])||k}
+function applyLang(){
+document.documentElement.lang=lang;
+document.documentElement.dir=lang==='fa'?'rtl':'ltr';
+document.body.classList.toggle('lang-en',lang==='en');
+document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});
+document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=t(el.dataset.i18nPh)});
+const lbl=document.getElementById('lang-lbl');if(lbl)lbl.textContent=lang==='fa'?'EN':'FA';
+const sel=document.getElementById('lang-select');if(sel)sel.value=lang;
+localStorage.setItem('lang',lang);
+}
+window.toggleLang=()=>{lang=lang==='fa'?'en':'fa';applyLang()};
+window.changeLang=(newLang)=>{lang=newLang;applyLang()};
 
 let curTab='private',curChat=null,rtCh=null,allCts=[],selCts=[],grpType='group';
 let mr=null,ac=[],recStart=null,recTmr=null,curAud=null;
@@ -506,58 +855,359 @@ let editId=null,menuTgt=null,replyTo=null;
 let selLibFile=null;
 let curClass=null,curCpTab='videos',vMode='upload',vFile=null;
 
+// ============ پروفایل ============
+const namesCache={};
+const avatarsCache={};
+let myProfile=null;
+
+async function getProfile(email){
+if(!email)return null;
+if(avatarsCache[email]!==undefined && namesCache[email]!==undefined){
+return{email,name:namesCache[email],avatar_url:avatarsCache[email]};
+}
+const{data}=await sb.from('profiles').select('*').eq('email',email).maybeSingle();
+if(data){
+namesCache[email]=data.name||email.split('@')[0];
+avatarsCache[email]=data.avatar_url||null;
+}
+return data;
+}
+
+async function getName(email){
+if(!email)return '?';
+if(namesCache[email])return namesCache[email];
+const{data}=await sb.from('profiles').select('name').eq('email',email).maybeSingle();
+const name=data?.name||email.split('@')[0];
+namesCache[email]=name;
+return name;
+}
+
+async function loadAllNames(emails){
+const unique=[...new Set(emails.filter(e=>e&&!namesCache[e]))];
+if(!unique.length)return;
+const{data}=await sb.from('profiles').select('email,name,avatar_url').in('email',unique);
+(data||[]).forEach(p=>{namesCache[p.email]=p.name||p.email.split('@')[0];avatarsCache[p.email]=p.avatar_url||null});
+}
+
+async function loadMyProfile(){
+let{data}=await sb.from('profiles').select('*').eq('email',myEmail).maybeSingle();
+if(!data){
+const defaultName=myEmail.split('@')[0];
+await sb.from('profiles').insert({email:myEmail,name:defaultName,username:defaultName});
+const{data:newData}=await sb.from('profiles').select('*').eq('email',myEmail).maybeSingle();
+data=newData;
+}
+myProfile=data;
+if(data?.name)namesCache[myEmail]=data.name;
+if(data?.avatar_url)avatarsCache[myEmail]=data.avatar_url;
+return data;
+}
+
+window.openMyProfile=async()=>{
+const p=await loadMyProfile();
+document.getElementById('profile-email-lbl').textContent=myEmail;
+document.getElementById('profile-email-txt').textContent=myEmail;
+const av=document.getElementById('profile-avatar');
+if(p?.avatar_url){av.textContent='';av.style.backgroundImage=`url('${p.avatar_url}')`}
+else{av.textContent=ini(p?.name||myEmail);av.style.backgroundImage=''}
+document.getElementById('profile-name').textContent=p?.name||myEmail.split('@')[0];
+document.getElementById('profile-username').textContent=p?.username?'@'+p.username:'@'+(myEmail.split('@')[0]);
+document.getElementById('profile-bio').textContent=p?.bio||t('noBio');
+document.getElementById('profile-phone').textContent=p?.phone||'—';
+showPage('profile');
+};
+
+window.closeProfile=()=>{showPage('home')};
+
+window.openProfile=async(email)=>{
+const targetEmail=email||myEmail;
+const isMe=targetEmail===myEmail;
+const p=await getProfile(targetEmail);
+if(!p){alert(t('error'));return}
+document.getElementById('vp-avatar').textContent=p.avatar_url?'':ini(p.name||p.email);
+document.getElementById('vp-avatar').style.backgroundImage=p.avatar_url?`url('${p.avatar_url}')`:'';
+document.getElementById('vp-avatar').style.backgroundSize='cover';
+document.getElementById('vp-avatar').style.backgroundPosition='center';
+document.getElementById('vp-name').textContent=p.name||p.email.split('@')[0];
+document.getElementById('vp-username').textContent=p.username?'@'+p.username:'';
+document.getElementById('vp-bio').textContent=p.bio||t('noBio');
+const chatBtn=document.getElementById('vp-chat-btn');
+if(isMe){
+chatBtn.textContent=lang==='fa'?'✏️ ویرایش پروفایل':'✏️ Edit Profile';
+chatBtn.onclick=()=>{closeModal('view-profile-modal');openEditProfile()};
+}else{
+chatBtn.textContent=lang==='fa'?'💬 شروع گفتگو':'💬 Start Chat';
+chatBtn.onclick=()=>{closeModal('view-profile-modal');openRoom('private',targetEmail)};
+}
+document.getElementById('view-profile-modal').classList.add('show');
+};
+
+window.openEditProfile=async()=>{
+const p=await loadMyProfile();
+document.getElementById('ep-name').value=p?.name||'';
+document.getElementById('ep-username').value=p?.username||'';
+document.getElementById('ep-bio').value=p?.bio||'';
+document.getElementById('ep-phone').value=p?.phone||'';
+document.getElementById('edit-profile-modal').classList.add('show');
+};
+
+document.getElementById('ep-save').onclick=async()=>{
+const name=document.getElementById('ep-name').value.trim();
+const username=document.getElementById('ep-username').value.trim().toLowerCase();
+const bio=document.getElementById('ep-bio').value.trim();
+const phone=document.getElementById('ep-phone').value.trim();
+if(!name){alert(t('nameLbl'));return}
+if(username&&!/^[a-z0-9_]{3,20}$/.test(username)){alert(t('usernameHint'));return}
+const btn=document.getElementById('ep-save');btn.disabled=true;btn.textContent='...';
+try{
+if(username){
+const{data:ex}=await sb.from('profiles').select('email').eq('username',username).neq('email',myEmail).maybeSingle();
+if(ex){alert(lang==='fa'?'این نام کاربری قبلاً گرفته شده':'Username already taken');btn.disabled=false;btn.textContent=t('save');return}
+}
+const{error}=await sb.from('profiles').update({name,username:username||null,bio,phone,updated_at:new Date().toISOString()}).eq('email',myEmail);
+if(error){alert(t('error')+': '+error.message);btn.disabled=false;btn.textContent=t('save');return}
+namesCache[myEmail]=name;myProfile=null;
+closeModal('edit-profile-modal');await openMyProfile();
+}catch(e){alert(t('error')+': '+e.message)}
+btn.disabled=false;btn.textContent=t('save');
+};
+
+document.getElementById('avatar-file').onchange=async(e)=>{
+const f=e.target.files[0];if(!f)return;e.target.value='';
+if(!f.type.startsWith('image/')){alert(lang==='fa'?'فقط عکس':'Images only');return}
+if(f.size>5*1024*1024){alert(lang==='fa'?'حجم عکس زیاد':'Image too large');return}
+const ext=f.name.split('.').pop()||'jpg';
+const fn=`avatar-${myEmail.replace(/[^a-z0-9]/gi,'_')}-${Date.now()}.${ext}`;
+const{error:ue}=await sb.storage.from('avatars').upload(fn,f,{contentType:f.type,upsert:true});
+if(ue){alert(t('error')+': '+ue.message);return}
+const{data:ud}=sb.storage.from('avatars').getPublicUrl(fn);
+const{error:pe}=await sb.from('profiles').update({avatar_url:ud.publicUrl,updated_at:new Date().toISOString()}).eq('email',myEmail);
+if(pe){alert(t('error')+': '+pe.message);return}
+avatarsCache[myEmail]=ud.publicUrl;
+await openMyProfile();
+};
+
+// ============ نشست‌ها و 2FA ============
+async function registerSession(){
+const ua=navigator.userAgent;
+let device=lang==='fa'?'دستگاه نامشخص':'Unknown device';
+if(/Android/i.test(ua))device='Android';
+else if(/iPhone|iPad|iPod/i.test(ua))device='iPhone/iPad';
+else if(/Windows/i.test(ua))device='Windows';
+else if(/Mac/i.test(ua))device='Mac';
+else if(/Linux/i.test(ua))device='Linux';
+if(/Chrome/i.test(ua))device+=' • Chrome';
+else if(/Firefox/i.test(ua))device+=' • Firefox';
+else if(/Safari/i.test(ua))device+=' • Safari';
+const sessionId=localStorage.getItem('session_id');
+if(sessionId){
+await sb.from('sessions').update({last_active:new Date().toISOString()}).eq('id',sessionId);
+}else{
+const{data}=await sb.from('sessions').insert({user_email:myEmail,device_info:device,user_agent:ua}).select().single();
+if(data)localStorage.setItem('session_id',data.id);
+}
+}
+
+window.showSessions=async()=>{
+const list=document.getElementById('sessions-list');
+list.innerHTML='<div style="text-align:center;padding:20px;color:var(--mut)">...</div>';
+const{data}=await sb.from('sessions').select('*').eq('user_email',myEmail).order('last_active',{ascending:false});
+if(!data?.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--mut)">'+(lang==='fa'?'نشستی نیست':'No sessions')+'</div>';return}
+const currentSessionId=localStorage.getItem('session_id');
+list.innerHTML='';
+data.forEach(s=>{
+const isCurrent=s.id===currentSessionId;
+const diff=Math.floor((Date.now()-new Date(s.last_active).getTime())/1000);
+const timeAgo=diff<60?(lang==='fa'?'الان':'Just now'):diff<3600?Math.floor(diff/60)+(lang==='fa'?' دقیقه پیش':' min ago'):Math.floor(diff/3600)+(lang==='fa'?' ساعت پیش':' hr ago');
+const it=document.createElement('div');
+it.className='session-card';
+it.innerHTML=`<div class="session-header"><div class="session-icon">📱</div><div class="session-info"><div class="session-device">${esc(s.device_info||'?')}</div><div class="session-time">${timeAgo}</div></div>${isCurrent?'<span class="session-current">'+(lang==='fa'?'فعلی':'Current')+'</span>':''}</div>`;
+if(!isCurrent){
+const btn=document.createElement('button');
+btn.style.cssText='width:100%;padding:8px;border-radius:10px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.2);color:#fca5a5;border:none';
+btn.textContent=lang==='fa'?'خروج از این دستگاه':'Log out this device';
+btn.onclick=async()=>{
+if(!confirm(lang==='fa'?'از این دستگاه خارج شوی؟':'Log out from this device?'))return;
+await sb.from('sessions').delete().eq('id',s.id);
+showSessions();
+};
+it.appendChild(btn);
+}
+list.appendChild(it);
+});
+document.getElementById('sessions-modal').classList.add('show');
+};
+
+window.logoutAll=async()=>{
+if(!confirm(lang==='fa'?'از همه دستگاه‌ها خارج شوی؟':'Log out from all devices?'))return;
+await sb.from('sessions').delete().eq('user_email',myEmail);
+localStorage.removeItem('session_id');
+await sb.auth.signOut();
+localStorage.removeItem('my_email');
+location.href='index.html';
+};
+
+let twofaCode=null;
+
+window.openTwoFA=async()=>{
+const p=await loadMyProfile();
+const enabled=p?.twofa_enabled===true;
+if(enabled){
+if(!confirm(lang==='fa'?'رمز دو مرحله‌ای غیرفعال شود؟':'Disable 2FA?'))return;
+await sb.from('profiles').update({twofa_enabled:false,twofa_code:null,twofa_expires:null}).eq('email',myEmail);
+alert(lang==='fa'?'✅ غیرفعال شد':'✅ Disabled');
+updateTwoFAStatus();
+return;
+}
+document.getElementById('twofa-step1').style.display='block';
+document.getElementById('twofa-step2').style.display='none';
+document.getElementById('twofa-modal').classList.add('show');
+};
+
+document.getElementById('twofa-enable-btn').onclick=async()=>{
+twofaCode=String(Math.floor(100000+Math.random()*900000));
+const expires=new Date(Date.now()+5*60*1000).toISOString();
+await sb.from('profiles').update({twofa_code:twofaCode,twofa_expires:expires}).eq('email',myEmail);
+document.getElementById('twofa-step1').style.display='none';
+document.getElementById('twofa-step2').style.display='block';
+document.getElementById('twofa-hint').textContent=(lang==='fa'?'کد (برای تست): ':'Code (test): ')+twofaCode;
+};
+
+document.getElementById('twofa-verify-btn').onclick=async()=>{
+const code=document.getElementById('twofa-code-inp').value.trim();
+if(!/^\d{6}$/.test(code)){alert(lang==='fa'?'کد ۶ رقمی':'6-digit code');return}
+const{data}=await sb.from('profiles').select('twofa_code,twofa_expires').eq('email',myEmail).maybeSingle();
+if(!data?.twofa_code||data.twofa_code!==code){alert(lang==='fa'?'❌ کد اشتباه':'❌ Wrong code');return}
+if(new Date(data.twofa_expires)<new Date()){alert(lang==='fa'?'❌ کد منقضی شده':'❌ Code expired');return}
+await sb.from('profiles').update({twofa_enabled:true,twofa_code:null,twofa_expires:null}).eq('email',myEmail);
+closeModal('twofa-modal');
+alert(lang==='fa'?'✅ فعال شد':'✅ Enabled');
+updateTwoFAStatus();
+};
+
+async function updateTwoFAStatus(){
+const p=await loadMyProfile();
+const el=document.getElementById('twofa-status');
+if(el)el.textContent=p?.twofa_enabled?(lang==='fa'?'✅ فعال':'✅ Enabled'):(lang==='fa'?'غیرفعال - برای فعال‌سازی بزن':'Disabled - tap to enable');
+}
+
+window.changePassword=()=>{
+document.getElementById('new-password').value='';
+document.getElementById('confirm-password').value='';
+document.getElementById('password-modal').classList.add('show');
+};
+
+document.getElementById('password-save').onclick=async()=>{
+const np=document.getElementById('new-password').value;
+const cp=document.getElementById('confirm-password').value;
+if(np.length<6){alert(lang==='fa'?'رمز باید حداقل ۶ کاراکتر باشد':'Password min 6 chars');return}
+if(np!==cp){alert(lang==='fa'?'رمزها یکی نیستند':'Passwords do not match');return}
+const btn=document.getElementById('password-save');btn.disabled=true;btn.textContent='...';
+const{error}=await sb.auth.updateUser({password:np});
+btn.disabled=false;btn.textContent=t('save');
+if(error){alert(t('error')+': '+error.message);return}
+closeModal('password-modal');
+alert(lang==='fa'?'✅ رمز تغییر کرد':'✅ Password changed');
+};
+
+// ============ صفحه‌ها ============
 window.showPage=p=>{
 document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
 document.getElementById('page-'+p).classList.add('active');
 document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-const nm={home:'nav-home',chats:'nav-chats',library:'nav-library',bots:'nav-more'};
+const nm={home:'nav-home',chats:'nav-chats',library:'nav-library',settings:'nav-more'};
 if(nm[p])document.getElementById(nm[p])?.classList.add('active');
 if(p==='chats')renderList();
 if(p==='library')loadLib();
 if(p==='bots')loadBots();
 if(p==='education')loadEdu();
 if(p==='payments')loadWallet();
+if(p==='settings'){const sel=document.getElementById('lang-select');if(sel)sel.value=lang;updateTwoFAStatus()}
 };
-window.goTab=t=>{showPage('chats');switchTab(t)};
-window.switchTab=t=>{curTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));renderList()};
-window.logout=async()=>{if(!confirm('خارج می‌شوید؟'))return;await sb.auth.signOut();localStorage.removeItem('my_email');location.href='index.html'};
-window.showNotif=()=>alert('اعلان‌ها به زودی...');
+window.goTab=x=>{showPage('chats');switchTab(x)};
+window.switchTab=x=>{curTab=x;document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.dataset.tab===x));renderList()};
+window.logout=async()=>{
+if(!confirm(t('logoutConfirm')))return;
+const sessionId=localStorage.getItem('session_id');
+if(sessionId)await sb.from('sessions').delete().eq('id',sessionId);
+await sb.auth.signOut();
+localStorage.removeItem('my_email');
+localStorage.removeItem('session_id');
+location.href='index.html';
+};
+window.showNotif=()=>alert(lang==='fa'?'اعلان‌ها به زودی...':'Notifications coming soon...');
 window.closeModal=id=>document.getElementById(id).classList.remove('show');
-window.toggleLang=()=>alert('دوزبانه به زودی...');
-
+// ============ لیست چت‌ها ============
 const listC=document.getElementById('list-container');
 async function renderList(){
-listC.innerHTML='<div class="empty-state"><div class="icon">⏳</div><h3>در حال بارگذاری...</h3></div>';
+listC.innerHTML='<div class="empty-state"><div class="icon">⏳</div><h3>'+t('loading')+'</h3></div>';
 if(curTab==='private')await renderPrivate();else await renderGrpCh(curTab);
 }
 async function renderPrivate(){
 const{data,error}=await sb.from('messages').select('sender_email,receiver_email').is('chat_id',null).or(`sender_email.eq.${myEmail},receiver_email.eq.${myEmail}`);
-if(error){listC.innerHTML='<div class="empty-state"><div class="icon">❌</div><h3>خطا</h3></div>';return}
-const set=new Set();data.forEach(m=>{if(m.sender_email!==myEmail)set.add(m.sender_email);if(m.receiver_email!==myEmail)set.add(m.receiver_email)});
+if(error){listC.innerHTML='<div class="empty-state"><div class="icon">❌</div><h3>'+t('error')+'</h3></div>';return}
+const set=new Set();
+data.forEach(m=>{if(m.sender_email!==myEmail)set.add(m.sender_email);if(m.receiver_email!==myEmail)set.add(m.receiver_email)});
 const cts=[...set];
-if(!cts.length){listC.innerHTML='<div class="empty-state"><div class="icon">👤</div><h3>هنوز مخاطبی نداری</h3></div>';return}
-listC.innerHTML='';cts.forEach(e=>{const it=document.createElement('div');it.className='list-item';
-it.innerHTML=`<div class="list-avatar">${ini(e)}</div><div class="list-info"><div class="list-name">${esc(e.split('@')[0])}</div><div class="list-sub">${esc(e)}</div></div>`;
-it.onclick=()=>openRoom('private',e);listC.appendChild(it)});
+if(!cts.length){listC.innerHTML='<div class="empty-state"><div class="icon">👤</div><h3>'+t('noContacts')+'</h3></div>';return}
+await loadAllNames(cts);
+listC.innerHTML='';
+cts.forEach(e=>{
+const it=document.createElement('div');it.className='list-item';
+const dispName=namesCache[e]||e.split('@')[0];
+it.innerHTML=`<div class="list-avatar" data-email="${esc(e)}">${ini(dispName)}</div><div class="list-info"><div class="list-name">${esc(dispName)}</div><div class="list-sub">${esc(e)}</div></div>`;
+const av=it.querySelector('.list-avatar');
+if(avatarsCache[e]){av.textContent='';av.style.backgroundImage=`url('${avatarsCache[e]}')`}
+av.onclick=(ev)=>{ev.stopPropagation();openProfile(e)};
+it.querySelector('.list-info').onclick=()=>openRoom('private',e);
+listC.appendChild(it);
+});
 }
 async function renderGrpCh(type){
 const{data:mem}=await sb.from('chat_members').select('chat_id').eq('member_email',myEmail);
-if(!mem?.length){listC.innerHTML=`<div class="empty-state"><div class="icon">${type==='group'?'👥':'📢'}</div><h3>هنوز ${type==='group'?'گروهی':'کانالی'} نداری</h3></div>`;return}
+const emptyMsg=`<div class="empty-state"><div class="icon">${type==='group'?'👥':'📢'}</div><h3>${t('noClasses')}</h3></div>`;
+if(!mem?.length){listC.innerHTML=emptyMsg;return}
 const ids=mem.map(m=>m.chat_id);
 const{data:chs}=await sb.from('chats').select('*').in('id',ids).eq('type',type).order('created_at',{ascending:false});
-if(!chs?.length){listC.innerHTML=`<div class="empty-state"><div class="icon">${type==='group'?'👥':'📢'}</div><h3>هنوز ${type==='group'?'گروهی':'کانالی'} نداری</h3></div>`;return}
+if(!chs?.length){listC.innerHTML=emptyMsg;return}
 listC.innerHTML='';chs.forEach(c=>{const it=document.createElement('div');it.className='list-item';
 it.innerHTML=`<div class="list-avatar">${type==='group'?'👥':'📢'}</div><div class="list-info"><div class="list-name">${esc(c.name)}</div><div class="list-sub">${esc(c.description||'—')}</div></div>`;
 it.onclick=()=>openRoom(type,c);listC.appendChild(it)});
 }
 
+// ============ چت روم ============
 const room=document.getElementById('chat-room'),msgArea=document.getElementById('messages-area');
 const roomAv=document.getElementById('room-avatar'),roomNm=document.getElementById('room-name'),roomSub=document.getElementById('room-sub');
+const callStartBtn=document.getElementById('call-start-btn');
+
 window.openRoom=async(type,data)=>{
-if(type==='private'){curChat={type:'private',email:data};roomAv.textContent=ini(data);roomNm.textContent=data.split('@')[0];roomSub.textContent=data}
-else{curChat={type,id:data.id,name:data.name};roomAv.textContent=type==='group'?'👥':'📢';roomNm.textContent=data.name;roomSub.textContent=data.description||''}
-room.classList.add('active');await loadMsgs();setupRT();
+if(type==='private'){
+curChat={type:'private',email:data};
+const dispName=await getName(data);
+roomAv.textContent=ini(dispName);
+roomNm.textContent=dispName;
+roomSub.textContent=data;
+if(avatarsCache[data]){roomAv.textContent='';roomAv.style.backgroundImage=`url('${avatarsCache[data]}')`}
+else{roomAv.style.backgroundImage=''}
+roomAv.onclick=()=>openProfile(data);
+document.getElementById('room-info-click').onclick=()=>openProfile(data);
+callStartBtn.style.display='none';
+}else{
+curChat={type,id:data.id,name:data.name};
+roomAv.textContent=type==='group'?'👥':'📢';
+roomAv.style.backgroundImage='';
+roomNm.textContent=data.name;
+roomSub.textContent=data.description||'';
+document.getElementById('room-info-click').onclick=null;
+callStartBtn.style.display=type==='group'?'flex':'none';
+callStartBtn.dataset.room='room_'+data.id;
+callStartBtn.dataset.name=data.name;
+}
+room.classList.add('active');
+await loadMsgs();
+setupRT();
 };
+
 window.closeRoom=()=>{room.classList.remove('active');curChat=null;if(rtCh)sb.removeChannel(rtCh);cancelReply()};
 async function loadMsgs(){
 if(!curChat)return;let q;
@@ -566,16 +1216,21 @@ else{q=sb.from('messages').select('*').eq('chat_id',curChat.id).order('created_a
 const{data}=await q;msgArea.innerHTML='';(data||[]).forEach(m=>addMsg(m));
 }
 function addMsg(m){
-const d=document.createElement('div');d.className='msg '+(m.sender_email===myEmail?'mine':'other');d.dataset.id=m.id;d.dataset.type=m.message_type;
+const d=document.createElement('div');
+d.className='msg '+(m.sender_email===myEmail?'mine':'other');
+d.dataset.id=m.id;d.dataset.type=m.message_type;
 let h='';
-if(curChat.type!=='private'&&m.sender_email!==myEmail){h+=`<div class="msg-sender">${esc(m.sender_email)}</div>`}
-if(m.reply_to_id){const rt=m.reply_to_type||'text';let rtx=m.reply_to_content;if(!rtx||!rtx.trim()){if(rt==='voice')rtx='🎤 ویس';else if(rt==='image')rtx='🖼️ عکس';else if(rt==='file')rtx='📄 فایل';else rtx='...'}
+if(curChat.type!=='private'&&m.sender_email!==myEmail){
+const dispName=namesCache[m.sender_email]||m.sender_email.split('@')[0];
+h+=`<div class="msg-sender" onclick="openProfile('${esc(m.sender_email)}')" style="cursor:pointer">${esc(dispName)}</div>`;
+}
+if(m.reply_to_id){const rt=m.reply_to_type||'text';let rtx=m.reply_to_content;if(!rtx||!rtx.trim()){if(rt==='voice')rtx=t('voiceMsg');else if(rt==='image')rtx=t('imageMsg');else if(rt==='file')rtx=t('fileMsg');else rtx='...'}
 h+=`<div class="reply-preview" data-rid="${esc(m.reply_to_id)}"><div class="reply-name">${esc((m.reply_to_sender||'').split('@')[0])}</div><div class="reply-text">${esc(rtx)}</div></div>`}
 if(m.message_type==='voice'&&m.audio_url){const du=m.audio_duration||0;h+=`<div class="voice-wrap"><button class="voice-play" data-url="${esc(m.audio_url)}">▶</button><div class="voice-wave">${Array.from({length:18},()=>`<span style="height:${Math.random()*18+6}px"></span>`).join('')}</div><div class="voice-dur">${fmtT(du)}</div></div>`}
 else if(m.message_type==='image'&&m.file_url){h+=`<div class="img-msg"><img src="${esc(m.file_url)}" data-full="${esc(m.file_url)}"></div>`}
 else if(m.message_type==='file'&&m.file_url){h+=`<div class="file-msg"><div class="file-icon">📄</div><div class="file-info"><div class="file-name">${esc(m.file_name||'file')}</div><div class="file-size">${fmtSz(m.file_size)}</div></div><a class="file-dl" href="${esc(m.file_url)}" download="${esc(m.file_name||'')}" target="_blank">⬇</a></div>`}
 else{h+=`<div>${esc(m.content||'')}</div>`}
-if(m.edited_at)h+=`<div class="msg-edited">ویرایش شده</div>`;
+if(m.edited_at)h+=`<div class="msg-edited">${t('edited')}</div>`;
 h+=`<div class="msg-actions" data-id="${m.id}">⋯</div>`;
 d.innerHTML=h;msgArea.appendChild(d);msgArea.scrollTop=msgArea.scrollHeight;
 }
@@ -591,7 +1246,7 @@ async function sendTxt(){
 const c=msgIn.value.trim();if(!c||!curChat)return;
 let pl=curChat.type==='private'?{content:c,sender_email:myEmail,receiver_email:curChat.email,message_type:'text'}:{content:c,sender_email:myEmail,receiver_email:'',chat_id:curChat.id,message_type:'text'};
 if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.reply_to_sender=replyTo.sender;pl.reply_to_type=replyTo.type}
-const{error}=await sb.from('messages').insert(pl);if(error)alert('خطا: '+error.message);else{msgIn.value='';cancelReply();checkBots()}
+const{error}=await sb.from('messages').insert(pl);if(error)alert(t('error')+': '+error.message);else{msgIn.value='';cancelReply()}
 }
 sendBtn.onclick=sendTxt;msgIn.addEventListener('keypress',e=>{if(e.key==='Enter')sendTxt()});
 
@@ -602,12 +1257,12 @@ window.pickImage=()=>{attachM.classList.remove('show');document.getElementById('
 window.pickFile=()=>{attachM.classList.remove('show');document.getElementById('file-doc').click()};
 
 document.getElementById('file-img').onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value='';
-if(!f.type.startsWith('image/')){alert('فقط عکس');return}
-if(f.size>5*1024*1024){alert('حجم عکس زیاد');return}
-const td=document.createElement('div');td.className='msg mine';td.innerHTML='<div>در حال آپلود...</div>';msgArea.appendChild(td);
+if(!f.type.startsWith('image/')){alert(lang==='fa'?'فقط عکس':'Images only');return}
+if(f.size>5*1024*1024){alert(lang==='fa'?'حجم عکس زیاد':'Image too large');return}
+const td=document.createElement('div');td.className='msg mine';td.innerHTML='<div>'+t('loading')+'</div>';msgArea.appendChild(td);
 const fn=`${Date.now()}-${Math.random().toString(36).slice(2)}.${f.name.split('.').pop()}`;
 const{error:ue}=await sb.storage.from('chat-files').upload(fn,f,{contentType:f.type});
-if(ue){td.remove();alert('خطا: '+ue.message);return}
+if(ue){td.remove();alert(t('error')+': '+ue.message);return}
 const{data:ud}=sb.storage.from('chat-files').getPublicUrl(fn);
 let pl=curChat.type==='private'?{content:'',sender_email:myEmail,receiver_email:curChat.email,message_type:'image',file_url:ud.publicUrl,file_name:f.name,file_size:f.size}:{content:'',sender_email:myEmail,receiver_email:'',chat_id:curChat.id,message_type:'image',file_url:ud.publicUrl,file_name:f.name,file_size:f.size};
 if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.reply_to_sender=replyTo.sender;pl.reply_to_type=replyTo.type}
@@ -615,11 +1270,11 @@ await sb.from('messages').insert(pl);td.remove();cancelReply();
 };
 
 document.getElementById('file-doc').onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value='';
-if(f.size>20*1024*1024){alert('حجم فایل زیاد');return}
-const td=document.createElement('div');td.className='msg mine';td.innerHTML='<div>در حال آپلود...</div>';msgArea.appendChild(td);
+if(f.size>20*1024*1024){alert(lang==='fa'?'حجم فایل زیاد':'File too large');return}
+const td=document.createElement('div');td.className='msg mine';td.innerHTML='<div>'+t('loading')+'</div>';msgArea.appendChild(td);
 const fn=`file-${Date.now()}-${Math.random().toString(36).slice(2)}.${f.name.split('.').pop()}`;
 const{error:ue}=await sb.storage.from('chat-files').upload(fn,f,{contentType:f.type||'application/octet-stream'});
-if(ue){td.remove();alert('خطا: '+ue.message);return}
+if(ue){td.remove();alert(t('error')+': '+ue.message);return}
 const{data:ud}=sb.storage.from('chat-files').getPublicUrl(fn);
 let pl=curChat.type==='private'?{content:'',sender_email:myEmail,receiver_email:curChat.email,message_type:'file',file_url:ud.publicUrl,file_name:f.name,file_size:f.size}:{content:'',sender_email:myEmail,receiver_email:'',chat_id:curChat.id,message_type:'file',file_url:ud.publicUrl,file_name:f.name,file_size:f.size};
 if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.reply_to_sender=replyTo.sender;pl.reply_to_type=replyTo.type}
@@ -632,14 +1287,14 @@ try{const st=await navigator.mediaDevices.getUserMedia({audio:true});ac=[];mr=ne
 mr.ondataavailable=e=>{if(e.data.size>0)ac.push(e.data)};mr.onstop=()=>st.getTracks().forEach(t=>t.stop());
 mr.start();recStart=Date.now();recBar.classList.add('show');document.getElementById('input-area').style.display='none';
 recTime.textContent='0:00';recTmr=setInterval(()=>{const s=Math.floor((Date.now()-recStart)/1000);recTime.textContent=fmtT(s);if(s>=60)stopRec(false)},500);
-}catch(e){alert('دسترسی به میکروفون داده نشد')}};
+}catch(e){alert(lang==='fa'?'دسترسی به میکروفون داده نشد':'Microphone access denied')}};
 function stopRec(c){if(!mr)return;if(mr.state!=='inactive')mr.stop();if(recTmr){clearInterval(recTmr);recTmr=null}recBar.classList.remove('show');document.getElementById('input-area').style.display='flex';if(c){ac=[];mr=null;recStart=null}}
 document.getElementById('rec-cancel').onclick=()=>stopRec(true);
 document.getElementById('rec-send').onclick=async()=>{const du=Math.floor((Date.now()-recStart)/1000);stopRec(false);
 setTimeout(async()=>{if(!ac.length)return;const bl=new Blob(ac,{type:'audio/webm'});ac=[];mr=null;
 const fn=`voice-${myEmail.replace(/[^a-z0-9]/gi,'_')}-${Date.now()}.webm`;
 const{error:ue}=await sb.storage.from('voice-messages').upload(fn,bl,{contentType:'audio/webm'});
-if(ue){alert('خطا: '+ue.message);return}
+if(ue){alert(t('error')+': '+ue.message);return}
 const{data:ud}=sb.storage.from('voice-messages').getPublicUrl(fn);
 let pl=curChat.type==='private'?{content:'',sender_email:myEmail,receiver_email:curChat.email,message_type:'voice',audio_url:ud.publicUrl,audio_duration:du}:{content:'',sender_email:myEmail,receiver_email:'',chat_id:curChat.id,message_type:'voice',audio_url:ud.publicUrl,audio_duration:du};
 if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.reply_to_sender=replyTo.sender;pl.reply_to_type=replyTo.type}
@@ -652,8 +1307,8 @@ const ab=e.target.closest('.msg-actions');
 if(ab){e.stopPropagation();const id=ab.dataset.id;const d=ab.closest('.msg');
 const ty=d.dataset.type;const snd=d.classList.contains('mine')?myEmail:(curChat.type==='private'?curChat.email:'');
 const ct=d.querySelector('div:not(.msg-sender):not(.reply-preview):not(.msg-actions):not(.voice-wrap):not(.img-msg):not(.file-msg)')?.textContent||'';
-menuTgt={id,ty,ct,snd};let h=`<button class="msg-menu-item reply" data-a="reply">↩ پاسخ</button>`;
-if(ty==='text'&&snd===myEmail)h+=`<button class="msg-menu-item" data-a="edit">✏️ ویرایش</button>`;
+menuTgt={id,ty,ct,snd};let h=`<button class="msg-menu-item reply" data-a="reply">↩ ${t('replyLabel')}</button>`;
+if(ty==='text'&&snd===myEmail)h+=`<button class="msg-menu-item" data-a="edit">${t('editLabel')}</button>`;
 msgMenu.innerHTML=h;
 const w=180,h2=(ty==='text'&&snd===myEmail)?110:58;
 let x=ab.getBoundingClientRect().left,y=ab.getBoundingClientRect().bottom+5;
@@ -672,9 +1327,9 @@ const a=it.dataset.a;const{id,ty,ct,snd}=menuTgt;msgMenu.classList.remove('show'
 if(a==='edit'){const{data}=await sb.from('messages').select('content').eq('id',id).single();
 if(data){editId=id;document.getElementById('edit-inp').value=data.content;document.getElementById('edit-modal').classList.add('show')}}
 else if(a==='reply'){let rc=ct;
-if(ty==='voice'){const{data}=await sb.from('messages').select('audio_duration').eq('id',id).single();rc='🎤 ویس ('+fmtT(data?.audio_duration||0)+')'}
-else if(ty==='image')rc='🖼️ عکس';
-else if(ty==='file'){const{data}=await sb.from('messages').select('file_name').eq('id',id).single();rc='📄 '+(data?.file_name||'فایل')}
+if(ty==='voice'){const{data}=await sb.from('messages').select('audio_duration').eq('id',id).single();rc=t('voiceMsg')+' ('+fmtT(data?.audio_duration||0)+')'}
+else if(ty==='image')rc=t('imageMsg');
+else if(ty==='file'){const{data}=await sb.from('messages').select('file_name').eq('id',id).single();rc=t('fileMsg')+' '+(data?.file_name||'')}
 replyTo={id,sender:snd,content:rc,type:ty};
 document.getElementById('reply-bar-name').textContent=snd.split('@')[0];
 document.getElementById('reply-bar-text').textContent=rc;
@@ -685,37 +1340,40 @@ function cancelReply(){replyTo=null;document.getElementById('reply-bar')?.classL
 document.getElementById('reply-close').onclick=cancelReply;
 
 document.getElementById('edit-save').onclick=async()=>{
-const v=document.getElementById('edit-inp').value.trim();if(!v){alert('خالی');return}
+const v=document.getElementById('edit-inp').value.trim();if(!v){alert(lang==='fa'?'خالی':'Empty');return}
 const{error}=await sb.from('messages').update({content:v,edited_at:new Date().toISOString()}).eq('id',editId);
-if(error)alert('خطا: '+error.message);else{closeModal('edit-modal');editId=null}
+if(error)alert(t('error')+': '+error.message);else{closeModal('edit-modal');editId=null}
 };
 
 window.openNewContact=()=>document.getElementById('contact-modal').classList.add('show');
 document.getElementById('contact-add').onclick=async()=>{
 const em=document.getElementById('contact-email').value.trim().toLowerCase();
-if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){alert('ایمیل معتبر نیست');return}
-if(em===myEmail){alert('نمی‌تونی با خودت چت کنی!');return}
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){alert(t('invalidEmail'));return}
+if(em===myEmail){alert(t('cantChatSelf'));return}
 closeModal('contact-modal');await renderList();openRoom('private',em);
 };
 
-window.openNewGroup=ty=>{grpType=ty;selCts=[];document.getElementById('group-title').textContent=ty==='group'?'👥 گروه جدید':'📢 کانال جدید';
+window.openNewGroup=ty=>{grpType=ty;selCts=[];document.getElementById('group-title').textContent=ty==='group'?'👥 '+t('newGroupTitle'):'📢 '+t('newGroupTitle');
 document.getElementById('group-name').value='';document.getElementById('group-desc').value='';document.getElementById('search-contacts').value='';
 document.getElementById('group-modal').classList.add('show');loadCtsPicker();
 };
 async function loadCtsPicker(){
 const p=document.getElementById('contacts-picker');p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">...</div>';
 const{data}=await sb.from('messages').select('sender_email,receiver_email').is('chat_id',null).or(`sender_email.eq.${myEmail},receiver_email.eq.${myEmail}`);
-if(!data){p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">مخاطبی نیست</div>';return}
+if(!data){p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">'+t('noContacts')+'</div>';return}
 const s=new Set();data.forEach(m=>{if(m.sender_email!==myEmail)s.add(m.sender_email);if(m.receiver_email!==myEmail)s.add(m.receiver_email)});
-allCts=[...s];if(!allCts.length){p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">مخاطبی نیست</div>';return}
+allCts=[...s];
+if(!allCts.length){p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">'+t('noContacts')+'</div>';return}
+await loadAllNames(allCts);
 renderCtsPicker(allCts);
 }
 function renderCtsPicker(cts){const p=document.getElementById('contacts-picker'),sc=document.getElementById('selected-count');
-if(!cts.length){p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">نیست</div>';sc.textContent='';return}
+if(!cts.length){p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">—</div>';sc.textContent='';return}
 p.innerHTML='';cts.forEach(e=>{const sel=selCts.includes(e);const it=document.createElement('div');it.className='contact-chk'+(sel?' selected':'');
-it.innerHTML=`<input type="checkbox" ${sel?'checked':''}><div class="chk-avatar">${ini(e)}</div><div class="chk-info"><div class="chk-name">${esc(e.split('@')[0])}</div><div class="chk-email">${esc(e)}</div></div>`;
+const dispName=namesCache[e]||e.split('@')[0];
+it.innerHTML=`<input type="checkbox" ${sel?'checked':''}><div class="chk-avatar">${ini(dispName)}</div><div class="chk-info"><div class="chk-name">${esc(dispName)}</div><div class="chk-email">${esc(e)}</div></div>`;
 it.onclick=ev=>{ev.preventDefault();const i=selCts.indexOf(e);if(i>-1)selCts.splice(i,1);else selCts.push(e);renderCtsPicker(allCts)};p.appendChild(it)});
-sc.textContent=selCts.length>0?'انتخاب شده: '+selCts.length:'';
+sc.textContent=selCts.length>0?(lang==='fa'?'انتخاب شده: '+selCts.length:'Selected: '+selCts.length):'';
 }
 document.getElementById('search-contacts').addEventListener('input',e=>{
 const q=e.target.value.trim().toLowerCase();if(!q){renderCtsPicker(allCts);return}
@@ -723,9 +1381,9 @@ renderCtsPicker(allCts.filter(x=>x.toLowerCase().includes(q)));
 });
 document.getElementById('group-create').onclick=async()=>{
 const nm=document.getElementById('group-name').value.trim(),dc=document.getElementById('group-desc').value.trim();
-if(!nm){alert('نام را وارد کن');return}
+if(!nm){alert(t('nameLbl'));return}
 const{data,error}=await sb.from('chats').insert({name:nm,description:dc,type:grpType,owner_email:myEmail}).select().single();
-if(error){alert('خطا: '+error.message);return}
+if(error){alert(t('error')+': '+error.message);return}
 const mem=[{chat_id:data.id,member_email:myEmail,role:'owner'},...selCts.filter(e=>e!==myEmail).map(e=>({chat_id:data.id,member_email:e,role:'member'}))];
 await sb.from('chat_members').insert(mem);closeModal('group-modal');selCts=[];
 switchTab(grpType);openRoom(grpType,data);
@@ -738,12 +1396,14 @@ const{data}=await sb.from('stories').select('*').order('created_at',{ascending:f
 if(!data||!data.length){allSt=[];stByUser={};renderStories();return}
 allSt=data;stByUser={};
 data.forEach(s=>{if(!stByUser[s.user_email])stByUser[s.user_email]=[];stByUser[s.user_email].push(s)});
+const emails=Object.keys(stByUser);
+await loadAllNames(emails);
 renderStories();
 }
 function renderStories(){
 if(!stBar)return;stBar.innerHTML='';
 const ad=document.createElement('div');ad.className='story-item';
-ad.innerHTML=`<div class="story-avatar add-story"><div style="width:100%;height:100%;border-radius:50%;background:rgba(5,6,26,.9);display:flex;align-items:center;justify-content:center;font-size:20px;color:#00d4ff;font-weight:700">+</div></div><div class="story-name">استوری من</div>`;
+ad.innerHTML=`<div class="story-avatar add-story"><div style="width:100%;height:100%;border-radius:50%;background:rgba(5,6,26,.9);display:flex;align-items:center;justify-content:center;font-size:20px;color:#00d4ff;font-weight:700">+</div></div><div class="story-name">${lang==='fa'?'استوری من':'My Story'}</div>`;
 ad.onclick=openStoryModal;stBar.appendChild(ad);
 const us=Object.keys(stByUser);if(!us.length)return;
 const sorted=us.sort((a,b)=>{if(a===myEmail)return-1;if(b===myEmail)return 1;return 0});
@@ -752,34 +1412,35 @@ const sts=stByUser[email];if(!sts?.length)return;
 const it=document.createElement('div');it.className='story-item';
 const last=sts[0],isV=last.media_type==='video',mine=email===myEmail,cnt=sts.length;
 let thumb=isV?`<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#000,#7b3ff2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px">▶</div>`:`<img src="${esc(last.media_url)}" onerror="this.style.display='none'">`;
-it.innerHTML=`<div class="story-avatar has-story">${thumb}${mine?'<div class="plus">+</div>':''}${!mine&&cnt>1?`<div style="position:absolute;top:-2px;left:-2px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;border:2px solid #05061a">${cnt}</div>`:''}</div><div class="story-name">${mine?'استوری من':esc(email.split('@')[0])}</div>`;
+const dispName=namesCache[email]||email.split('@')[0];
+it.innerHTML=`<div class="story-avatar has-story">${thumb}${mine?'<div class="plus">+</div>':''}${!mine&&cnt>1?`<div style="position:absolute;top:-2px;left:-2px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;border:2px solid #05061a">${cnt}</div>`:''}</div><div class="story-name">${mine?(lang==='fa'?'استوری من':'My Story'):esc(dispName)}</div>`;
 it.onclick=()=>{if(mine){if(sts.length>0)viewStory(email);else openStoryModal()}else viewStory(email)};
 stBar.appendChild(it);
 });
 }
-window.openStoryModal=()=>{selStFile=null;document.getElementById('story-preview').innerHTML='چیزی انتخاب نشده';document.getElementById('story-preview').classList.add('empty');document.getElementById('story-cap-inp').value='';document.getElementById('story-modal').classList.add('show')};
+window.openStoryModal=()=>{selStFile=null;const p=document.getElementById('story-preview');p.innerHTML=t('nothingSelected');p.classList.add('empty');document.getElementById('story-cap-inp').value='';document.getElementById('story-modal').classList.add('show')};
 document.getElementById('file-story').onchange=e=>{const f=e.target.files[0];if(!f)return;e.target.value='';
 const isI=f.type.startsWith('image/'),isV=f.type.startsWith('video/');
-if(!isI&&!isV){alert('فقط عکس یا ویدیو');return}
-if(isI&&f.size>10*1048576){alert('عکس زیاد');return}
-if(isV&&f.size>150*1048576){alert('ویدیو زیاد');return}
+if(!isI&&!isV){alert(lang==='fa'?'فقط عکس یا ویدیو':'Images or videos only');return}
+if(isI&&f.size>10*1048576){alert(lang==='fa'?'عکس زیاد':'Image too large');return}
+if(isV&&f.size>150*1048576){alert(lang==='fa'?'ویدیو زیاد':'Video too large');return}
 selStFile=f;const p=document.getElementById('story-preview');p.classList.remove('empty');
 if(isI){const r=new FileReader();r.onload=ev=>{p.innerHTML=`<img src="${ev.target.result}">`};r.readAsDataURL(f)}
 else{const u=URL.createObjectURL(f);p.innerHTML=`<video src="${u}" controls></video>`}
 };
 document.getElementById('story-pub').onclick=async()=>{
-if(!selStFile){alert('چیزی انتخاب نشده');return}
+if(!selStFile){alert(t('nothingSelected'));return}
 const cap=document.getElementById('story-cap-inp').value.trim();const btn=document.getElementById('story-pub');btn.disabled=true;btn.textContent='...';
 const isV=selStFile.type.startsWith('video/');const mt=isV?'video':'image';
 try{const fn=`story-${myEmail.replace(/[^a-z0-9]/gi,'_')}-${Date.now()}.${selStFile.name.split('.').pop()}`;
 const{error:ue}=await sb.storage.from('stories').upload(fn,selStFile,{contentType:selStFile.type});
-if(ue){alert('خطا: '+ue.message);btn.disabled=false;btn.textContent='انتشار';return}
+if(ue){alert(t('error')+': '+ue.message);btn.disabled=false;btn.textContent=t('publish');return}
 const{data:ud}=sb.storage.from('stories').getPublicUrl(fn);
 const ex=new Date(Date.now()+24*60*60*1000).toISOString();
 await sb.from('stories').insert({user_email:myEmail,media_url:ud.publicUrl,media_type:mt,caption:cap,expires_at:ex});
 closeModal('story-modal');await loadStories();
-}catch(e){alert('خطا: '+e.message)}
-btn.disabled=false;btn.textContent='انتشار';
+}catch(e){alert(t('error')+': '+e.message)}
+btn.disabled=false;btn.textContent=t('publish');
 };
 window.viewStory=em=>{curStUser=em;curStIdx=0;document.getElementById('story-viewer').classList.add('show');showStory()};
 function showStory(){
@@ -787,8 +1448,8 @@ if(!curStUser)return;const sts=stByUser[curStUser];if(!sts?.length){closeStory()
 const s=sts[curStIdx];if(!s){closeStory();return}
 const md=document.getElementById('story-media');
 md.innerHTML=s.media_type==='video'?`<video src="${esc(s.media_url)}" autoplay controls playsinline></video>`:`<img src="${esc(s.media_url)}">`;
-document.getElementById('story-head-av').textContent=ini(curStUser);
-document.getElementById('story-head-name').textContent=curStUser;
+document.getElementById('story-head-av').textContent=ini(namesCache[curStUser]||curStUser);
+document.getElementById('story-head-name').textContent=namesCache[curStUser]||curStUser;
 document.getElementById('story-head-time').textContent=ago(new Date(s.created_at));
 if(s.caption){document.getElementById('story-cap').textContent=s.caption;document.getElementById('story-cap').style.display='block'}
 else document.getElementById('story-cap').style.display='none';
@@ -804,7 +1465,7 @@ window.closeStory=()=>{document.getElementById('story-viewer').classList.remove(
 async function loadLib(){
 const list=document.getElementById('lib-list');list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
 const{data}=await sb.from('library').select('*').order('created_at',{ascending:false});
-if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">🎬</div><h3>هنوز محتوایی نیست</h3></div>';return}
+if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">🎬</div><h3>'+(lang==='fa'?'هنوز محتوایی نیست':'No content yet')+'</h3></div>';return}
 list.innerHTML='';data.forEach(l=>{
 const it=document.createElement('div');it.className='list-item';
 const thumb=l.media_type==='video'?`<div class="list-avatar" style="font-size:22px">🎬</div>`:`<div class="list-avatar" style="background-image:url('${esc(l.media_url)}')"></div>`;
@@ -816,36 +1477,36 @@ else window.open(l.media_url,'_blank');
 list.appendChild(it);
 });
 }
-window.openLibModal=()=>{selLibFile=null;document.getElementById('lib-title').value='';document.getElementById('lib-desc').value='';document.getElementById('lib-preview').innerHTML='چیزی انتخاب نشده';document.getElementById('lib-preview').classList.add('empty');document.getElementById('lib-modal').classList.add('show')};
+window.openLibModal=()=>{selLibFile=null;document.getElementById('lib-title').value='';document.getElementById('lib-desc').value='';const p=document.getElementById('lib-preview');p.innerHTML=t('nothingSelected');p.classList.add('empty');document.getElementById('lib-modal').classList.add('show')};
 document.getElementById('file-lib').onchange=e=>{const f=e.target.files[0];if(!f)return;e.target.value='';
 selLibFile=f;const p=document.getElementById('lib-preview');p.classList.remove('empty');
 if(f.type.startsWith('image/')){const r=new FileReader();r.onload=ev=>{p.innerHTML=`<img src="${ev.target.result}">`};r.readAsDataURL(f)}
 else{const u=URL.createObjectURL(f);p.innerHTML=`<video src="${u}" controls></video>`}
 };
 document.getElementById('lib-pub').onclick=async()=>{
-if(!selLibFile){alert('فایل انتخاب کن');return}
-const t=document.getElementById('lib-title').value.trim()||'بدون عنوان';
+if(!selLibFile){alert(t('nothingSelected'));return}
+const ti=document.getElementById('lib-title').value.trim()||(lang==='fa'?'بدون عنوان':'Untitled');
 const d=document.getElementById('lib-desc').value.trim();
 const isV=selLibFile.type.startsWith('video/');const mt=isV?'video':'image';
 const btn=document.getElementById('lib-pub');btn.disabled=true;btn.textContent='...';
 const fn=`lib-${Date.now()}-${Math.random().toString(36).slice(2)}.${selLibFile.name.split('.').pop()}`;
 const{error:ue}=await sb.storage.from('chat-files').upload(fn,selLibFile,{contentType:selLibFile.type});
-if(ue){alert('خطا: '+ue.message);btn.disabled=false;btn.textContent='افزودن';return}
+if(ue){alert(t('error')+': '+ue.message);btn.disabled=false;btn.textContent=t('add');return}
 const{data:ud}=sb.storage.from('chat-files').getPublicUrl(fn);
-await sb.from('library').insert({title:t,description:d,media_url:ud.publicUrl,media_type:mt,owner_email:myEmail});
-closeModal('lib-modal');loadLib();btn.disabled=false;btn.textContent='افزودن';
+await sb.from('library').insert({title:ti,description:d,media_url:ud.publicUrl,media_type:mt,owner_email:myEmail});
+closeModal('lib-modal');loadLib();btn.disabled=false;btn.textContent=t('add');
 };
 
 // ===== ربات =====
 async function loadBots(){
 const list=document.getElementById('bots-list');list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
 const{data}=await sb.from('bots').select('*').order('created_at',{ascending:false});
-if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">🤖</div><h3>هنوز رباتی نیست</h3></div>';return}
+if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">🤖</div><h3>'+(lang==='fa'?'هنوز رباتی نیست':'No bots yet')+'</h3></div>';return}
 list.innerHTML='';data.forEach(b=>{
 const it=document.createElement('div');it.className='bot-card';
-it.innerHTML=`<div class="bot-head"><div class="bot-avatar">🤖</div><div class="bot-name">${esc(b.name)}</div></div><div class="bot-desc">${esc(b.description||'—')}</div><div class="bot-desc" style="color:var(--p)">پاسخ: ${esc(b.reply||'—')}</div><div class="bot-actions"><button class="bot-start">شروع</button>${b.owner_email===myEmail?'<button class="bot-del">حذف</button>':''}</div>`;
-it.querySelector('.bot-start').onclick=()=>alert('ربات "'+b.name+'" فعال شد. پاسخ: '+b.reply);
-if(b.owner_email===myEmail){it.querySelector('.bot-del').onclick=async()=>{if(!confirm('حذف شود؟'))return;await sb.from('bots').delete().eq('id',b.id);loadBots()}}
+it.innerHTML=`<div class="bot-head"><div class="bot-avatar">🤖</div><div class="bot-name">${esc(b.name)}</div></div><div class="bot-desc">${esc(b.description||'—')}</div><div class="bot-desc" style="color:var(--p)">${lang==='fa'?'پاسخ':'Reply'}: ${esc(b.reply||'—')}</div><div class="bot-actions"><button class="bot-start">${lang==='fa'?'شروع':'Start'}</button>${b.owner_email===myEmail?'<button class="bot-del">'+t('delete')+'</button>':''}</div>`;
+it.querySelector('.bot-start').onclick=()=>alert((lang==='fa'?'ربات "'+b.name+'" فعال شد. پاسخ: ':'Bot "'+b.name+'" activated. Reply: ')+b.reply);
+if(b.owner_email===myEmail){it.querySelector('.bot-del').onclick=async()=>{if(!confirm(lang==='fa'?'حذف شود؟':'Delete?'))return;await sb.from('bots').delete().eq('id',b.id);loadBots()}}
 list.appendChild(it);
 });
 }
@@ -854,23 +1515,22 @@ document.getElementById('bot-create').onclick=async()=>{
 const n=document.getElementById('bot-name').value.trim();
 const d=document.getElementById('bot-desc').value.trim();
 const r=document.getElementById('bot-reply').value.trim();
-if(!n){alert('نام ربات را وارد کن');return}
-if(!r){alert('پاسخ خودکار را وارد کن');return}
+if(!n){alert(t('nameLbl'));return}
+if(!r){alert(t('autoReplyLbl'));return}
 const{error}=await sb.from('bots').insert({name:n,description:d,reply:r,owner_email:myEmail});
-if(error){alert('خطا: '+error.message);return}
+if(error){alert(t('error')+': '+error.message);return}
 closeModal('bot-modal');loadBots();
 };
-
-// ===== آموزش (فیلتر شده) =====
+// ===== آموزش =====
 async function loadEdu(){
 const list=document.getElementById('edu-list');
 list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
 const{data,error}=await sb.from('education').select('*').order('created_at',{ascending:false});
-if(error){list.innerHTML='<div class="empty-state"><div class="icon">❌</div><h3>خطا</h3></div>';return}
-if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">📚</div><h3>هنوز کلاسی نیست</h3><p style="font-size:12px;margin-top:6px">با دکمه بالا یکی بساز یا با کد وارد شو</p></div>';return}
+if(error){list.innerHTML='<div class="empty-state"><div class="icon">❌</div><h3>'+t('error')+'</h3></div>';return}
+if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">📚</div><h3>'+t('noClasses')+'</h3></div>';return}
 const myClasses=data.filter(c=>c.owner_email===myEmail||(c.members||[]).includes(myEmail));
 if(!myClasses.length){
-list.innerHTML='<div class="empty-state"><div class="icon">🔒</div><h3>هنوز عضو هیچ کلاسی نیستی</h3><p style="font-size:12px;margin-top:6px;line-height:1.6">با دکمه <b>🔑 ورود با کد</b> کد کلاس رو وارد کن<br>یا اگه معلمی، با دکمه <b>➕ ساخت کلاس</b> کلاس بساز</p></div>';
+list.innerHTML='<div class="empty-state"><div class="icon">🔒</div><h3>'+(lang==='fa'?'هنوز عضو هیچ کلاسی نیستی':'Not a member of any class')+'</h3><p style="font-size:12px;margin-top:6px;line-height:1.6">'+(lang==='fa'?'با دکمه <b>🔑 ورود با کد</b> کد کلاس رو وارد کن<br>یا اگه معلمی، با دکمه <b>➕ ساخت کلاس</b> کلاس بساز':'Use <b>🔑 Join with Code</b> to enter<br>or <b>➕ Create Class</b> if you teach')+'</p></div>';
 return;
 }
 list.innerHTML='';
@@ -878,8 +1538,8 @@ myClasses.forEach(c=>{
 const it=document.createElement('div');it.className='edu-class';
 const isOwner=c.owner_email===myEmail;
 const codeValid=/^\d{6}$/.test(c.code||'');
-const codeDisplay=codeValid?esc(c.code):'<span style="color:#ef4444">نامعتبر</span>';
-it.innerHTML=`<div class="edu-head"><div class="edu-avatar">📚</div><div class="edu-name">${esc(c.name)}</div>${isOwner?'<span style="font-size:10px;background:var(--p);color:#000;padding:2px 8px;border-radius:8px;font-weight:700">معلم</span>':'<span style="font-size:10px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:2px 8px;border-radius:8px;font-weight:700">دانش‌آموز</span>'}</div><div class="edu-info">${esc(c.description||'—')}</div><div class="edu-info" style="margin-top:6px;color:var(--p);font-size:11px">👥 ${(c.members||[]).length+1} عضو${isOwner?` • کد: <b style="direction:ltr;display:inline-block">${codeDisplay}</b>`:''}</div><div style="margin-top:8px"><button class="edu-enter-btn" style="width:100%;padding:8px;border:none;border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#00d4ff,#7b3ff2);color:#fff">${isOwner?'⚙️ پنل مدیریت':'📖 ورود به کلاس'}</button></div>`;
+const codeDisplay=codeValid?esc(c.code):'<span style="color:#ef4444">'+(lang==='fa'?'نامعتبر':'Invalid')+'</span>';
+it.innerHTML=`<div class="edu-head"><div class="edu-avatar">📚</div><div class="edu-name">${esc(c.name)}</div>${isOwner?'<span style="font-size:10px;background:var(--p);color:#000;padding:2px 8px;border-radius:8px;font-weight:700">'+t('teacher')+'</span>':'<span style="font-size:10px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:2px 8px;border-radius:8px;font-weight:700">'+t('student')+'</span>'}</div><div class="edu-info">${esc(c.description||'—')}</div><div class="edu-info" style="margin-top:6px;color:var(--p);font-size:11px">👥 ${(c.members||[]).length+1} ${lang==='fa'?'عضو':'members'}${isOwner?` • ${lang==='fa'?'کد':'Code'}: <b style="direction:ltr;display:inline-block">${codeDisplay}</b>`:''}</div><div style="margin-top:8px"><button class="edu-enter-btn" style="width:100%;padding:8px;border:none;border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#00d4ff,#7b3ff2);color:#fff">${isOwner?'⚙️ '+t('classPanel'):'📖 '+(lang==='fa'?'ورود به کلاس':'Enter Class')}</button></div>`;
 it.querySelector('.edu-enter-btn').onclick=(ev)=>{ev.stopPropagation();openClassPanel(c.id)};
 list.appendChild(it);
 });
@@ -898,13 +1558,13 @@ return String(Date.now()).slice(-6).padStart(6,'0');
 document.getElementById('edu-create').onclick=async()=>{
 const n=document.getElementById('edu-name').value.trim();
 const d=document.getElementById('edu-desc').value.trim();
-if(!n){alert('نام کلاس را وارد کن');return}
-const btn=document.getElementById('edu-create');btn.disabled=true;btn.textContent='در حال ساخت...';
+if(!n){alert(t('classNameLbl'));return}
+const btn=document.getElementById('edu-create');btn.disabled=true;btn.textContent='...';
 const code=await genUniqueCode();
-if(!/^\d{6}$/.test(code)){alert('خطا در تولید کد');btn.disabled=false;btn.textContent='ساخت';return}
+if(!/^\d{6}$/.test(code)){alert(t('error'));btn.disabled=false;btn.textContent=t('create');return}
 const{data,error}=await sb.from('education').insert({name:n,description:d,owner_email:myEmail,code,members:[]}).select().single();
-btn.disabled=false;btn.textContent='ساخت';
-if(error){alert('خطا: '+error.message);return}
+btn.disabled=false;btn.textContent=t('create');
+if(error){alert(t('error')+': '+error.message);return}
 closeModal('edu-modal');
 document.getElementById('edu-show-code').textContent=code;
 document.getElementById('edu-code-modal').classList.add('show');
@@ -912,176 +1572,133 @@ document.getElementById('edu-code-modal').classList.add('show');
 window.openEduJoin=()=>{document.getElementById('edu-join-code').value='';document.getElementById('edu-join-modal').classList.add('show');setTimeout(()=>document.getElementById('edu-join-code').focus(),200)};
 document.getElementById('edu-join-btn').onclick=async()=>{
 const code=document.getElementById('edu-join-code').value.trim();
-if(!/^\d{6}$/.test(code)){alert('کد باید ۶ رقم عددی باشه');return}
+if(!/^\d{6}$/.test(code)){alert(lang==='fa'?'کد باید ۶ رقم عددی باشه':'Code must be 6 digits');return}
 const btn=document.getElementById('edu-join-btn');btn.disabled=true;btn.textContent='...';
 try{
 const{data,error}=await sb.rpc('join_edu_class',{p_code:code});
-btn.disabled=false;btn.textContent='ورود';
-if(error){alert('❌ '+(error.message||'خطا در عضویت'));return}
-if(!data){alert('خطای نامشخص');return}
-if(!data.ok){
-alert(data.msg||'خطا');
-if(data.owner){closeModal('edu-join-modal');loadEdu()}
-return;
-}
+btn.disabled=false;btn.textContent=t('enter');
+if(error){alert('❌ '+(error.message||t('error')));return}
+if(!data){alert(t('error'));return}
+if(!data.ok){alert(data.msg||t('error'));if(data.owner){closeModal('edu-join-modal');loadEdu()}return}
 closeModal('edu-join-modal');
-if(data.msg==='قبلاً عضو بودی'){alert('✅ قبلاً عضو این کلاس بودی!')}
-else{alert('🎉 به کلاس "'+data.name+'" خوش آمدی!')}
+if(data.msg==='قبلاً عضو بودی'||data.msg==='Already member'){alert('✅ '+(lang==='fa'?'قبلاً عضو بودی':'Already member'))}
+else{alert('🎉 '+(lang==='fa'?'خوش آمدی':'Welcome')+' "'+data.name+'"')}
 loadEdu();
 }catch(e){
-btn.disabled=false;btn.textContent='ورود';
-alert('خطا: '+e.message);
+btn.disabled=false;btn.textContent=t('enter');
+alert(t('error')+': '+e.message);
 }
 };
 window.copyEduCode=()=>{
 const c=document.getElementById('edu-show-code').textContent;
-if(navigator.clipboard){navigator.clipboard.writeText(c).then(()=>alert('✅ کد کپی شد: '+c)).catch(()=>alert('کد: '+c))}else alert('کد: '+c);
+if(navigator.clipboard){navigator.clipboard.writeText(c).then(()=>alert('✅ '+t('copySuccess')+': '+c)).catch(()=>alert(c))}else alert(c);
 };
 
-// ============================================
-// ===== پنل مدیریت/کلاس (با دسترسی معلم/دانش‌آموز) =====
-// ============================================
+// ===== پنل کلاس =====
 window.openClassPanel=async(clsId)=>{
 const{data,error}=await sb.from('education').select('*').eq('id',clsId).single();
-if(error||!data){alert('کلاس پیدا نشد');return}
+if(error||!data){alert(t('error'));return}
 curClass=data;
 const isOwner=data.owner_email===myEmail;
-
 document.getElementById('cp-title').textContent='📚 '+data.name;
-document.getElementById('cp-sub').textContent=isOwner?'پنل مدیریت':'کلاس آموزشی';
+document.getElementById('cp-sub').textContent=isOwner?t('classPanel'):(lang==='fa'?'کلاس آموزشی':'Class');
 document.getElementById('cp-code').textContent=data.code||'—';
-
-// تب اعضا فقط برای معلم
 const membersTab=document.querySelector('[data-cp="members"]');
 if(membersTab)membersTab.style.display=isOwner?'block':'none';
-
-// دکمه افزودن ویدیو فقط برای معلم
 const addVideoBtn=document.getElementById('cp-add-video-btn');
 if(addVideoBtn)addVideoBtn.style.display=isOwner?'block':'none';
-
-// کارت کد کلاس فقط برای معلم
 const codeCard=document.getElementById('cp-code-card');
 if(codeCard)codeCard.style.display=isOwner?'flex':'none';
-
 showPage('class-panel');
 switchCpTab('videos');
 };
 window.closeClassPanel=()=>{curClass=null;showPage('education')};
 window.copyCpCode=()=>{
 if(!curClass?.code)return;
-if(navigator.clipboard){navigator.clipboard.writeText(curClass.code).then(()=>alert('✅ کد کپی شد: '+curClass.code)).catch(()=>alert('کد: '+curClass.code))}else alert('کد: '+curClass.code);
+if(navigator.clipboard){navigator.clipboard.writeText(curClass.code).then(()=>alert('✅ '+t('copySuccess'))).catch(()=>alert(curClass.code))}else alert(curClass.code);
 };
-window.switchCpTab=t=>{
-curCpTab=t;
-document.querySelectorAll('[data-cp]').forEach(x=>x.classList.toggle('active',x.dataset.cp===t));
-document.getElementById('cp-videos').style.display=t==='videos'?'block':'none';
-document.getElementById('cp-members').style.display=t==='members'?'block':'none';
-// آپدیت دکمه افزودن ویدیو بر اساس دسترسی
+window.switchCpTab=x=>{
+curCpTab=x;
+document.querySelectorAll('[data-cp]').forEach(el=>el.classList.toggle('active',el.dataset.cp===x));
+document.getElementById('cp-videos').style.display=x==='videos'?'block':'none';
+document.getElementById('cp-members').style.display=x==='members'?'block':'none';
 const addVideoBtn=document.getElementById('cp-add-video-btn');
 if(addVideoBtn)addVideoBtn.style.display=(curClass?.owner_email===myEmail)?'block':'none';
-if(t==='videos')loadClassVideos();
-if(t==='members')loadClassMembers();
+if(x==='videos')loadClassVideos();
+if(x==='members')loadClassMembers();
 };
 window.switchVideoMode=m=>{
 vMode=m;
-document.querySelectorAll('[data-vmode]').forEach(x=>x.classList.toggle('active',x.dataset.vmode===m));
+document.querySelectorAll('[data-vmode]').forEach(el=>el.classList.toggle('active',el.dataset.vmode===m));
 document.getElementById('v-upload-section').style.display=m==='upload'?'block':'none';
 document.getElementById('v-link-section').style.display=m==='link'?'block':'none';
 };
 window.openAddVideoModal=()=>{
-if(!curClass||curClass.owner_email!==myEmail){alert('فقط معلم می‌تونه ویدیو اضافه کنه');return}
+if(!curClass||curClass.owner_email!==myEmail){alert(t('onlyTeacher'));return}
 vFile=null;vMode='upload';
-document.getElementById('v-title').value='';
-document.getElementById('v-desc').value='';
-document.getElementById('v-url').value='';
-document.getElementById('v-preview').innerHTML='ویدیویی انتخاب نشده';
-document.getElementById('v-preview').classList.add('empty');
+document.getElementById('v-title').value='';document.getElementById('v-desc').value='';document.getElementById('v-url').value='';
+const p=document.getElementById('v-preview');p.innerHTML=t('nothingSelected');p.classList.add('empty');
 document.getElementById('v-upload-progress').style.display='none';
 document.getElementById('v-progress-bar').style.width='0%';
-document.getElementById('v-progress-text').textContent='۰٪';
+document.getElementById('v-progress-text').textContent='0%';
 switchVideoMode('upload');
 document.getElementById('add-video-modal').classList.add('show');
 };
 document.getElementById('v-file').onchange=e=>{
 const f=e.target.files[0];if(!f)return;e.target.value='';
-if(!f.type.startsWith('video/')){alert('فقط فایل ویدیویی انتخاب کن');return}
-if(f.size>50*1024*1024){alert('حجم ویدیو نباید بیشتر از ۵۰ مگابایت باشه');return}
+if(!f.type.startsWith('video/')){alert(lang==='fa'?'فقط ویدیو':'Video only');return}
+if(f.size>50*1024*1024){alert(t('maxSize'));return}
 vFile=f;
-const p=document.getElementById('v-preview');
-p.classList.remove('empty');
+const p=document.getElementById('v-preview');p.classList.remove('empty');
 const u=URL.createObjectURL(f);
 p.innerHTML=`<video src="${u}" controls style="max-width:100%;max-height:180px;border-radius:12px"></video>`;
 };
 document.getElementById('v-add-btn').onclick=async()=>{
-if(!curClass){alert('کلاس انتخاب نشده');return}
-if(curClass.owner_email!==myEmail){alert('فقط معلم می‌تونه ویدیو اضافه کنه');return}
-const t=document.getElementById('v-title').value.trim();
+if(!curClass){alert(t('error'));return}
+if(curClass.owner_email!==myEmail){alert(t('onlyTeacher'));return}
+const ti=document.getElementById('v-title').value.trim();
 const d=document.getElementById('v-desc').value.trim();
-if(!t){alert('عنوان رو وارد کن');return}
-const btn=document.getElementById('v-add-btn');
-btn.disabled=true;
+if(!ti){alert(t('videoTitleLbl'));return}
+const btn=document.getElementById('v-add-btn');btn.disabled=true;
 if(vMode==='link'){
 const u=document.getElementById('v-url').value.trim();
-if(!u){alert('لینک ویدیو رو وارد کن');btn.disabled=false;return}
-if(!/^https?:\/\//i.test(u)){alert('لینک باید با http یا https شروع بشه');btn.disabled=false;return}
+if(!u){alert(t('videoUrlLbl'));btn.disabled=false;return}
+if(!/^https?:\/\//i.test(u)){alert(lang==='fa'?'لینک باید با http یا https شروع بشه':'URL must start with http or https');btn.disabled=false;return}
 btn.textContent='...';
-const{error}=await sb.from('edu_videos').insert({class_id:curClass.id,title:t,description:d,video_url:u,owner_email:myEmail,mime_type:'link'});
-btn.disabled=false;btn.textContent='افزودن';
-if(error){alert('خطا: '+error.message);return}
-closeModal('add-video-modal');
-loadClassVideos();
-return;
+const{error}=await sb.from('edu_videos').insert({class_id:curClass.id,title:ti,description:d,video_url:u,owner_email:myEmail,mime_type:'link'});
+btn.disabled=false;btn.textContent=t('add');
+if(error){alert(t('error')+': '+error.message);return}
+closeModal('add-video-modal');loadClassVideos();return;
 }
-if(!vFile){alert('ویدیویی انتخاب کن');btn.disabled=false;return}
-btn.textContent='در حال آپلود...';
+if(!vFile){alert(t('nothingSelected'));btn.disabled=false;return}
+btn.textContent=t('loading');
 document.getElementById('v-upload-progress').style.display='block';
 const ext=vFile.name.split('.').pop()||'mp4';
 const fn=`edu-${curClass.id}-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 try{
 const{error:ue}=await sb.storage.from('edu-videos').upload(fn,vFile,{contentType:vFile.type||'video/mp4',cacheControl:'3600',upsert:false});
-if(ue){
-alert('خطا در آپلود: '+ue.message);
-btn.disabled=false;btn.textContent='افزودن';
-document.getElementById('v-upload-progress').style.display='none';
-return;
-}
+if(ue){alert(t('error')+': '+ue.message);btn.disabled=false;btn.textContent=t('add');document.getElementById('v-upload-progress').style.display='none';return}
 let prog=0;
-const int=setInterval(()=>{
-prog=Math.min(prog+15,100);
-document.getElementById('v-progress-bar').style.width=prog+'%';
-document.getElementById('v-progress-text').textContent=prog+'٪';
-if(prog>=100)clearInterval(int);
-},150);
+const int=setInterval(()=>{prog=Math.min(prog+15,100);document.getElementById('v-progress-bar').style.width=prog+'%';document.getElementById('v-progress-text').textContent=prog+'%';if(prog>=100)clearInterval(int)},150);
 await new Promise(r=>setTimeout(r,800));
 const{data:ud}=sb.storage.from('edu-videos').getPublicUrl(fn);
-const{error:ie}=await sb.from('edu_videos').insert({class_id:curClass.id,title:t,description:d,video_url:ud.publicUrl,owner_email:myEmail,storage_path:fn,file_size:vFile.size,mime_type:vFile.type||'video/mp4'});
-if(ie){
-alert('خطا در ذخیره اطلاعات: '+ie.message);
-await sb.storage.from('edu-videos').remove([fn]);
-btn.disabled=false;btn.textContent='افزودن';
-return;
-}
-closeModal('add-video-modal');
-vFile=null;
-loadClassVideos();
-}catch(err){
-alert('خطای غیرمنتظره: '+err.message);
-btn.disabled=false;btn.textContent='افزودن';
-document.getElementById('v-upload-progress').style.display='none';
-}
+const{error:ie}=await sb.from('edu_videos').insert({class_id:curClass.id,title:ti,description:d,video_url:ud.publicUrl,owner_email:myEmail,storage_path:fn,file_size:vFile.size,mime_type:vFile.type||'video/mp4'});
+if(ie){alert(t('error')+': '+ie.message);await sb.storage.from('edu-videos').remove([fn]);btn.disabled=false;btn.textContent=t('add');return}
+closeModal('add-video-modal');vFile=null;loadClassVideos();
+}catch(err){alert(t('error')+': '+err.message);btn.disabled=false;btn.textContent=t('add');document.getElementById('v-upload-progress').style.display='none'}
 };
 async function loadClassVideos(){
 if(!curClass)return;
 const list=document.getElementById('cp-videos-list');
 list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
 const{data}=await sb.from('edu_videos').select('*').eq('class_id',curClass.id).order('created_at',{ascending:false});
-if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">🎬</div><h3>هنوز ویدیویی نیست</h3></div>';return}
+if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">🎬</div><h3>'+t('emptyVideo')+'</h3></div>';return}
 const isOwner=curClass.owner_email===myEmail;
 list.innerHTML='';data.forEach(v=>{
 const it=document.createElement('div');it.className='list-item';
 const isUploaded=v.storage_path&&v.mime_type!=='link';
-const badge=isUploaded?`<span style="font-size:9px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:2px 6px;border-radius:6px;font-weight:700">آپلود شده</span>`:`<span style="font-size:9px;background:linear-gradient(135deg,#00d4ff,#7b3ff2);color:#fff;padding:2px 6px;border-radius:6px;font-weight:700">لینک</span>`;
-const delBtn=(isOwner&&v.owner_email===myEmail)?`<button class="bot-del" style="padding:6px 12px;border:none;border-radius:8px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.2);color:#fca5a5">حذف</button>`:'';
+const badge=isUploaded?`<span style="font-size:9px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:2px 6px;border-radius:6px;font-weight:700">${lang==='fa'?'آپلود شده':'Uploaded'}</span>`:`<span style="font-size:9px;background:linear-gradient(135deg,#00d4ff,#7b3ff2);color:#fff;padding:2px 6px;border-radius:6px;font-weight:700">${lang==='fa'?'لینک':'Link'}</span>`;
+const delBtn=(isOwner&&v.owner_email===myEmail)?`<button class="bot-del" style="padding:6px 12px;border:none;border-radius:8px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.2);color:#fca5a5">${t('delete')}</button>`:'';
 it.innerHTML=`<div class="list-avatar" style="font-size:22px">🎬</div><div class="list-info"><div class="list-name">${esc(v.title)} ${badge}</div><div class="list-sub">${esc(v.description||'—')}${v.file_size?' • '+fmtSz(v.file_size):''}</div></div>${delBtn}`;
 it.querySelector('.list-info').onclick=()=>{
 const w=window.open('','_blank');
@@ -1090,7 +1707,7 @@ w.document.write(`<html dir="rtl"><head><title>${esc(v.title)}</title><style>bod
 const delBtnEl=it.querySelector('.bot-del');
 if(delBtnEl)delBtnEl.onclick=async(ev)=>{
 ev.stopPropagation();
-if(!confirm('این ویدیو حذف شود؟'))return;
+if(!confirm(t('deleteVideo')))return;
 if(v.storage_path){await sb.storage.from('edu-videos').remove([v.storage_path])}
 await sb.from('edu_videos').delete().eq('id',v.id);
 loadClassVideos();
@@ -1100,28 +1717,31 @@ list.appendChild(it);
 }
 async function loadClassMembers(){
 if(!curClass)return;
-if(curClass.owner_email!==myEmail){return}
+if(curClass.owner_email!==myEmail)return;
 const list=document.getElementById('cp-members-list');
 list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
 const members=curClass.members||[];
+await loadAllNames([curClass.owner_email,...members]);
 list.innerHTML='';
+const teacherName=namesCache[curClass.owner_email]||curClass.owner_email.split('@')[0];
 const teacherItem=document.createElement('div');teacherItem.className='list-item';
-teacherItem.innerHTML=`<div class="list-avatar" style="background:linear-gradient(135deg,#f59e0b,#f97316)">${ini(curClass.owner_email)}</div><div class="list-info"><div class="list-name">${esc(curClass.owner_email.split('@')[0])}</div><div class="list-sub">${esc(curClass.owner_email)}</div></div><span style="font-size:10px;background:var(--p);color:#000;padding:2px 8px;border-radius:8px;font-weight:700">معلم</span>`;
+teacherItem.innerHTML=`<div class="list-avatar" style="background:linear-gradient(135deg,#f59e0b,#f97316)">${ini(teacherName)}</div><div class="list-info"><div class="list-name">${esc(teacherName)}</div><div class="list-sub">${esc(curClass.owner_email)}</div></div><span style="font-size:10px;background:var(--p);color:#000;padding:2px 8px;border-radius:8px;font-weight:700">${t('teacher')}</span>`;
 list.appendChild(teacherItem);
 if(!members.length){
 const empty=document.createElement('div');empty.className='empty-state';empty.style.padding='30px 20px';
-empty.innerHTML='<div class="icon" style="font-size:40px">👥</div><h3>هنوز دانش‌آموزی نیست</h3>';
+empty.innerHTML='<div class="icon" style="font-size:40px">👥</div><h3>'+t('emptyMembers')+'</h3>';
 list.appendChild(empty);
 return;
 }
 members.forEach(em=>{
+const dispName=namesCache[em]||em.split('@')[0];
 const it=document.createElement('div');it.className='list-item';
-it.innerHTML=`<div class="list-avatar">${ini(em)}</div><div class="list-info"><div class="list-name">${esc(em.split('@')[0])}</div><div class="list-sub">${esc(em)}</div></div><button class="bot-del" style="padding:6px 12px;border:none;border-radius:8px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.2);color:#fca5a5">حذف</button>`;
+it.innerHTML=`<div class="list-avatar">${ini(dispName)}</div><div class="list-info"><div class="list-name">${esc(dispName)}</div><div class="list-sub">${esc(em)}</div></div><button class="bot-del" style="padding:6px 12px;border:none;border-radius:8px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.2);color:#fca5a5">${t('delete')}</button>`;
 it.querySelector('.bot-del').onclick=async()=>{
-if(!confirm('این دانش‌آموز از کلاس حذف شود؟'))return;
+if(!confirm(t('deleteStudent')))return;
 const newMembers=members.filter(x=>x!==em);
 const{error}=await sb.from('education').update({members:newMembers}).eq('id',curClass.id);
-if(error){alert('خطا: '+error.message);return}
+if(error){alert(t('error')+': '+error.message);return}
 curClass.members=newMembers;
 loadClassMembers();
 };
@@ -1134,29 +1754,123 @@ async function loadWallet(){
 const el=document.getElementById('wallet-bal');if(!el)return;
 const{data}=await sb.from('wallets').select('balance').eq('user_email',myEmail).maybeSingle();
 const bal=data?.balance||0;
-el.textContent=Number(bal).toLocaleString('fa-IR')+' تومان';
+el.textContent=Number(bal).toLocaleString(lang==='fa'?'fa-IR':'en-US')+(lang==='fa'?' تومان':' Toman');
 }
-// ===== چک ربات =====
-async function checkBots(){
-if(!curChat||curChat.type!=='private')return;
-const{data:bots}=await sb.from('bots').select('*');
-if(!bots?.length)return;
-const lastMsg=msgIn.value.trim().toLowerCase();
-const matched=bots.find(b=>lastMsg.includes((b.name||'').toLowerCase())||lastMsg.includes((b.reply||'').toLowerCase()));
-if(matched){
-setTimeout(async()=>{
-await sb.from('messages').insert({content:'🤖 '+matched.reply,sender_email:curChat.email,receiver_email:myEmail,message_type:'text'});
-},700);
+
+// ============================================
+// ===== تماس صوتی گروهی با LiveKit =====
+// ============================================
+const LK_URL='wss://tms-bxlk0q2o.livekit.cloud';
+const LK_KEY='APIBhvnBREQa54D';
+const LK_SECRET='18fup4uYJKd3zv7JLeY2JLAPpxtlpi7RvGOEBZcGrQh';
+let lkRoom=null;
+
+async function generateLKToken(roomName,identity){
+const header={alg:'HS256',typ:'JWT'};
+const now=Math.floor(Date.now()/1000);
+const payload={exp:now+3600,iss:LK_KEY,sub:identity,nbf:now-10,name:identity,video:{roomJoin:true,room:roomName,canPublish:true,canSubscribe:true,canPublishData:true}};
+const enc=s=>btoa(JSON.stringify(s)).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+const headerB64=enc(header);const payloadB64=enc(payload);
+const data=headerB64+'.'+payloadB64;
+const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(LK_SECRET),{alg:'HMAC',hash:'SHA-256'},false,['sign']);
+const sig=await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(data));
+const sigB64=btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+return data+'.'+sigB64;
 }
+
+window.startCall=async(roomName,displayName)=>{
+if(!roomName){alert(t('error'));return}
+try{
+document.getElementById('call-modal').classList.add('show');
+document.getElementById('call-title').textContent='📞 '+(displayName||t('callGroup'));
+document.getElementById('call-sub').textContent=t('callConnecting');
+document.getElementById('call-status').textContent='';
+document.getElementById('call-participants').innerHTML='';
+const identity=myEmail.split('@')[0]+'_'+Date.now();
+const token=await generateLKToken(roomName,identity);
+lkRoom=new LivekitClient.Room({adaptiveStream:true,dynacast:true,audioCaptureDefaults:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+lkRoom.on(LivekitClient.RoomEvent.ParticipantConnected,()=>renderParticipants());
+lkRoom.on(LivekitClient.RoomEvent.ParticipantDisconnected,()=>renderParticipants());
+lkRoom.on(LivekitClient.RoomEvent.TrackSubscribed,(track)=>{if(track.kind==='audio'){const el=track.attach();el.autoplay=true;el.style.display='none';document.body.appendChild(el)}renderParticipants()});
+lkRoom.on(LivekitClient.RoomEvent.TrackUnsubscribed,(track)=>{track.detach();renderParticipants()});
+lkRoom.on(LivekitClient.RoomEvent.ActiveSpeakersChanged,()=>renderParticipants());
+lkRoom.on(LivekitClient.RoomEvent.Disconnected,()=>endCall());
+await lkRoom.connect(LK_URL,token);
+document.getElementById('call-sub').textContent=t('callConnected');
+await lkRoom.localParticipant.setMicrophoneEnabled(true);
+renderParticipants();
+updateMicBtn();
+}catch(e){console.error(e);alert(t('callError')+': '+e.message);endCall()}
+};
+
+window.startCallFromChat=()=>{
+const btn=document.getElementById('call-start-btn');
+if(!btn.dataset.room){alert(t('error'));return}
+startCall(btn.dataset.room,btn.dataset.name);
+};
+
+function renderParticipants(){
+if(!lkRoom)return;
+const cont=document.getElementById('call-participants');cont.innerHTML='';
+const all=[lkRoom.localParticipant,...Array.from(lkRoom.remoteParticipants.values())];
+all.forEach(p=>{
+const isLocal=p===lkRoom.localParticipant;
+const isSpeaking=p.isSpeaking;
+const isMuted=!p.isMicrophoneEnabled;
+const rawName=p.identity.split('_')[0];
+const name=isLocal?t('you'):(namesCache[rawName+'@x']||namesCache[rawName]||rawName);
+const initial=(name||'?').charAt(0).toUpperCase();
+const d=document.createElement('div');
+d.className='participant'+(isSpeaking?' speaking':'');
+d.innerHTML=`<div class="participant-avatar">${initial}${isMuted?'<div class="participant-muted">🔇</div>':''}</div><div class="participant-name">${esc(name)}</div>`;
+cont.appendChild(d);
+});
 }
+
+window.toggleMic=async()=>{
+if(!lkRoom)return;
+const enabled=lkRoom.localParticipant.isMicrophoneEnabled;
+await lkRoom.localParticipant.setMicrophoneEnabled(!enabled);
+updateMicBtn();renderParticipants();
+};
+
+function updateMicBtn(){
+const btn=document.getElementById('call-mic-btn');if(!lkRoom)return;
+if(lkRoom.localParticipant.isMicrophoneEnabled){btn.classList.remove('muted');btn.textContent='🎤'}
+else{btn.classList.add('muted');btn.textContent='🔇'}
+}
+
+window.endCall=async()=>{
+try{if(lkRoom){await lkRoom.disconnect();lkRoom=null}}catch(e){}
+document.querySelectorAll('audio').forEach(a=>{if(a.srcObject)a.remove()});
+document.getElementById('call-modal').classList.remove('show');
+};
+
+document.getElementById('call-mic-btn').onclick=toggleMic;
+document.getElementById('call-end-btn').onclick=endCall;
+
 // ===== شروع =====
 (async()=>{
+applyLang();
+await loadMyProfile();
+await registerSession();
 await loadStories();
+// آپدیت آواتار خانه
+const homeAv=document.getElementById('home-avatar');
+if(homeAv&&avatarsCache[myEmail]){
+homeAv.textContent='';
+homeAv.style.backgroundImage=`url('${avatarsCache[myEmail]}')`;
+}
+const greeting=document.getElementById('home-greeting');
+if(greeting&&namesCache[myEmail]){
+greeting.textContent=(lang==='fa'?'سلام، ':'Hi, ')+namesCache[myEmail]+'!';
+}
 stRt=sb.channel('stories-rt').on('postgres_changes',{event:'*',schema:'public',table:'stories'},()=>loadStories()).subscribe();
 })();
 window.addEventListener('beforeunload',()=>{
 if(rtCh)sb.removeChannel(rtCh);
 if(stRt)sb.removeChannel(stRt);
+if(lkRoom){try{lkRoom.disconnect()}catch(e){}}
 });
 </script>
 </body>
