@@ -155,6 +155,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 [dir="ltr"] .msg-menu-item{text-align:left}
 .msg-menu-item:hover{background:rgba(0,212,255,.15)}
 .msg-menu-item.reply{color:var(--p)}
+.msg-menu-item.delete{color:#ef4444}
 .modal-overlay{position:fixed;inset:0;background:rgba(5,6,26,.8);backdrop-filter:blur(6px);display:none;justify-content:center;align-items:center;z-index:1000;padding:16px;overflow-y:auto}
 .modal-overlay.show{display:flex}
 .modal{background:#0a0e28;border:2px solid var(--bd);border-radius:20px;padding:22px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
@@ -232,6 +233,10 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .msg-check{font-weight:700;display:inline-block;letter-spacing:-2px}
 .msg-check.sent{color:#8b9dc3;opacity:.8}
 .msg-check.read{color:#22c55e;text-shadow:0 0 6px rgba(34,197,94,.5)}
+
+/* ===== پیام حذف‌شده ===== */
+.msg.deleted{opacity:.6;font-style:italic}
+.msg-deleted-txt{font-size:12.5px;color:var(--mut);font-style:italic;display:flex;align-items:center;gap:6px}
 
 /* ===== پروفایل ===== */
 .profile-card{text-align:center;padding:24px 16px;background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(123,63,242,.1));border:2px solid var(--bd);border-radius:20px;margin-bottom:14px;backdrop-filter:blur(10px)}
@@ -803,6 +808,7 @@ onlyTeacher:'فقط معلم می‌تونه ویدیو اضافه کنه',delet
 profile:'پروفایل',editProfileTitle:'✏️ ویرایش پروفایل',usernameLbl:'نام کاربری',usernameHint:'فقط حروف انگلیسی، اعداد و _ (بدون @)',bioLbl:'درباره من',phoneLbl:'📱 شماره تماس',phoneLbl2:'شماره تماس (اختیاری)',emailLbl:'✉️ ایمیل',startChat:'شروع گفتگو',noBio:'درباره من چیزی ننوشتی',
 settings:'تنظیمات',accountSection:'👤 حساب کاربری',profileDesc:'نام، عکس، بیوگرافی',languageSection:'🌐 زبان',language:'زبان',languageDesc:'فارسی یا انگلیسی',securitySection:'🔒 امنیت',twoFA:'رمز دو مرحله‌ای',twoFADesc:'محافظت بیشتر از حساب',twoFATitle:'🔐 رمز دو مرحله‌ای',twoFADesc2:'با فعال‌سازی، هنگام ورود یک کد ۶ رقمی به ایمیلت فرستاده می‌شود.',twoFAEnable:'فعال‌سازی',twoFACodeLbl:'کد ۶ رقمی',verify:'تأیید',activeSessions:'نشست‌های فعال',activeSessionsDesc:'دستگاه‌های متصل',sessionsTitle:'📱 نشست‌های فعال',sessionsDesc:'دستگاه‌هایی که با حساب تو لاگین کردن:',logoutAll:'خروج از همه',changePassword:'تغییر رمز عبور',changePasswordDesc:'رمز جدید تنظیم کن',changePasswordTitle:'🔑 تغییر رمز عبور',newPassword:'رمز جدید',confirmPassword:'تکرار رمز جدید',aboutSection:'ℹ️ درباره',appVersion:'نسخه برنامه',logoutBtn:'خروج از حساب',logoutDesc:'خارج شدن از این دستگاه',
 callStart:'شروع تماس',callGroup:'تماس گروهی',callConnecting:'در حال اتصال...',callConnected:'متصل شد',callError:'خطا در تماس',
+deleteForAll:'حذف برای همه',deleteForMe:'حذف فقط برای من',deletedMsg:'این پیام حذف شد',deleteConfirmAll:'OK = حذف برای همه، Cancel = حذف فقط برای من',deleteConfirmMe:'این پیام برای تو حذف شود؟',
 },
 en:{
 appName:'Bale Melle',appTagline:'Super App',welcome:'Hello!',welcomeSub:'Welcome to Bale Melle',
@@ -832,6 +838,7 @@ onlyTeacher:'Only the teacher can add videos',deleteVideo:'Delete this video?',d
 profile:'Profile',editProfileTitle:'✏️ Edit Profile',usernameLbl:'Username',usernameHint:'Only a-z, 0-9, _ (no @)',bioLbl:'About me',phoneLbl:'📱 Phone',phoneLbl2:'Phone (optional)',emailLbl:'✉️ Email',startChat:'Start Chat',noBio:'No bio yet',
 settings:'Settings',accountSection:'👤 Account',profileDesc:'Name, photo, bio',languageSection:'🌐 Language',language:'Language',languageDesc:'Persian or English',securitySection:'🔒 Security',twoFA:'Two-Factor Auth',twoFADesc:'Extra account protection',twoFATitle:'🔐 Two-Factor Auth',twoFADesc2:'When enabled, a 6-digit code is sent to your email on login.',twoFAEnable:'Enable',twoFACodeLbl:'6-digit code',verify:'Verify',activeSessions:'Active Sessions',activeSessionsDesc:'Connected devices',sessionsTitle:'📱 Active Sessions',sessionsDesc:'Devices logged into your account:',logoutAll:'Log out all',changePassword:'Change Password',changePasswordDesc:'Set a new password',changePasswordTitle:'🔑 Change Password',newPassword:'New password',confirmPassword:'Confirm new password',aboutSection:'ℹ️ About',appVersion:'App Version',logoutBtn:'Log out',logoutDesc:'Sign out from this device',
 callStart:'Start Call',callGroup:'Group Call',callConnecting:'Connecting...',callConnected:'Connected',callError:'Call error',
+deleteForAll:'Delete for everyone',deleteForMe:'Delete for me only',deletedMsg:'This message was deleted',deleteConfirmAll:'OK = Delete for everyone, Cancel = Delete for me only',deleteConfirmMe:'Delete this message for you?',
 }
 };
 
@@ -1208,17 +1215,39 @@ setupRT();
 };
 
 window.closeRoom=()=>{room.classList.remove('active');curChat=null;if(rtCh)sb.removeChannel(rtCh);cancelReply()};
+
 async function loadMsgs(){
 if(!curChat)return;let q;
 if(curChat.type==='private'){q=sb.from('messages').select('*').is('chat_id',null).or(`and(sender_email.eq.${myEmail},receiver_email.eq.${curChat.email}),and(sender_email.eq.${curChat.email},receiver_email.eq.${myEmail})`).order('created_at',{ascending:true})}
 else{q=sb.from('messages').select('*').eq('chat_id',curChat.id).order('created_at',{ascending:true})}
 const{data}=await q;
+const{data:myDeleted}=await sb.from('deleted_messages').select('message_id').eq('user_email',myEmail);
+const deletedIds=new Set((myDeleted||[]).map(d=>d.message_id));
 msgArea.innerHTML='';
-(data||[]).forEach(m=>addMsg(m));
+(data||[]).forEach(m=>{
+if(deletedIds.has(m.id))return;
+addMsg(m);
+});
 await markMessagesRead();
 await updateGroupChecks();
 }
+
 function addMsg(m){
+// اگه پیام برای همه حذف شده
+if(m.deleted_for_all){
+const d=document.createElement('div');
+d.className='msg deleted '+(m.sender_email===myEmail?'mine':'other');
+d.dataset.id=m.id;d.dataset.type='deleted';
+let h='';
+if(curChat.type!=='private'&&m.sender_email!==myEmail){
+const dispName=namesCache[m.sender_email]||m.sender_email.split('@')[0];
+h+=`<div class="msg-sender">${esc(dispName)}</div>`;
+}
+h+=`<div class="msg-deleted-txt">🚫 ${t('deletedMsg')}</div>`;
+h+=`<div class="msg-actions" data-id="${m.id}">⋯</div>`;
+d.innerHTML=h;msgArea.appendChild(d);msgArea.scrollTop=msgArea.scrollHeight;
+return;
+}
 const d=document.createElement('div');
 d.className='msg '+(m.sender_email===myEmail?'mine':'other');
 d.dataset.id=m.id;d.dataset.type=m.message_type;
@@ -1234,7 +1263,7 @@ else if(m.message_type==='image'&&m.file_url){h+=`<div class="img-msg"><img src=
 else if(m.message_type==='file'&&m.file_url){h+=`<div class="file-msg"><div class="file-icon">📄</div><div class="file-info"><div class="file-name">${esc(m.file_name||'file')}</div><div class="file-size">${fmtSz(m.file_size)}</div></div><a class="file-dl" href="${esc(m.file_url)}" download="${esc(m.file_name||'')}" target="_blank">⬇</a></div>`}
 else{h+=`<div>${esc(m.content||'')}</div>`}
 if(m.edited_at)h+=`<div class="msg-edited">${t('edited')}</div>`;
-// تیک برای پیام‌های خودم
+// تیک
 if(m.sender_email===myEmail){
 if(curChat.type==='private'){
 const isRead=m.read_at?true:false;
@@ -1246,6 +1275,7 @@ h+=`<div class="msg-meta" data-check="${m.id}"><span class="msg-check sent">✓<
 h+=`<div class="msg-actions" data-id="${m.id}">⋯</div>`;
 d.innerHTML=h;msgArea.appendChild(d);msgArea.scrollTop=msgArea.scrollHeight;
 }
+
 function setupRT(){
 if(rtCh)sb.removeChannel(rtCh);
 rtCh=sb.channel('r-'+Date.now())
@@ -1268,10 +1298,23 @@ let ok=false;
 if(curChat.type==='private'){
 ok=(m.sender_email===myEmail&&m.receiver_email===curChat.email)||(m.sender_email===curChat.email&&m.receiver_email===myEmail);
 }else{ok=m.chat_id===curChat.id}
-if(ok){const o=msgArea.querySelector(`[data-id="${m.id}"]`);if(o)o.remove();addMsg(m);updateGroupChecks()}
+if(ok){
+const o=msgArea.querySelector(`[data-id="${m.id}"]`);
+if(o)o.remove();
+if(!m.deleted_for_all)addMsg(m);
+else addMsg(m);
+updateGroupChecks();
+}
 })
 .on('postgres_changes',{event:'INSERT',schema:'public',table:'message_reads'},()=>{
 updateGroupChecks();
+})
+.on('postgres_changes',{event:'INSERT',schema:'public',table:'deleted_messages'},async p=>{
+const dd=p.new;
+if(dd.user_email===myEmail){
+const el=msgArea.querySelector(`[data-id="${dd.message_id}"]`);
+if(el)el.remove();
+}
 })
 .subscribe();
 }
@@ -1331,6 +1374,7 @@ checkEl.innerHTML='<span class="msg-check sent">✓</span>';
 });
 }
 
+// ============ ارسال پیام ============
 const msgIn=document.getElementById('msg-input'),sendBtn=document.getElementById('send-btn');
 async function sendTxt(){
 const c=msgIn.value.trim();if(!c||!curChat)return;
@@ -1391,16 +1435,22 @@ if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.rep
 await sb.from('messages').insert(pl);cancelReply();
 },200)};
 
+// ============ منوی پیام (Reply / Edit / Delete) ============
 const msgMenu=document.getElementById('msg-menu');
 msgArea.addEventListener('click',e=>{
 const ab=e.target.closest('.msg-actions');
 if(ab){e.stopPropagation();const id=ab.dataset.id;const d=ab.closest('.msg');
 const ty=d.dataset.type;const snd=d.classList.contains('mine')?myEmail:(curChat.type==='private'?curChat.email:'');
-const ct=d.querySelector('div:not(.msg-sender):not(.reply-preview):not(.msg-actions):not(.voice-wrap):not(.img-msg):not(.file-msg):not(.msg-meta)')?.textContent||'';
-menuTgt={id,ty,ct,snd};let h=`<button class="msg-menu-item reply" data-a="reply">↩ ${t('replyLabel')}</button>`;
-if(ty==='text'&&snd===myEmail)h+=`<button class="msg-menu-item" data-a="edit">${t('editLabel')}</button>`;
+const isMine=d.classList.contains('mine');
+const ct=d.querySelector('div:not(.msg-sender):not(.reply-preview):not(.msg-actions):not(.voice-wrap):not(.img-msg):not(.file-msg):not(.msg-meta):not(.msg-deleted-txt)')?.textContent||'';
+menuTgt={id,ty,ct,snd,isMine};
+let h=`<button class="msg-menu-item reply" data-a="reply">↩ ${t('replyLabel')}</button>`;
+if(ty==='text'&&isMine)h+=`<button class="msg-menu-item" data-a="edit">${t('editLabel')}</button>`;
+h+=`<button class="msg-menu-item delete" data-a="delete">🗑️ ${t('delete')}</button>`;
 msgMenu.innerHTML=h;
-const w=180,h2=(ty==='text'&&snd===myEmail)?110:58;
+let items=2;
+if(ty==='text'&&isMine)items=3;
+const w=180,h2=items*45+16;
 let x=ab.getBoundingClientRect().left,y=ab.getBoundingClientRect().bottom+5;
 if(document.dir==='rtl')x=ab.getBoundingClientRect().right-w;
 x=Math.max(10,Math.min(x,innerWidth-w-10));y=Math.min(y,innerHeight-h2-10);
@@ -1411,20 +1461,43 @@ if(vb.textContent==='▶'){curAud=new Audio(u);curAud.play();vb.textContent='⏸
 const im=e.target.closest('.img-msg img');if(im){window.open(im.dataset.full||im.src,'_blank')}
 const rp=e.target.closest('.reply-preview');if(rp){const tid=rp.dataset.rid;const tm=msgArea.querySelector(`[data-id="${tid}"]`);if(tm){tm.scrollIntoView({behavior:'smooth',block:'center'});tm.style.background='rgba(255,243,205,.3)';setTimeout(()=>tm.style.background='',1500)}}
 });
+
 msgMenu.addEventListener('click',async e=>{
 const it=e.target.closest('.msg-menu-item');if(!it||!menuTgt)return;
-const a=it.dataset.a;const{id,ty,ct,snd}=menuTgt;msgMenu.classList.remove('show');
+const a=it.dataset.a;const{id,ty,ct,snd,isMine}=menuTgt;msgMenu.classList.remove('show');
 if(a==='edit'){const{data}=await sb.from('messages').select('content').eq('id',id).single();
 if(data){editId=id;document.getElementById('edit-inp').value=data.content;document.getElementById('edit-modal').classList.add('show')}}
 else if(a==='reply'){let rc=ct;
 if(ty==='voice'){const{data}=await sb.from('messages').select('audio_duration').eq('id',id).single();rc=t('voiceMsg')+' ('+fmtT(data?.audio_duration||0)+')'}
 else if(ty==='image')rc=t('imageMsg');
 else if(ty==='file'){const{data}=await sb.from('messages').select('file_name').eq('id',id).single();rc=t('fileMsg')+' '+(data?.file_name||'')}
+else if(ty==='deleted')rc=t('deletedMsg');
 replyTo={id,sender:snd,content:rc,type:ty};
 document.getElementById('reply-bar-name').textContent=snd.split('@')[0];
 document.getElementById('reply-bar-text').textContent=rc;
 document.getElementById('reply-bar').classList.add('show');msgIn.focus()}
+else if(a==='delete'){
+if(isMine){
+const choice=confirm(t('deleteConfirmAll'));
+if(choice){
+// حذف برای همه
+const{error}=await sb.from('messages').update({deleted_for_all:true,content:null,file_url:null,audio_url:null,file_name:null}).eq('id',id);
+if(error){alert(t('error')+': '+error.message);return}
+}else{
+// حذف فقط برای من
+await sb.from('deleted_messages').insert({message_id:id,user_email:myEmail});
+const el=msgArea.querySelector(`[data-id="${id}"]`);
+if(el)el.remove();
+}
+}else{
+if(!confirm(t('deleteConfirmMe')))return;
+await sb.from('deleted_messages').insert({message_id:id,user_email:myEmail});
+const el=msgArea.querySelector(`[data-id="${id}"]`);
+if(el)el.remove();
+}
+}
 });
+
 document.addEventListener('click',e=>{if(!msgMenu.classList.contains('show'))return;if(e.target.closest('#msg-menu')||e.target.closest('.msg-actions'))return;msgMenu.classList.remove('show')});
 function cancelReply(){replyTo=null;document.getElementById('reply-bar')?.classList.remove('show')}
 document.getElementById('reply-close').onclick=cancelReply;
@@ -1435,6 +1508,7 @@ const{error}=await sb.from('messages').update({content:v,edited_at:new Date().to
 if(error)alert(t('error')+': '+error.message);else{closeModal('edit-modal');editId=null}
 };
 
+// ============ مخاطب و گروه جدید ============
 window.openNewContact=()=>document.getElementById('contact-modal').classList.add('show');
 document.getElementById('contact-add').onclick=async()=>{
 const em=document.getElementById('contact-email').value.trim().toLowerCase();
@@ -1479,7 +1553,7 @@ await sb.from('chat_members').insert(mem);closeModal('group-modal');selCts=[];
 switchTab(grpType);openRoom(grpType,data);
 };
 
-// ===== استوری =====
+// ============ استوری ============
 const stBar=document.getElementById('stories-bar');
 async function loadStories(){
 const{data}=await sb.from('stories').select('*').order('created_at',{ascending:false});
@@ -1551,7 +1625,7 @@ window.nextStory=()=>{if(!curStUser)return;const sts=stByUser[curStUser];if(curS
 window.prevStory=()=>{if(!curStUser)return;if(curStIdx>0){curStIdx--;showStory()}else{const us=Object.keys(stByUser);const i=us.indexOf(curStUser);if(i>0){curStUser=us[i-1];curStIdx=stByUser[curStUser].length-1;showStory()}}};
 window.closeStory=()=>{document.getElementById('story-viewer').classList.remove('show');if(stTmr){clearInterval(stTmr);stTmr=null}document.getElementById('story-media').innerHTML='';curStUser=null;curStIdx=0};
 
-// ===== کتابخانه =====
+// ============ کتابخانه ============
 async function loadLib(){
 const list=document.getElementById('lib-list');list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
 const{data}=await sb.from('library').select('*').order('created_at',{ascending:false});
@@ -1587,7 +1661,7 @@ await sb.from('library').insert({title:ti,description:d,media_url:ud.publicUrl,m
 closeModal('lib-modal');loadLib();btn.disabled=false;btn.textContent=t('add');
 };
 
-// ===== ربات =====
+// ============ ربات ============
 async function loadBots(){
 const list=document.getElementById('bots-list');list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
 const{data}=await sb.from('bots').select('*').order('created_at',{ascending:false});
