@@ -227,6 +227,12 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .operator-name{font-size:14px;font-weight:700}
 .operator-desc{font-size:11px;color:var(--mut)}
 
+/* ===== تیک پیام ===== */
+.msg-meta{display:flex;align-items:center;justify-content:flex-end;gap:3px;margin-top:3px;font-size:11px;direction:ltr}
+.msg-check{font-weight:700;display:inline-block;letter-spacing:-2px}
+.msg-check.sent{color:#8b9dc3;opacity:.8}
+.msg-check.read{color:#22c55e;text-shadow:0 0 6px rgba(34,197,94,.5)}
+
 /* ===== پروفایل ===== */
 .profile-card{text-align:center;padding:24px 16px;background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(123,63,242,.1));border:2px solid var(--bd);border-radius:20px;margin-bottom:14px;backdrop-filter:blur(10px)}
 .profile-avatar-wrap{position:relative;display:inline-block;margin-bottom:12px}
@@ -568,7 +574,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <div style="width:44px"></div>
 </div>
 
-<!-- حساب کاربری -->
 <div class="settings-section">
 <h3 data-i18n="accountSection">👤 حساب کاربری</h3>
 <div class="settings-item" onclick="openMyProfile()">
@@ -581,7 +586,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 </div>
 </div>
 
-<!-- زبان -->
 <div class="settings-section">
 <h3 data-i18n="languageSection">🌐 زبان</h3>
 <div class="settings-item">
@@ -597,7 +601,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 </div>
 </div>
 
-<!-- امنیت -->
 <div class="settings-section">
 <h3 data-i18n="securitySection">🔒 امنیت</h3>
 <div class="settings-item" onclick="openTwoFA()">
@@ -626,7 +629,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 </div>
 </div>
 
-<!-- درباره -->
 <div class="settings-section">
 <h3 data-i18n="aboutSection">ℹ️ درباره</h3>
 <div class="settings-item" onclick="alert('بله مله - نسخه ۱.۰\nساخته شده توسط استودیو MMA')">
@@ -862,9 +864,6 @@ let myProfile=null;
 
 async function getProfile(email){
 if(!email)return null;
-if(avatarsCache[email]!==undefined && namesCache[email]!==undefined){
-return{email,name:namesCache[email],avatar_url:avatarsCache[email]};
-}
 const{data}=await sb.from('profiles').select('*').eq('email',email).maybeSingle();
 if(data){
 namesCache[email]=data.name||email.split('@')[0];
@@ -990,7 +989,7 @@ await openMyProfile();
 // ============ نشست‌ها و 2FA ============
 async function registerSession(){
 const ua=navigator.userAgent;
-let device=lang==='fa'?'دستگاه نامشخص':'Unknown device';
+let device='Unknown device';
 if(/Android/i.test(ua))device='Android';
 else if(/iPhone|iPad|iPod/i.test(ua))device='iPhone/iPad';
 else if(/Windows/i.test(ua))device='Windows';
@@ -1213,7 +1212,11 @@ async function loadMsgs(){
 if(!curChat)return;let q;
 if(curChat.type==='private'){q=sb.from('messages').select('*').is('chat_id',null).or(`and(sender_email.eq.${myEmail},receiver_email.eq.${curChat.email}),and(sender_email.eq.${curChat.email},receiver_email.eq.${myEmail})`).order('created_at',{ascending:true})}
 else{q=sb.from('messages').select('*').eq('chat_id',curChat.id).order('created_at',{ascending:true})}
-const{data}=await q;msgArea.innerHTML='';(data||[]).forEach(m=>addMsg(m));
+const{data}=await q;
+msgArea.innerHTML='';
+(data||[]).forEach(m=>addMsg(m));
+await markMessagesRead();
+await updateGroupChecks();
 }
 function addMsg(m){
 const d=document.createElement('div');
@@ -1231,14 +1234,101 @@ else if(m.message_type==='image'&&m.file_url){h+=`<div class="img-msg"><img src=
 else if(m.message_type==='file'&&m.file_url){h+=`<div class="file-msg"><div class="file-icon">📄</div><div class="file-info"><div class="file-name">${esc(m.file_name||'file')}</div><div class="file-size">${fmtSz(m.file_size)}</div></div><a class="file-dl" href="${esc(m.file_url)}" download="${esc(m.file_name||'')}" target="_blank">⬇</a></div>`}
 else{h+=`<div>${esc(m.content||'')}</div>`}
 if(m.edited_at)h+=`<div class="msg-edited">${t('edited')}</div>`;
+// تیک برای پیام‌های خودم
+if(m.sender_email===myEmail){
+if(curChat.type==='private'){
+const isRead=m.read_at?true:false;
+h+=`<div class="msg-meta">${isRead?'<span class="msg-check read">✓✓</span>':'<span class="msg-check sent">✓</span>'}</div>`;
+}else{
+h+=`<div class="msg-meta" data-check="${m.id}"><span class="msg-check sent">✓</span></div>`;
+}
+}
 h+=`<div class="msg-actions" data-id="${m.id}">⋯</div>`;
 d.innerHTML=h;msgArea.appendChild(d);msgArea.scrollTop=msgArea.scrollHeight;
 }
-function setupRT(){if(rtCh)sb.removeChannel(rtCh);
-rtCh=sb.channel('r-'+Date.now()).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},p=>{const m=p.new;
-if(curChat.type==='private'){const ok=(m.sender_email===myEmail&&m.receiver_email===curChat.email)||(m.sender_email===curChat.email&&m.receiver_email===myEmail);if(ok&&!m.chat_id)addMsg(m)}else{if(m.chat_id===curChat.id)addMsg(m)}}).on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages'},p=>{const m=p.new;let ok=false;
-if(curChat.type==='private'){ok=(m.sender_email===myEmail&&m.receiver_email===curChat.email)||(m.sender_email===curChat.email&&m.receiver_email===myEmail)}else{ok=m.chat_id===curChat.id}
-if(ok){const o=msgArea.querySelector(`[data-id="${m.id}"]`);if(o)o.remove();addMsg(m)}}).subscribe();
+function setupRT(){
+if(rtCh)sb.removeChannel(rtCh);
+rtCh=sb.channel('r-'+Date.now())
+.on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},async p=>{
+const m=p.new;
+let ok=false;
+if(curChat.type==='private'){
+ok=(m.sender_email===myEmail&&m.receiver_email===curChat.email)||(m.sender_email===curChat.email&&m.receiver_email===myEmail);
+if(ok&&!m.chat_id){
+addMsg(m);
+if(m.sender_email===curChat.email){await markMessagesRead()}
+}
+}else{
+if(m.chat_id===curChat.id){addMsg(m);await markMessagesRead();updateGroupChecks()}
+}
+})
+.on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages'},p=>{
+const m=p.new;
+let ok=false;
+if(curChat.type==='private'){
+ok=(m.sender_email===myEmail&&m.receiver_email===curChat.email)||(m.sender_email===curChat.email&&m.receiver_email===myEmail);
+}else{ok=m.chat_id===curChat.id}
+if(ok){const o=msgArea.querySelector(`[data-id="${m.id}"]`);if(o)o.remove();addMsg(m);updateGroupChecks()}
+})
+.on('postgres_changes',{event:'INSERT',schema:'public',table:'message_reads'},()=>{
+updateGroupChecks();
+})
+.subscribe();
+}
+
+// ============ تیک خوانده‌شده ============
+async function markMessagesRead(){
+if(!curChat)return;
+try{
+if(curChat.type==='private'){
+await sb.from('messages')
+.update({read_at:new Date().toISOString()})
+.is('chat_id',null)
+.eq('sender_email',curChat.email)
+.eq('receiver_email',myEmail)
+.is('read_at',null);
+}else{
+const{data:unread}=await sb.from('messages')
+.select('id')
+.eq('chat_id',curChat.id)
+.neq('sender_email',myEmail);
+if(!unread?.length)return;
+const ids=unread.map(m=>m.id);
+const{data:already}=await sb.from('message_reads')
+.select('message_id')
+.in('message_id',ids)
+.eq('user_email',myEmail);
+const alreadyIds=new Set((already||[]).map(r=>r.message_id));
+const toInsert=ids.filter(id=>!alreadyIds.has(id)).map(id=>({message_id:id,user_email:myEmail}));
+if(toInsert.length){
+await sb.from('message_reads').insert(toInsert);
+}
+}
+}catch(e){console.error('markRead:',e)}
+}
+
+async function updateGroupChecks(){
+if(!curChat||curChat.type==='private')return;
+const myMsgs=[...msgArea.querySelectorAll('.msg.mine')];
+if(!myMsgs.length)return;
+const ids=myMsgs.map(el=>el.dataset.id);
+const{data:members}=await sb.from('chat_members').select('member_email').eq('chat_id',curChat.id);
+const totalOthers=(members||[]).filter(m=>m.member_email!==myEmail).length;
+if(totalOthers===0)return;
+const{data:reads}=await sb.from('message_reads').select('message_id').in('message_id',ids);
+const readCount={};
+(reads||[]).forEach(r=>{readCount[r.message_id]=(readCount[r.message_id]||0)+1});
+myMsgs.forEach(el=>{
+const id=el.dataset.id;
+const cnt=readCount[id]||0;
+const checkEl=el.querySelector('[data-check]');
+if(!checkEl)return;
+if(cnt>=totalOthers){
+checkEl.innerHTML='<span class="msg-check read">✓✓</span>';
+}else{
+checkEl.innerHTML='<span class="msg-check sent">✓</span>';
+}
+});
 }
 
 const msgIn=document.getElementById('msg-input'),sendBtn=document.getElementById('send-btn');
@@ -1306,7 +1396,7 @@ msgArea.addEventListener('click',e=>{
 const ab=e.target.closest('.msg-actions');
 if(ab){e.stopPropagation();const id=ab.dataset.id;const d=ab.closest('.msg');
 const ty=d.dataset.type;const snd=d.classList.contains('mine')?myEmail:(curChat.type==='private'?curChat.email:'');
-const ct=d.querySelector('div:not(.msg-sender):not(.reply-preview):not(.msg-actions):not(.voice-wrap):not(.img-msg):not(.file-msg)')?.textContent||'';
+const ct=d.querySelector('div:not(.msg-sender):not(.reply-preview):not(.msg-actions):not(.voice-wrap):not(.img-msg):not(.file-msg):not(.msg-meta)')?.textContent||'';
 menuTgt={id,ty,ct,snd};let h=`<button class="msg-menu-item reply" data-a="reply">↩ ${t('replyLabel')}</button>`;
 if(ty==='text'&&snd===myEmail)h+=`<button class="msg-menu-item" data-a="edit">${t('editLabel')}</button>`;
 msgMenu.innerHTML=h;
@@ -1818,7 +1908,7 @@ const isLocal=p===lkRoom.localParticipant;
 const isSpeaking=p.isSpeaking;
 const isMuted=!p.isMicrophoneEnabled;
 const rawName=p.identity.split('_')[0];
-const name=isLocal?t('you'):(namesCache[rawName+'@x']||namesCache[rawName]||rawName);
+const name=isLocal?t('you'):(namesCache[rawName]||rawName);
 const initial=(name||'?').charAt(0).toUpperCase();
 const d=document.createElement('div');
 d.className='participant'+(isSpeaking?' speaking':'');
@@ -1855,7 +1945,6 @@ applyLang();
 await loadMyProfile();
 await registerSession();
 await loadStories();
-// آپدیت آواتار خانه
 const homeAv=document.getElementById('home-avatar');
 if(homeAv&&avatarsCache[myEmail]){
 homeAv.textContent='';
