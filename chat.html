@@ -238,6 +238,20 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .msg.deleted{opacity:.6;font-style:italic}
 .msg-deleted-txt{font-size:12.5px;color:var(--mut);font-style:italic;display:flex;align-items:center;gap:6px}
 
+/* ===== وضعیت کاربر ===== */
+.status-text{font-size:11px;color:var(--p);font-style:italic;display:flex;align-items:center;gap:4px;animation:fadeIn .3s}
+.status-text.rec{color:#ef4444}
+.status-text.up{color:#f59e0b}
+.status-online{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-left:4px;box-shadow:0 0 6px rgba(34,197,94,.8);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.typing-dots{display:inline-flex;gap:2px;align-items:center}
+.typing-dots span{width:3px;height:3px;border-radius:50%;background:var(--p);animation:td 1.4s infinite}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+.list-item-status{font-size:10.5px;color:var(--p);direction:ltr;text-align:right;margin-top:2px;font-style:italic}
+
 /* ===== پروفایل ===== */
 .profile-card{text-align:center;padding:24px 16px;background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(123,63,242,.1));border:2px solid var(--bd);border-radius:20px;margin-bottom:14px;backdrop-filter:blur(10px)}
 .profile-avatar-wrap{position:relative;display:inline-block;margin-bottom:12px}
@@ -389,6 +403,101 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <a href="https://www.abfa.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">💧</div><div class="pay-title" data-i18n="payWater">پرداخت آب</div></a>
 <a href="https://epay.bankmellat.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">📞</div><div class="pay-title" data-i18n="payPhone">پرداخت تلفن</div></a>
 </div>
+</div><body>
+<!-- صفحه Home -->
+<div class="page active" id="page-home">
+<div class="top-bar">
+<button class="icon-btn" onclick="showNotif()"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></button>
+<div class="app-title"><h1><span data-i18n="appName">بله مله</span> <span>✈</span></h1><p data-i18n="appTagline">سوپر اپلیکیشن</p></div>
+<button class="lang-btn" onclick="toggleLang()"><span id="lang-lbl">EN</span></button>
+</div>
+<div class="welcome-card">
+<div class="welcome-avatar" id="home-avatar" onclick="openMyProfile()">✈</div>
+<div class="welcome-text"><h2 id="home-greeting" data-i18n="welcome">سلام!</h2><p data-i18n="welcomeSub">به بله مله خوش آمدید</p></div>
+</div>
+<div class="quick-actions">
+<button class="quick-btn" onclick="goTab('group')"><div class="quick-icon g">👥</div><div class="quick-label" data-i18n="groups">گروه‌ها</div></button>
+<button class="quick-btn" onclick="goTab('channel')"><div class="quick-icon ch">📢</div><div class="quick-label" data-i18n="channels">کانال‌ها</div></button>
+<button class="quick-btn" onclick="goTab('private')"><div class="quick-icon ct">👤</div><div class="quick-label" data-i18n="contacts">مخاطبین</div></button>
+<button class="quick-btn" onclick="goTab('private')"><div class="quick-icon cv">💬</div><div class="quick-label" data-i18n="chats">گفتگوها</div></button>
+</div>
+<div class="quick-actions">
+<button class="quick-btn" onclick="showPage('library')"><div class="quick-icon lb">🎬</div><div class="quick-label" data-i18n="library">کتابخانه</div></button>
+<button class="quick-btn" onclick="showPage('bots')"><div class="quick-icon bot">🤖</div><div class="quick-label" data-i18n="bots">ربات‌ها</div></button>
+<button class="quick-btn" onclick="showPage('payments')"><div class="quick-icon pay">💰</div><div class="quick-label" data-i18n="financeShort">مالی</div></button>
+<button class="quick-btn" onclick="showPage('education')"><div class="quick-icon edu">📚</div><div class="quick-label" data-i18n="education">آموزش</div></button>
+</div>
+<div class="features-grid">
+<div class="feature-card"><div class="feature-icon sec">🔒</div><div class="feature-text"><h4 data-i18n="secTitle">امنیت بالا</h4><p data-i18n="secSub">با رمزنگاری پیشرفته</p></div></div>
+<div class="feature-card"><div class="feature-icon spd">⚡</div><div class="feature-text"><h4 data-i18n="spdTitle">سرعت بالا</h4><p data-i18n="spdSub">ارسال و دریافت سریع</p></div></div>
+<div class="feature-card"><div class="feature-icon cld">☁️</div><div class="feature-text"><h4 data-i18n="cldTitle">فضای ابری</h4><p data-i18n="cldSub">دسترسی از همه جا</p></div></div>
+<div class="feature-card"><div class="feature-icon fre">⭐</div><div class="feature-text"><h4 data-i18n="freTitle">رایگان</h4><p data-i18n="freSub">بدون هزینه، همیشه</p></div></div>
+</div>
+</div>
+
+<!-- صفحه Chats -->
+<div class="page" id="page-chats">
+<div class="top-bar">
+<button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+<div class="app-title"><h1 data-i18n="chats">گفتگوها</h1><p id="my-email-lbl">...</p></div>
+<button class="icon-btn" onclick="logout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button>
+</div>
+<div class="stories-bar" id="stories-bar"></div>
+<div class="action-buttons">
+<button class="action-btn" onclick="openNewContact()"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span data-i18n="newContact">مخاطب</span></button>
+<button class="action-btn" onclick="openNewGroup('group')"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span data-i18n="newGroup">گروه</span></button>
+<button class="action-btn" onclick="openNewGroup('channel')"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg><span data-i18n="newChannel">کانال</span></button>
+</div>
+<div class="tabs">
+<button class="tab active" data-tab="private" onclick="switchTab('private')" data-i18n="privateTab">خصوصی</button>
+<button class="tab" data-tab="group" onclick="switchTab('group')" data-i18n="groups">گروه‌ها</button>
+<button class="tab" data-tab="channel" onclick="switchTab('channel')" data-i18n="channels">کانال‌ها</button>
+</div>
+<div class="list-container" id="list-container"></div>
+</div>
+
+<!-- صفحه کتابخانه -->
+<div class="page" id="page-library">
+<div class="top-bar">
+<button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+<div class="app-title"><h1>🎬 <span data-i18n="library">کتابخانه</span></h1><p data-i18n="librarySub">ویدیوها و محتوا</p></div>
+<button class="icon-btn" onclick="openLibModal()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
+</div>
+<div id="lib-list"></div>
+</div>
+
+<!-- صفحه ربات‌ها -->
+<div class="page" id="page-bots">
+<div class="top-bar">
+<button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+<div class="app-title"><h1>🤖 <span data-i18n="bots">ربات‌ها</span></h1><p data-i18n="botsSub">پاسخ خودکار</p></div>
+<button class="icon-btn" onclick="openBotModal()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
+</div>
+<div id="bots-list"></div>
+</div>
+
+<!-- صفحه مالی -->
+<div class="page" id="page-payments">
+<div class="top-bar">
+<button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+<div class="app-title"><h1>💰 <span data-i18n="finance">خدمات مالی</span></h1><p data-i18n="financeSub">شارژ، بسته، پرداخت</p></div>
+<div style="width:44px"></div>
+</div>
+<div class="welcome-card"><div class="welcome-avatar">💰</div><div class="welcome-text"><h2 data-i18n="wallet">کیف پول</h2><p><span data-i18n="balance">موجودی</span>: <b id="wallet-bal">۰ تومان</b></p></div></div>
+<h3 style="font-size:14px;margin:14px 0 10px;color:var(--p)" data-i18n="chargeSection">📱 شارژ و بسته اینترنت</h3>
+<div class="pay-grid">
+<a href="https://shop.mci.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo mci">M</div><div class="operator-name" data-i18n="mci">همراه اول</div><div class="operator-desc" data-i18n="chargeDesc">شارژ / بسته اینترنت</div></a>
+<a href="https://shop.irancell.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo irancell">I</div><div class="operator-name" data-i18n="irancell">ایرانسل</div><div class="operator-desc" data-i18n="chargeDesc">شارژ / بسته اینترنت</div></a>
+<a href="https://shop.rightel.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo rightel">R</div><div class="operator-name" data-i18n="rightel">رایتل</div><div class="operator-desc" data-i18n="chargeDesc">شارژ / بسته اینترنت</div></a>
+<a href="https://shad.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo mci">📞</div><div class="operator-name" data-i18n="otherOperators">سایر اپراتورها</div><div class="operator-desc" data-i18n="servicePortal">سامانه خدمات</div></a>
+</div>
+<h3 style="font-size:14px;margin:14px 0 10px;color:var(--p)" data-i18n="otherServices">🧾 خدمات دیگر</h3>
+<div class="pay-grid">
+<a href="https://www.tavanir.org.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">💡</div><div class="pay-title" data-i18n="payElectricity">پرداخت برق</div></a>
+<a href="https://www.nigc.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">🔥</div><div class="pay-title" data-i18n="payGas">پرداخت گاز</div></a>
+<a href="https://www.abfa.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">💧</div><div class="pay-title" data-i18n="payWater">پرداخت آب</div></a>
+<a href="https://epay.bankmellat.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">📞</div><div class="pay-title" data-i18n="payPhone">پرداخت تلفن</div></a>
+</div>
 </div>
 <!-- صفحه آموزش -->
 <div class="page" id="page-education">
@@ -434,7 +543,11 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <div class="chat-header">
 <button class="back-btn" onclick="closeRoom()">→</button>
 <div class="room-avatar" id="room-avatar">?</div>
-<div class="room-info" id="room-info-click"><div class="room-name" id="room-name"></div><div class="room-sub" id="room-sub"></div></div>
+<div class="room-info" id="room-info-click">
+<div class="room-name" id="room-name"></div>
+<div class="room-sub" id="room-sub"></div>
+<div id="chat-status" style="min-height:14px;margin-top:2px"></div>
+</div>
 <button class="back-btn call-start-btn" id="call-start-btn" style="display:none" onclick="startCallFromChat()">📞</button>
 </div>
 <div class="messages-area" id="messages-area"></div>
@@ -809,6 +922,7 @@ profile:'پروفایل',editProfileTitle:'✏️ ویرایش پروفایل',u
 settings:'تنظیمات',accountSection:'👤 حساب کاربری',profileDesc:'نام، عکس، بیوگرافی',languageSection:'🌐 زبان',language:'زبان',languageDesc:'فارسی یا انگلیسی',securitySection:'🔒 امنیت',twoFA:'رمز دو مرحله‌ای',twoFADesc:'محافظت بیشتر از حساب',twoFATitle:'🔐 رمز دو مرحله‌ای',twoFADesc2:'با فعال‌سازی، هنگام ورود یک کد ۶ رقمی به ایمیلت فرستاده می‌شود.',twoFAEnable:'فعال‌سازی',twoFACodeLbl:'کد ۶ رقمی',verify:'تأیید',activeSessions:'نشست‌های فعال',activeSessionsDesc:'دستگاه‌های متصل',sessionsTitle:'📱 نشست‌های فعال',sessionsDesc:'دستگاه‌هایی که با حساب تو لاگین کردن:',logoutAll:'خروج از همه',changePassword:'تغییر رمز عبور',changePasswordDesc:'رمز جدید تنظیم کن',changePasswordTitle:'🔑 تغییر رمز عبور',newPassword:'رمز جدید',confirmPassword:'تکرار رمز جدید',aboutSection:'ℹ️ درباره',appVersion:'نسخه برنامه',logoutBtn:'خروج از حساب',logoutDesc:'خارج شدن از این دستگاه',
 callStart:'شروع تماس',callGroup:'تماس گروهی',callConnecting:'در حال اتصال...',callConnected:'متصل شد',callError:'خطا در تماس',
 deleteForAll:'حذف برای همه',deleteForMe:'حذف فقط برای من',deletedMsg:'این پیام حذف شد',deleteConfirmAll:'OK = حذف برای همه، Cancel = حذف فقط برای من',deleteConfirmMe:'این پیام برای تو حذف شود؟',
+typing:'در حال نوشتن...',recordingVoice:'در حال ضبط ویس...',uploadingFile:'در حال ارسال فایل...',online:'آنلاین',lastSeen:'آخرین بازدید',onlineCount:'آنلاین',
 },
 en:{
 appName:'Bale Melle',appTagline:'Super App',welcome:'Hello!',welcomeSub:'Welcome to Bale Melle',
@@ -839,6 +953,7 @@ profile:'Profile',editProfileTitle:'✏️ Edit Profile',usernameLbl:'Username',
 settings:'Settings',accountSection:'👤 Account',profileDesc:'Name, photo, bio',languageSection:'🌐 Language',language:'Language',languageDesc:'Persian or English',securitySection:'🔒 Security',twoFA:'Two-Factor Auth',twoFADesc:'Extra account protection',twoFATitle:'🔐 Two-Factor Auth',twoFADesc2:'When enabled, a 6-digit code is sent to your email on login.',twoFAEnable:'Enable',twoFACodeLbl:'6-digit code',verify:'Verify',activeSessions:'Active Sessions',activeSessionsDesc:'Connected devices',sessionsTitle:'📱 Active Sessions',sessionsDesc:'Devices logged into your account:',logoutAll:'Log out all',changePassword:'Change Password',changePasswordDesc:'Set a new password',changePasswordTitle:'🔑 Change Password',newPassword:'New password',confirmPassword:'Confirm new password',aboutSection:'ℹ️ About',appVersion:'App Version',logoutBtn:'Log out',logoutDesc:'Sign out from this device',
 callStart:'Start Call',callGroup:'Group Call',callConnecting:'Connecting...',callConnected:'Connected',callError:'Call error',
 deleteForAll:'Delete for everyone',deleteForMe:'Delete for me only',deletedMsg:'This message was deleted',deleteConfirmAll:'OK = Delete for everyone, Cancel = Delete for me only',deleteConfirmMe:'Delete this message for you?',
+typing:'typing...',recordingVoice:'Recording voice...',uploadingFile:'Uploading file...',online:'Online',lastSeen:'Last seen',onlineCount:'online',
 }
 };
 
@@ -1136,6 +1251,7 @@ window.logout=async()=>{
 if(!confirm(t('logoutConfirm')))return;
 const sessionId=localStorage.getItem('session_id');
 if(sessionId)await sb.from('sessions').delete().eq('id',sessionId);
+try{await setOffline()}catch(e){}
 await sb.auth.signOut();
 localStorage.removeItem('my_email');
 localStorage.removeItem('session_id');
@@ -1143,6 +1259,179 @@ location.href='index.html';
 };
 window.showNotif=()=>alert(lang==='fa'?'اعلان‌ها به زودی...':'Notifications coming soon...');
 window.closeModal=id=>document.getElementById(id).classList.remove('show');
+// ============================================
+// ===== وضعیت کاربران (آنلاین، تایپ، ضبط ویس، آپلود) =====
+// ============================================
+let typingTimer=null;
+let myStatusChannel=null;
+let statusChannel=null;
+let isCurrentlyTyping=false;
+let isCurrentlyRecording=false;
+let isCurrentlyUploading=false;
+const statusCache={}; // { email: {is_typing, is_recording, is_uploading, chat_id, last_seen, is_online} }
+
+// به‌روزرسانی وضعیت خودم
+async function updateMyStatus(updates){
+try{
+const payload={
+user_email:myEmail,
+chat_id:curChat?.id||null,
+updated_at:new Date().toISOString(),
+last_seen:new Date().toISOString(),
+...updates
+};
+await sb.from('user_status').upsert(payload,{onConflict:'user_email'});
+}catch(e){console.error('updateStatus:',e)}
+}
+
+// وقتی تایپ می‌کنم
+function onTyping(){
+if(!curChat)return;
+if(!isCurrentlyTyping){
+isCurrentlyTyping=true;
+updateMyStatus({is_typing:true,chat_id:curChat.id||null});
+}
+clearTimeout(typingTimer);
+typingTimer=setTimeout(()=>{
+isCurrentlyTyping=false;
+updateMyStatus({is_typing:false});
+},1500);
+}
+
+// وقتی ضبط ویس شروع می‌شه
+function onRecordingStart(){
+isCurrentlyRecording=true;
+updateMyStatus({is_recording:true,chat_id:curChat?.id||null});
+}
+function onRecordingStop(){
+isCurrentlyRecording=false;
+updateMyStatus({is_recording:false});
+}
+
+// وقتی آپلود فایل شروع می‌شه
+function onUploadStart(){
+isCurrentlyUploading=true;
+updateMyStatus({is_uploading:true,chat_id:curChat?.id||null});
+}
+function onUploadStop(){
+isCurrentlyUploading=false;
+updateMyStatus({is_uploading:false});
+}
+
+// آنلاین / آفلاین
+async function setOnline(){
+await updateMyStatus({is_online:true,last_seen:new Date().toISOString()});
+}
+async function setOffline(){
+await updateMyStatus({is_online:false,last_seen:new Date().toISOString(),is_typing:false,is_recording:false,is_uploading:false});
+}
+
+// چک وضعیت هر ۳۰ ثانیه
+setInterval(()=>{
+if(document.hidden){
+setOffline();
+}else{
+setOnline();
+}
+},30000);
+
+// متن وضعیت
+function getStatusText(email){
+const st=statusCache[email];
+if(!st)return '';
+// توی گروه، اگه chat_id درست نیست نشون نده
+if(curChat&&curChat.type!=='private'&&st.chat_id&&st.chat_id!==curChat.id)return '';
+if(st.is_recording)return `<span class="status-text rec">🎤 ${lang==='fa'?'در حال ضبط ویس...':'Recording voice...'}</span>`;
+if(st.is_uploading)return `<span class="status-text up">📎 ${lang==='fa'?'در حال ارسال فایل...':'Uploading file...'}</span>`;
+if(st.is_typing)return `<span class="status-text"><span class="typing-dots"><span></span><span></span><span></span></span> ${lang==='fa'?'در حال نوشتن...':'typing...'}</span>`;
+if(st.is_online)return `<span class="status-text"><span class="status-online"></span> ${lang==='fa'?'آنلاین':'Online'}</span>`;
+if(st.last_seen){
+const diff=Math.floor((Date.now()-new Date(st.last_seen).getTime())/1000);
+if(diff<60)return `<span class="status-text">${lang==='fa'?'آخرین بازدید: الان':'Last seen: Just now'}</span>`;
+if(diff<3600)return `<span class="status-text">${lang==='fa'?'آخرین بازدید: ':'Last seen: '}${Math.floor(diff/60)} ${lang==='fa'?'دقیقه پیش':'min ago'}</span>`;
+if(diff<86400)return `<span class="status-text">${lang==='fa'?'آخرین بازدید: ':'Last seen: '}${Math.floor(diff/3600)} ${lang==='fa'?'ساعت پیش':'hr ago'}</span>`;
+return `<span class="status-text">${lang==='fa'?'آخرین بازدید: ':'Last seen: '}${Math.floor(diff/86400)} ${lang==='fa'?'روز پیش':'day ago'}</span>`;
+}
+return '';
+}
+
+// آپدیت نمایش وضعیت توی هدر چت
+function updateChatStatus(){
+const st=document.getElementById('chat-status');
+if(!st)return;
+if(!curChat){st.innerHTML='';return}
+if(curChat.type==='private'){
+st.innerHTML=getStatusText(curChat.email);
+}else{
+// توی گروه، تعداد آنلاین‌ها
+const members=Object.entries(statusCache).filter(([email,s])=>email!==myEmail&&s.is_online);
+if(members.length===0){st.innerHTML='';return}
+st.innerHTML=`<span class="status-text"><span class="status-online"></span> ${members.length} ${lang==='fa'?'آنلاین':'online'}</span>`;
+}
+}
+
+// لود وضعیت همه کاربران
+async function loadAllStatus(){
+try{
+const{data}=await sb.from('user_status').select('*');
+(data||[]).forEach(s=>{statusCache[s.user_email]=s});
+updateChatStatus();
+}catch(e){console.error(e)}
+}
+
+// راه‌اندازی Realtime وضعیت
+function setupStatusRealtime(){
+if(statusChannel)sb.removeChannel(statusChannel);
+statusChannel=sb.channel('status-rt')
+.on('postgres_changes',{event:'*',schema:'public',table:'user_status'},p=>{
+const s=p.new;
+statusCache[s.user_email]=s;
+if(curChat){
+if(curChat.type==='private'&&s.user_email===curChat.email){
+updateChatStatus();
+}
+if(curChat.type!=='private'){
+updateChatStatus();
+}
+}
+updateListStatus();
+})
+.subscribe();
+}
+
+// آپدیت وضعیت توی لیست چت‌ها
+function updateListStatus(){
+document.querySelectorAll('.list-item').forEach(it=>{
+const av=it.querySelector('.list-avatar');
+if(!av)return;
+const email=av.dataset.email;
+if(!email)return;
+const st=statusCache[email];
+let statusEl=it.querySelector('.list-item-status');
+if(!st||(!st.is_online&&!st.is_typing&&!st.is_recording&&!st.is_uploading)){
+if(statusEl)statusEl.remove();
+return;
+}
+let txt='';
+if(st.is_recording)txt='🎤 '+(lang==='fa'?'در حال ضبط...':'Recording...');
+else if(st.is_uploading)txt='📎 '+(lang==='fa'?'در حال ارسال...':'Uploading...');
+else if(st.is_typing)txt='✍️ '+(lang==='fa'?'در حال نوشتن...':'typing...');
+else if(st.is_online)txt='🟢 '+(lang==='fa'?'آنلاین':'Online');
+if(!statusEl){
+statusEl=document.createElement('div');
+statusEl.className='list-item-status';
+const info=it.querySelector('.list-info');
+if(info)info.appendChild(statusEl);
+}
+statusEl.textContent=txt;
+});
+}
+
+// آپدیت هر ۳۰ ثانیه برای آفلاین‌های قدیمی
+setInterval(()=>{
+updateChatStatus();
+updateListStatus();
+},10000);
 // ============ لیست چت‌ها ============
 const listC=document.getElementById('list-container');
 async function renderList(){
@@ -1166,6 +1455,18 @@ const av=it.querySelector('.list-avatar');
 if(avatarsCache[e]){av.textContent='';av.style.backgroundImage=`url('${avatarsCache[e]}')`}
 av.onclick=(ev)=>{ev.stopPropagation();openProfile(e)};
 it.querySelector('.list-info').onclick=()=>openRoom('private',e);
+// وضعیت
+const st=statusCache[e];
+if(st){
+const statusEl=document.createElement('div');
+statusEl.className='list-item-status';
+let txt='';
+if(st.is_recording)txt='🎤 '+(lang==='fa'?'در حال ضبط...':'Recording...');
+else if(st.is_uploading)txt='📎 '+(lang==='fa'?'در حال ارسال...':'Uploading...');
+else if(st.is_typing)txt='✍️ '+(lang==='fa'?'در حال نوشتن...':'typing...');
+else if(st.is_online)txt='🟢 '+(lang==='fa'?'آنلاین':'Online');
+if(txt){statusEl.textContent=txt;it.querySelector('.list-info').appendChild(statusEl)}
+}
 listC.appendChild(it);
 });
 }
@@ -1212,6 +1513,7 @@ callStartBtn.dataset.name=data.name;
 room.classList.add('active');
 await loadMsgs();
 setupRT();
+updateChatStatus();
 };
 
 window.closeRoom=()=>{room.classList.remove('active');curChat=null;if(rtCh)sb.removeChannel(rtCh);cancelReply()};
@@ -1233,7 +1535,7 @@ await updateGroupChecks();
 }
 
 function addMsg(m){
-// اگه پیام برای همه حذف شده
+// پیام حذف‌شده برای همه
 if(m.deleted_for_all){
 const d=document.createElement('div');
 d.className='msg deleted '+(m.sender_email===myEmail?'mine':'other');
@@ -1301,8 +1603,7 @@ ok=(m.sender_email===myEmail&&m.receiver_email===curChat.email)||(m.sender_email
 if(ok){
 const o=msgArea.querySelector(`[data-id="${m.id}"]`);
 if(o)o.remove();
-if(!m.deleted_for_all)addMsg(m);
-else addMsg(m);
+addMsg(m);
 updateGroupChecks();
 }
 })
@@ -1380,9 +1681,17 @@ async function sendTxt(){
 const c=msgIn.value.trim();if(!c||!curChat)return;
 let pl=curChat.type==='private'?{content:c,sender_email:myEmail,receiver_email:curChat.email,message_type:'text'}:{content:c,sender_email:myEmail,receiver_email:'',chat_id:curChat.id,message_type:'text'};
 if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.reply_to_sender=replyTo.sender;pl.reply_to_type=replyTo.type}
-const{error}=await sb.from('messages').insert(pl);if(error)alert(t('error')+': '+error.message);else{msgIn.value='';cancelReply()}
+const{error}=await sb.from('messages').insert(pl);
+if(error)alert(t('error')+': '+error.message);
+else{
+msgIn.value='';
+cancelReply();
+if(isCurrentlyTyping){isCurrentlyTyping=false;clearTimeout(typingTimer);updateMyStatus({is_typing:false})}
 }
-sendBtn.onclick=sendTxt;msgIn.addEventListener('keypress',e=>{if(e.key==='Enter')sendTxt()});
+}
+sendBtn.onclick=sendTxt;
+msgIn.addEventListener('input',()=>{if(msgIn.value.trim().length>0)onTyping()});
+msgIn.addEventListener('keypress',e=>{if(e.key==='Enter')sendTxt()});
 
 const attachM=document.getElementById('attach-menu'),attachB=document.getElementById('attach-btn');
 attachB.onclick=e=>{e.stopPropagation();attachM.classList.toggle('show')};
@@ -1394,25 +1703,27 @@ document.getElementById('file-img').onchange=async e=>{const f=e.target.files[0]
 if(!f.type.startsWith('image/')){alert(lang==='fa'?'فقط عکس':'Images only');return}
 if(f.size>5*1024*1024){alert(lang==='fa'?'حجم عکس زیاد':'Image too large');return}
 const td=document.createElement('div');td.className='msg mine';td.innerHTML='<div>'+t('loading')+'</div>';msgArea.appendChild(td);
+onUploadStart();
 const fn=`${Date.now()}-${Math.random().toString(36).slice(2)}.${f.name.split('.').pop()}`;
 const{error:ue}=await sb.storage.from('chat-files').upload(fn,f,{contentType:f.type});
-if(ue){td.remove();alert(t('error')+': '+ue.message);return}
+if(ue){td.remove();onUploadStop();alert(t('error')+': '+ue.message);return}
 const{data:ud}=sb.storage.from('chat-files').getPublicUrl(fn);
 let pl=curChat.type==='private'?{content:'',sender_email:myEmail,receiver_email:curChat.email,message_type:'image',file_url:ud.publicUrl,file_name:f.name,file_size:f.size}:{content:'',sender_email:myEmail,receiver_email:'',chat_id:curChat.id,message_type:'image',file_url:ud.publicUrl,file_name:f.name,file_size:f.size};
 if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.reply_to_sender=replyTo.sender;pl.reply_to_type=replyTo.type}
-await sb.from('messages').insert(pl);td.remove();cancelReply();
+await sb.from('messages').insert(pl);td.remove();onUploadStop();cancelReply();
 };
 
 document.getElementById('file-doc').onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value='';
 if(f.size>20*1024*1024){alert(lang==='fa'?'حجم فایل زیاد':'File too large');return}
 const td=document.createElement('div');td.className='msg mine';td.innerHTML='<div>'+t('loading')+'</div>';msgArea.appendChild(td);
+onUploadStart();
 const fn=`file-${Date.now()}-${Math.random().toString(36).slice(2)}.${f.name.split('.').pop()}`;
 const{error:ue}=await sb.storage.from('chat-files').upload(fn,f,{contentType:f.type||'application/octet-stream'});
-if(ue){td.remove();alert(t('error')+': '+ue.message);return}
+if(ue){td.remove();onUploadStop();alert(t('error')+': '+ue.message);return}
 const{data:ud}=sb.storage.from('chat-files').getPublicUrl(fn);
 let pl=curChat.type==='private'?{content:'',sender_email:myEmail,receiver_email:curChat.email,message_type:'file',file_url:ud.publicUrl,file_name:f.name,file_size:f.size}:{content:'',sender_email:myEmail,receiver_email:'',chat_id:curChat.id,message_type:'file',file_url:ud.publicUrl,file_name:f.name,file_size:f.size};
 if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.reply_to_sender=replyTo.sender;pl.reply_to_type=replyTo.type}
-await sb.from('messages').insert(pl);td.remove();cancelReply();
+await sb.from('messages').insert(pl);td.remove();onUploadStop();cancelReply();
 };
 
 const recBar=document.getElementById('rec-bar'),recTime=document.getElementById('rec-time');
@@ -1420,9 +1731,10 @@ window.startRec=async()=>{attachM.classList.remove('show');
 try{const st=await navigator.mediaDevices.getUserMedia({audio:true});ac=[];mr=new MediaRecorder(st);
 mr.ondataavailable=e=>{if(e.data.size>0)ac.push(e.data)};mr.onstop=()=>st.getTracks().forEach(t=>t.stop());
 mr.start();recStart=Date.now();recBar.classList.add('show');document.getElementById('input-area').style.display='none';
+onRecordingStart();
 recTime.textContent='0:00';recTmr=setInterval(()=>{const s=Math.floor((Date.now()-recStart)/1000);recTime.textContent=fmtT(s);if(s>=60)stopRec(false)},500);
 }catch(e){alert(lang==='fa'?'دسترسی به میکروفون داده نشد':'Microphone access denied')}};
-function stopRec(c){if(!mr)return;if(mr.state!=='inactive')mr.stop();if(recTmr){clearInterval(recTmr);recTmr=null}recBar.classList.remove('show');document.getElementById('input-area').style.display='flex';if(c){ac=[];mr=null;recStart=null}}
+function stopRec(c){if(!mr)return;if(mr.state!=='inactive')mr.stop();if(recTmr){clearInterval(recTmr);recTmr=null}recBar.classList.remove('show');document.getElementById('input-area').style.display='flex';onRecordingStop();if(c){ac=[];mr=null;recStart=null}}
 document.getElementById('rec-cancel').onclick=()=>stopRec(true);
 document.getElementById('rec-send').onclick=async()=>{const du=Math.floor((Date.now()-recStart)/1000);stopRec(false);
 setTimeout(async()=>{if(!ac.length)return;const bl=new Blob(ac,{type:'audio/webm'});ac=[];mr=null;
@@ -1435,7 +1747,7 @@ if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.rep
 await sb.from('messages').insert(pl);cancelReply();
 },200)};
 
-// ============ منوی پیام (Reply / Edit / Delete) ============
+// ============ منوی پیام ============
 const msgMenu=document.getElementById('msg-menu');
 msgArea.addEventListener('click',e=>{
 const ab=e.target.closest('.msg-actions');
@@ -1448,8 +1760,7 @@ let h=`<button class="msg-menu-item reply" data-a="reply">↩ ${t('replyLabel')}
 if(ty==='text'&&isMine)h+=`<button class="msg-menu-item" data-a="edit">${t('editLabel')}</button>`;
 h+=`<button class="msg-menu-item delete" data-a="delete">🗑️ ${t('delete')}</button>`;
 msgMenu.innerHTML=h;
-let items=2;
-if(ty==='text'&&isMine)items=3;
+let items=2;if(ty==='text'&&isMine)items=3;
 const w=180,h2=items*45+16;
 let x=ab.getBoundingClientRect().left,y=ab.getBoundingClientRect().bottom+5;
 if(document.dir==='rtl')x=ab.getBoundingClientRect().right-w;
@@ -1480,11 +1791,9 @@ else if(a==='delete'){
 if(isMine){
 const choice=confirm(t('deleteConfirmAll'));
 if(choice){
-// حذف برای همه
 const{error}=await sb.from('messages').update({deleted_for_all:true,content:null,file_url:null,audio_url:null,file_name:null}).eq('id',id);
 if(error){alert(t('error')+': '+error.message);return}
 }else{
-// حذف فقط برای من
 await sb.from('deleted_messages').insert({message_id:id,user_email:myEmail});
 const el=msgArea.querySelector(`[data-id="${id}"]`);
 if(el)el.remove();
@@ -2019,6 +2328,9 @@ applyLang();
 await loadMyProfile();
 await registerSession();
 await loadStories();
+await setOnline();
+await loadAllStatus();
+setupStatusRealtime();
 const homeAv=document.getElementById('home-avatar');
 if(homeAv&&avatarsCache[myEmail]){
 homeAv.textContent='';
@@ -2030,9 +2342,12 @@ greeting.textContent=(lang==='fa'?'سلام، ':'Hi, ')+namesCache[myEmail]+'!';
 }
 stRt=sb.channel('stories-rt').on('postgres_changes',{event:'*',schema:'public',table:'stories'},()=>loadStories()).subscribe();
 })();
+
 window.addEventListener('beforeunload',()=>{
+try{setOffline()}catch(e){}
 if(rtCh)sb.removeChannel(rtCh);
 if(stRt)sb.removeChannel(stRt);
+if(statusChannel)sb.removeChannel(statusChannel);
 if(lkRoom){try{lkRoom.disconnect()}catch(e){}}
 });
 </script>
