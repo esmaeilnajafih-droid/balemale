@@ -228,17 +228,14 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .operator-name{font-size:14px;font-weight:700}
 .operator-desc{font-size:11px;color:var(--mut)}
 
-/* ===== تیک پیام ===== */
 .msg-meta{display:flex;align-items:center;justify-content:flex-end;gap:3px;margin-top:3px;font-size:11px;direction:ltr}
 .msg-check{font-weight:700;display:inline-block;letter-spacing:-2px}
 .msg-check.sent{color:#8b9dc3;opacity:.8}
 .msg-check.read{color:#22c55e;text-shadow:0 0 6px rgba(34,197,94,.5)}
 
-/* ===== پیام حذف‌شده ===== */
 .msg.deleted{opacity:.6;font-style:italic}
 .msg-deleted-txt{font-size:12.5px;color:var(--mut);font-style:italic;display:flex;align-items:center;gap:6px}
 
-/* ===== وضعیت کاربر ===== */
 .status-text{font-size:11px;color:var(--p);font-style:italic;display:flex;align-items:center;gap:4px;animation:fadeIn .3s}
 .status-text.rec{color:#ef4444}
 .status-text.up{color:#f59e0b}
@@ -252,7 +249,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 @keyframes td{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
 .list-item-status{font-size:10.5px;color:var(--p);direction:ltr;text-align:right;margin-top:2px;font-style:italic}
 
-/* ===== پروفایل ===== */
 .profile-card{text-align:center;padding:24px 16px;background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(123,63,242,.1));border:2px solid var(--bd);border-radius:20px;margin-bottom:14px;backdrop-filter:blur(10px)}
 .profile-avatar-wrap{position:relative;display:inline-block;margin-bottom:12px}
 .profile-avatar{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:800;border:4px solid rgba(0,212,255,.3);box-shadow:0 0 30px rgba(0,212,255,.5);background-size:cover;background-position:center}
@@ -265,7 +261,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .profile-info-label{font-size:12px;color:var(--p);font-weight:600}
 .profile-info-value{font-size:12.5px;color:#e0e7ff;direction:ltr;font-weight:500}
 
-/* ===== تنظیمات ===== */
 .settings-section{margin-bottom:20px}
 .settings-section h3{font-size:13px;font-weight:700;color:var(--p);margin-bottom:10px;padding:0 4px}
 .settings-item{background:var(--card);border:2px solid var(--bd);border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;backdrop-filter:blur(10px);transition:background .2s}
@@ -286,7 +281,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .session-time{font-size:11px;color:var(--mut)}
 .session-current{font-size:10px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:2px 8px;border-radius:8px;font-weight:700}
 
-/* ===== تماس ===== */
 .call-modal{position:fixed;inset:0;background:linear-gradient(135deg,#05061a,#0a0e28);z-index:5000;display:none;flex-direction:column;padding:20px;color:#fff}
 .call-modal.show{display:flex}
 .call-header{text-align:center;margin-bottom:20px}
@@ -825,7 +819,7 @@ edited:'ویرایش شده',invalidEmail:'ایمیل معتبر نیست',cantC
 onlyTeacher:'فقط معلم می‌تونه ویدیو اضافه کنه',deleteVideo:'این ویدیو حذف شود؟',deleteStudent:'این دانش‌آموز از کلاس حذف شود؟',copySuccess:'کد کپی شد',
 profile:'پروفایل',editProfileTitle:'✏️ ویرایش پروفایل',usernameLbl:'نام کاربری',usernameHint:'فقط حروف انگلیسی، اعداد و _ (بدون @)',bioLbl:'درباره من',phoneLbl:'📱 شماره تماس',phoneLbl2:'شماره تماس (اختیاری)',emailLbl:'✉️ ایمیل',startChat:'شروع گفتگو',noBio:'درباره من چیزی ننوشتی',
 settings:'تنظیمات',accountSection:'👤 حساب کاربری',profileDesc:'نام، عکس، بیوگرافی',languageSection:'🌐 زبان',language:'زبان',languageDesc:'فارسی یا انگلیسی',securitySection:'🔒 امنیت',twoFA:'رمز دو مرحله‌ای',twoFADesc:'محافظت بیشتر از حساب',twoFATitle:'🔐 رمز دو مرحله‌ای',twoFADesc2:'با فعال‌سازی، هنگام ورود یک کد ۶ رقمی به ایمیلت فرستاده می‌شود.',twoFAEnable:'فعال‌سازی',twoFACodeLbl:'کد ۶ رقمی',verify:'تأیید',activeSessions:'نشست‌های فعال',activeSessionsDesc:'دستگاه‌های متصل',sessionsTitle:'📱 نشست‌های فعال',sessionsDesc:'دستگاه‌هایی که با حساب تو لاگین کردن:',logoutAll:'خروج از همه',changePassword:'تغییر رمز عبور',changePasswordDesc:'رمز جدید تنظیم کن',changePasswordTitle:'🔑 تغییر رمز عبور',newPassword:'رمز جدید',confirmPassword:'تکرار رمز جدید',aboutSection:'ℹ️ درباره',appVersion:'نسخه برنامه',logoutBtn:'خروج از حساب',logoutDesc:'خارج شدن از این دستگاه',
-callStart:'شروع تماس',callGroup:'تماس گروهی',callConnecting:'در حال اتصال...',callConnected:'متصل شد',callError:'خطا در تماس',
+callStart:'شروع تماس',callGroup:'تماس گروهی',callPrivate:'تماس خصوصی',callConnecting:'در حال اتصال...',callConnected:'متصل شد',callError:'خطا در تماس',
 deleteForAll:'حذف برای همه',deleteForMe:'حذف فقط برای من',deletedMsg:'این پیام حذف شد',deleteConfirmAll:'OK = حذف برای همه، Cancel = حذف فقط برای من',deleteConfirmMe:'این پیام برای تو حذف شود؟',
 typing:'در حال نوشتن...',recordingVoice:'در حال ضبط ویس...',uploadingFile:'در حال ارسال فایل...',online:'آنلاین',lastSeen:'آخرین بازدید',onlineCount:'آنلاین',
 },
@@ -856,7 +850,7 @@ edited:'edited',invalidEmail:'Invalid email',cantChatSelf:"You can't chat with y
 onlyTeacher:'Only the teacher can add videos',deleteVideo:'Delete this video?',deleteStudent:'Remove this student from class?',copySuccess:'Code copied',
 profile:'Profile',editProfileTitle:'✏️ Edit Profile',usernameLbl:'Username',usernameHint:'Only a-z, 0-9, _ (no @)',bioLbl:'About me',phoneLbl:'📱 Phone',phoneLbl2:'Phone (optional)',emailLbl:'✉️ Email',startChat:'Start Chat',noBio:'No bio yet',
 settings:'Settings',accountSection:'👤 Account',profileDesc:'Name, photo, bio',languageSection:'🌐 Language',language:'Language',languageDesc:'Persian or English',securitySection:'🔒 Security',twoFA:'Two-Factor Auth',twoFADesc:'Extra account protection',twoFATitle:'🔐 Two-Factor Auth',twoFADesc2:'When enabled, a 6-digit code is sent to your email on login.',twoFAEnable:'Enable',twoFACodeLbl:'6-digit code',verify:'Verify',activeSessions:'Active Sessions',activeSessionsDesc:'Connected devices',sessionsTitle:'📱 Active Sessions',sessionsDesc:'Devices logged into your account:',logoutAll:'Log out all',changePassword:'Change Password',changePasswordDesc:'Set a new password',changePasswordTitle:'🔑 Change Password',newPassword:'New password',confirmPassword:'Confirm new password',aboutSection:'ℹ️ About',appVersion:'App Version',logoutBtn:'Log out',logoutDesc:'Sign out from this device',
-callStart:'Start Call',callGroup:'Group Call',callConnecting:'Connecting...',callConnected:'Connected',callError:'Call error',
+callStart:'Start Call',callGroup:'Group Call',callPrivate:'Private Call',callConnecting:'Connecting...',callConnected:'Connected',callError:'Call error',
 deleteForAll:'Delete for everyone',deleteForMe:'Delete for me only',deletedMsg:'This message was deleted',deleteConfirmAll:'OK = Delete for everyone, Cancel = Delete for me only',deleteConfirmMe:'Delete this message for you?',
 typing:'typing...',recordingVoice:'Recording voice...',uploadingFile:'Uploading file...',online:'Online',lastSeen:'Last seen',onlineCount:'online',
 }
@@ -1173,9 +1167,8 @@ let statusChannel=null;
 let isCurrentlyTyping=false;
 let isCurrentlyRecording=false;
 let isCurrentlyUploading=false;
-const statusCache={}; // { email: {is_typing, is_recording, is_uploading, chat_id, last_seen, is_online} }
+const statusCache={};
 
-// به‌روزرسانی وضعیت خودم
 async function updateMyStatus(updates){
 try{
 const payload={
@@ -1189,7 +1182,6 @@ await sb.from('user_status').upsert(payload,{onConflict:'user_email'});
 }catch(e){console.error('updateStatus:',e)}
 }
 
-// وقتی تایپ می‌کنم
 function onTyping(){
 if(!curChat)return;
 if(!isCurrentlyTyping){
@@ -1203,7 +1195,6 @@ updateMyStatus({is_typing:false});
 },1500);
 }
 
-// وقتی ضبط ویس شروع می‌شه
 function onRecordingStart(){
 isCurrentlyRecording=true;
 updateMyStatus({is_recording:true,chat_id:curChat?.id||null});
@@ -1213,7 +1204,6 @@ isCurrentlyRecording=false;
 updateMyStatus({is_recording:false});
 }
 
-// وقتی آپلود فایل شروع می‌شه
 function onUploadStart(){
 isCurrentlyUploading=true;
 updateMyStatus({is_uploading:true,chat_id:curChat?.id||null});
@@ -1223,7 +1213,6 @@ isCurrentlyUploading=false;
 updateMyStatus({is_uploading:false});
 }
 
-// آنلاین / آفلاین
 async function setOnline(){
 await updateMyStatus({is_online:true,last_seen:new Date().toISOString()});
 }
@@ -1231,7 +1220,6 @@ async function setOffline(){
 await updateMyStatus({is_online:false,last_seen:new Date().toISOString(),is_typing:false,is_recording:false,is_uploading:false});
 }
 
-// چک وضعیت هر ۳۰ ثانیه
 setInterval(()=>{
 if(document.hidden){
 setOffline();
@@ -1240,7 +1228,6 @@ setOnline();
 }
 },30000);
 
-// متن وضعیت
 function getStatusText(email){
 const st=statusCache[email];
 if(!st)return '';
@@ -1259,7 +1246,6 @@ return `<span class="status-text">${lang==='fa'?'آخرین بازدید: ':'Las
 return '';
 }
 
-// آپدیت نمایش وضعیت توی هدر چت
 function updateChatStatus(){
 const st=document.getElementById('chat-status');
 if(!st)return;
@@ -1273,7 +1259,6 @@ st.innerHTML=`<span class="status-text"><span class="status-online"></span> ${me
 }
 }
 
-// لود وضعیت همه کاربران
 async function loadAllStatus(){
 try{
 const{data}=await sb.from('user_status').select('*');
@@ -1282,7 +1267,6 @@ updateChatStatus();
 }catch(e){console.error(e)}
 }
 
-// راه‌اندازی Realtime وضعیت
 function setupStatusRealtime(){
 if(statusChannel)sb.removeChannel(statusChannel);
 statusChannel=sb.channel('status-rt')
@@ -1302,7 +1286,6 @@ updateListStatus();
 .subscribe();
 }
 
-// آپدیت وضعیت توی لیست چت‌ها
 function updateListStatus(){
 document.querySelectorAll('.list-item').forEach(it=>{
 const av=it.querySelector('.list-avatar');
@@ -1330,7 +1313,6 @@ statusEl.textContent=txt;
 });
 }
 
-// آپدیت هر ۱۰ ثانیه
 setInterval(()=>{
 updateChatStatus();
 updateListStatus();
@@ -1400,7 +1382,12 @@ if(avatarsCache[data]){roomAv.textContent='';roomAv.style.backgroundImage=`url('
 else{roomAv.style.backgroundImage=''}
 roomAv.onclick=()=>openProfile(data);
 document.getElementById('room-info-click').onclick=()=>openProfile(data);
-callStartBtn.style.display='none';
+// ✅ تماس خصوصی فعال
+callStartBtn.style.display='flex';
+const sorted=[myEmail,data].sort();
+callStartBtn.dataset.room='private_'+sorted[0]+'_'+sorted[1];
+callStartBtn.dataset.name=dispName;
+callStartBtn.dataset.type='private';
 }else{
 curChat={type,id:data.id,name:data.name};
 roomAv.textContent=type==='group'?'👥':'📢';
@@ -1408,9 +1395,11 @@ roomAv.style.backgroundImage='';
 roomNm.textContent=data.name;
 roomSub.textContent=data.description||'';
 document.getElementById('room-info-click').onclick=null;
+// فقط برای گروه‌ها، نه کانال‌ها
 callStartBtn.style.display=type==='group'?'flex':'none';
 callStartBtn.dataset.room='room_'+data.id;
 callStartBtn.dataset.name=data.name;
+callStartBtn.dataset.type='group';
 }
 room.classList.add('active');
 await loadMsgs();
@@ -1520,7 +1509,6 @@ if(el)el.remove();
 .subscribe();
 }
 
-// ============ تیک خوانده‌شده ============
 async function markMessagesRead(){
 if(!curChat)return;
 try{
@@ -2131,7 +2119,7 @@ el.textContent=Number(bal).toLocaleString(lang==='fa'?'fa-IR':'en-US')+(lang==='
 }
 
 // ============================================
-// ===== تماس صوتی گروهی با LiveKit (اصلاح‌شده) =====
+// ===== تماس صوتی (خصوصی + گروهی) با LiveKit =====
 // ============================================
 const LK_URL='wss://tms-bxlk0q2o.livekit.cloud';
 const LK_KEY='APIBhvnBREQa54D';
@@ -2160,7 +2148,7 @@ const headerB64=enc(header);
 const payloadB64=enc(payload);
 const data=headerB64+'.'+payloadB64;
 
-// ✅ اصلاح اصلی: name به جای alg
+// ✅ اصلاح: name به جای alg
 const key=await crypto.subtle.importKey(
 'raw',
 new TextEncoder().encode(LK_SECRET),
@@ -2178,11 +2166,12 @@ const sigB64=btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/=/g,'').
 return data+'.'+sigB64;
 }
 
-window.startCall=async(roomName,displayName)=>{
+window.startCall=async(roomName,displayName,callType)=>{
 if(!roomName){alert(t('error'));return}
 try{
 document.getElementById('call-modal').classList.add('show');
-document.getElementById('call-title').textContent='📞 '+(displayName||t('callGroup'));
+const titleText=callType==='private'?'📞 '+t('callPrivate')+' - ':'📞 '+(displayName||t('callGroup'));
+document.getElementById('call-title').textContent=callType==='private'?('📞 '+t('callPrivate')+' - '+displayName):('📞 '+(displayName||t('callGroup')));
 document.getElementById('call-sub').textContent=t('callConnecting');
 document.getElementById('call-status').textContent='';
 document.getElementById('call-participants').innerHTML='';
@@ -2206,7 +2195,7 @@ updateMicBtn();
 window.startCallFromChat=()=>{
 const btn=document.getElementById('call-start-btn');
 if(!btn.dataset.room){alert(t('error'));return}
-startCall(btn.dataset.room,btn.dataset.name);
+startCall(btn.dataset.room,btn.dataset.name,btn.dataset.type||'group');
 };
 
 function renderParticipants(){
