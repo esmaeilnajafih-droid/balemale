@@ -403,101 +403,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <a href="https://www.abfa.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">💧</div><div class="pay-title" data-i18n="payWater">پرداخت آب</div></a>
 <a href="https://epay.bankmellat.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">📞</div><div class="pay-title" data-i18n="payPhone">پرداخت تلفن</div></a>
 </div>
-</div><body>
-<!-- صفحه Home -->
-<div class="page active" id="page-home">
-<div class="top-bar">
-<button class="icon-btn" onclick="showNotif()"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></button>
-<div class="app-title"><h1><span data-i18n="appName">بله مله</span> <span>✈</span></h1><p data-i18n="appTagline">سوپر اپلیکیشن</p></div>
-<button class="lang-btn" onclick="toggleLang()"><span id="lang-lbl">EN</span></button>
-</div>
-<div class="welcome-card">
-<div class="welcome-avatar" id="home-avatar" onclick="openMyProfile()">✈</div>
-<div class="welcome-text"><h2 id="home-greeting" data-i18n="welcome">سلام!</h2><p data-i18n="welcomeSub">به بله مله خوش آمدید</p></div>
-</div>
-<div class="quick-actions">
-<button class="quick-btn" onclick="goTab('group')"><div class="quick-icon g">👥</div><div class="quick-label" data-i18n="groups">گروه‌ها</div></button>
-<button class="quick-btn" onclick="goTab('channel')"><div class="quick-icon ch">📢</div><div class="quick-label" data-i18n="channels">کانال‌ها</div></button>
-<button class="quick-btn" onclick="goTab('private')"><div class="quick-icon ct">👤</div><div class="quick-label" data-i18n="contacts">مخاطبین</div></button>
-<button class="quick-btn" onclick="goTab('private')"><div class="quick-icon cv">💬</div><div class="quick-label" data-i18n="chats">گفتگوها</div></button>
-</div>
-<div class="quick-actions">
-<button class="quick-btn" onclick="showPage('library')"><div class="quick-icon lb">🎬</div><div class="quick-label" data-i18n="library">کتابخانه</div></button>
-<button class="quick-btn" onclick="showPage('bots')"><div class="quick-icon bot">🤖</div><div class="quick-label" data-i18n="bots">ربات‌ها</div></button>
-<button class="quick-btn" onclick="showPage('payments')"><div class="quick-icon pay">💰</div><div class="quick-label" data-i18n="financeShort">مالی</div></button>
-<button class="quick-btn" onclick="showPage('education')"><div class="quick-icon edu">📚</div><div class="quick-label" data-i18n="education">آموزش</div></button>
-</div>
-<div class="features-grid">
-<div class="feature-card"><div class="feature-icon sec">🔒</div><div class="feature-text"><h4 data-i18n="secTitle">امنیت بالا</h4><p data-i18n="secSub">با رمزنگاری پیشرفته</p></div></div>
-<div class="feature-card"><div class="feature-icon spd">⚡</div><div class="feature-text"><h4 data-i18n="spdTitle">سرعت بالا</h4><p data-i18n="spdSub">ارسال و دریافت سریع</p></div></div>
-<div class="feature-card"><div class="feature-icon cld">☁️</div><div class="feature-text"><h4 data-i18n="cldTitle">فضای ابری</h4><p data-i18n="cldSub">دسترسی از همه جا</p></div></div>
-<div class="feature-card"><div class="feature-icon fre">⭐</div><div class="feature-text"><h4 data-i18n="freTitle">رایگان</h4><p data-i18n="freSub">بدون هزینه، همیشه</p></div></div>
-</div>
-</div>
-
-<!-- صفحه Chats -->
-<div class="page" id="page-chats">
-<div class="top-bar">
-<button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1 data-i18n="chats">گفتگوها</h1><p id="my-email-lbl">...</p></div>
-<button class="icon-btn" onclick="logout()"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></button>
-</div>
-<div class="stories-bar" id="stories-bar"></div>
-<div class="action-buttons">
-<button class="action-btn" onclick="openNewContact()"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span data-i18n="newContact">مخاطب</span></button>
-<button class="action-btn" onclick="openNewGroup('group')"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span data-i18n="newGroup">گروه</span></button>
-<button class="action-btn" onclick="openNewGroup('channel')"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg><span data-i18n="newChannel">کانال</span></button>
-</div>
-<div class="tabs">
-<button class="tab active" data-tab="private" onclick="switchTab('private')" data-i18n="privateTab">خصوصی</button>
-<button class="tab" data-tab="group" onclick="switchTab('group')" data-i18n="groups">گروه‌ها</button>
-<button class="tab" data-tab="channel" onclick="switchTab('channel')" data-i18n="channels">کانال‌ها</button>
-</div>
-<div class="list-container" id="list-container"></div>
-</div>
-
-<!-- صفحه کتابخانه -->
-<div class="page" id="page-library">
-<div class="top-bar">
-<button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1>🎬 <span data-i18n="library">کتابخانه</span></h1><p data-i18n="librarySub">ویدیوها و محتوا</p></div>
-<button class="icon-btn" onclick="openLibModal()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
-</div>
-<div id="lib-list"></div>
-</div>
-
-<!-- صفحه ربات‌ها -->
-<div class="page" id="page-bots">
-<div class="top-bar">
-<button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1>🤖 <span data-i18n="bots">ربات‌ها</span></h1><p data-i18n="botsSub">پاسخ خودکار</p></div>
-<button class="icon-btn" onclick="openBotModal()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
-</div>
-<div id="bots-list"></div>
-</div>
-
-<!-- صفحه مالی -->
-<div class="page" id="page-payments">
-<div class="top-bar">
-<button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1>💰 <span data-i18n="finance">خدمات مالی</span></h1><p data-i18n="financeSub">شارژ، بسته، پرداخت</p></div>
-<div style="width:44px"></div>
-</div>
-<div class="welcome-card"><div class="welcome-avatar">💰</div><div class="welcome-text"><h2 data-i18n="wallet">کیف پول</h2><p><span data-i18n="balance">موجودی</span>: <b id="wallet-bal">۰ تومان</b></p></div></div>
-<h3 style="font-size:14px;margin:14px 0 10px;color:var(--p)" data-i18n="chargeSection">📱 شارژ و بسته اینترنت</h3>
-<div class="pay-grid">
-<a href="https://shop.mci.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo mci">M</div><div class="operator-name" data-i18n="mci">همراه اول</div><div class="operator-desc" data-i18n="chargeDesc">شارژ / بسته اینترنت</div></a>
-<a href="https://shop.irancell.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo irancell">I</div><div class="operator-name" data-i18n="irancell">ایرانسل</div><div class="operator-desc" data-i18n="chargeDesc">شارژ / بسته اینترنت</div></a>
-<a href="https://shop.rightel.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo rightel">R</div><div class="operator-name" data-i18n="rightel">رایتل</div><div class="operator-desc" data-i18n="chargeDesc">شارژ / بسته اینترنت</div></a>
-<a href="https://shad.ir/" target="_blank" rel="noopener" class="operator-card"><div class="operator-logo mci">📞</div><div class="operator-name" data-i18n="otherOperators">سایر اپراتورها</div><div class="operator-desc" data-i18n="servicePortal">سامانه خدمات</div></a>
-</div>
-<h3 style="font-size:14px;margin:14px 0 10px;color:var(--p)" data-i18n="otherServices">🧾 خدمات دیگر</h3>
-<div class="pay-grid">
-<a href="https://www.tavanir.org.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">💡</div><div class="pay-title" data-i18n="payElectricity">پرداخت برق</div></a>
-<a href="https://www.nigc.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">🔥</div><div class="pay-title" data-i18n="payGas">پرداخت گاز</div></a>
-<a href="https://www.abfa.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">💧</div><div class="pay-title" data-i18n="payWater">پرداخت آب</div></a>
-<a href="https://epay.bankmellat.ir/" target="_blank" rel="noopener" class="pay-card"><div class="pay-icon">📞</div><div class="pay-title" data-i18n="payPhone">پرداخت تلفن</div></a>
-</div>
 </div>
 <!-- صفحه آموزش -->
 <div class="page" id="page-education">
@@ -1339,7 +1244,6 @@ setOnline();
 function getStatusText(email){
 const st=statusCache[email];
 if(!st)return '';
-// توی گروه، اگه chat_id درست نیست نشون نده
 if(curChat&&curChat.type!=='private'&&st.chat_id&&st.chat_id!==curChat.id)return '';
 if(st.is_recording)return `<span class="status-text rec">🎤 ${lang==='fa'?'در حال ضبط ویس...':'Recording voice...'}</span>`;
 if(st.is_uploading)return `<span class="status-text up">📎 ${lang==='fa'?'در حال ارسال فایل...':'Uploading file...'}</span>`;
@@ -1363,7 +1267,6 @@ if(!curChat){st.innerHTML='';return}
 if(curChat.type==='private'){
 st.innerHTML=getStatusText(curChat.email);
 }else{
-// توی گروه، تعداد آنلاین‌ها
 const members=Object.entries(statusCache).filter(([email,s])=>email!==myEmail&&s.is_online);
 if(members.length===0){st.innerHTML='';return}
 st.innerHTML=`<span class="status-text"><span class="status-online"></span> ${members.length} ${lang==='fa'?'آنلاین':'online'}</span>`;
@@ -1427,7 +1330,7 @@ statusEl.textContent=txt;
 });
 }
 
-// آپدیت هر ۳۰ ثانیه برای آفلاین‌های قدیمی
+// آپدیت هر ۱۰ ثانیه
 setInterval(()=>{
 updateChatStatus();
 updateListStatus();
@@ -1455,7 +1358,6 @@ const av=it.querySelector('.list-avatar');
 if(avatarsCache[e]){av.textContent='';av.style.backgroundImage=`url('${avatarsCache[e]}')`}
 av.onclick=(ev)=>{ev.stopPropagation();openProfile(e)};
 it.querySelector('.list-info').onclick=()=>openRoom('private',e);
-// وضعیت
 const st=statusCache[e];
 if(st){
 const statusEl=document.createElement('div');
@@ -1535,7 +1437,6 @@ await updateGroupChecks();
 }
 
 function addMsg(m){
-// پیام حذف‌شده برای همه
 if(m.deleted_for_all){
 const d=document.createElement('div');
 d.className='msg deleted '+(m.sender_email===myEmail?'mine':'other');
@@ -1565,7 +1466,6 @@ else if(m.message_type==='image'&&m.file_url){h+=`<div class="img-msg"><img src=
 else if(m.message_type==='file'&&m.file_url){h+=`<div class="file-msg"><div class="file-icon">📄</div><div class="file-info"><div class="file-name">${esc(m.file_name||'file')}</div><div class="file-size">${fmtSz(m.file_size)}</div></div><a class="file-dl" href="${esc(m.file_url)}" download="${esc(m.file_name||'')}" target="_blank">⬇</a></div>`}
 else{h+=`<div>${esc(m.content||'')}</div>`}
 if(m.edited_at)h+=`<div class="msg-edited">${t('edited')}</div>`;
-// تیک
 if(m.sender_email===myEmail){
 if(curChat.type==='private'){
 const isRead=m.read_at?true:false;
@@ -2231,7 +2131,7 @@ el.textContent=Number(bal).toLocaleString(lang==='fa'?'fa-IR':'en-US')+(lang==='
 }
 
 // ============================================
-// ===== تماس صوتی گروهی با LiveKit =====
+// ===== تماس صوتی گروهی با LiveKit (اصلاح‌شده) =====
 // ============================================
 const LK_URL='wss://tms-bxlk0q2o.livekit.cloud';
 const LK_KEY='APIBhvnBREQa54D';
@@ -2241,12 +2141,39 @@ let lkRoom=null;
 async function generateLKToken(roomName,identity){
 const header={alg:'HS256',typ:'JWT'};
 const now=Math.floor(Date.now()/1000);
-const payload={exp:now+3600,iss:LK_KEY,sub:identity,nbf:now-10,name:identity,video:{roomJoin:true,room:roomName,canPublish:true,canSubscribe:true,canPublishData:true}};
+const payload={
+exp:now+3600,
+iss:LK_KEY,
+sub:identity,
+nbf:now-10,
+name:identity,
+video:{
+roomJoin:true,
+room:roomName,
+canPublish:true,
+canSubscribe:true,
+canPublishData:true
+}
+};
 const enc=s=>btoa(JSON.stringify(s)).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
-const headerB64=enc(header);const payloadB64=enc(payload);
+const headerB64=enc(header);
+const payloadB64=enc(payload);
 const data=headerB64+'.'+payloadB64;
-const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(LK_SECRET),{alg:'HMAC',hash:'SHA-256'},false,['sign']);
-const sig=await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(data));
+
+// ✅ اصلاح اصلی: name به جای alg
+const key=await crypto.subtle.importKey(
+'raw',
+new TextEncoder().encode(LK_SECRET),
+{name:'HMAC',hash:'SHA-256'},
+false,
+['sign']
+);
+
+const sig=await crypto.subtle.sign(
+'HMAC',
+key,
+new TextEncoder().encode(data)
+);
 const sigB64=btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
 return data+'.'+sigB64;
 }
