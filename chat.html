@@ -75,12 +75,21 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .action-btn{flex:1;padding:10px 6px;background:var(--card);border:2px solid var(--bd);border-radius:12px;color:var(--p);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
 .action-btn svg{width:18px;height:18px;fill:currentColor}
 .list-container{flex:1;overflow-y:auto;padding-bottom:20px}
-.list-item{padding:12px 14px;background:var(--card);border:2px solid var(--bd);border-radius:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;backdrop-filter:blur(10px)}
+.list-item{padding:12px 14px;background:var(--card);border:2px solid var(--bd);border-radius:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;backdrop-filter:blur(10px);position:relative}
 .list-item:active{background:rgba(0,212,255,.15)}
-.list-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;background-size:cover;background-position:center}
+.list-item.unread{background:linear-gradient(135deg,rgba(0,212,255,.12),rgba(123,63,242,.08));border-color:rgba(0,212,255,.6)}
+.list-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;background-size:cover;background-position:center;position:relative}
 .list-info{flex:1;min-width:0}
 .list-name{font-size:13.5px;font-weight:600;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .list-sub{font-size:11px;color:var(--mut);direction:ltr;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list-last-msg{font-size:12px;color:#a5b4fc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px;font-weight:500}
+.list-last-msg.mine-prefix{color:var(--mut)}
+.list-time{font-size:10.5px;color:var(--mut);position:absolute;top:12px;left:14px;font-weight:600}
+[dir="ltr"] .list-time{left:auto;right:14px}
+.list-time.unread-time{color:var(--p)}
+.unread-badge{position:absolute;bottom:12px;left:14px;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 10px rgba(34,197,94,.6);direction:ltr}
+[dir="ltr"] .unread-badge{left:auto;right:14px}
+.unread-badge.muted{background:linear-gradient(135deg,#8b9dc3,#64748b);box-shadow:none}
 .empty-state{text-align:center;padding:60px 20px;color:var(--mut)}
 .empty-state .icon{font-size:56px;margin-bottom:14px;opacity:.4}
 .empty-state h3{font-size:14px;font-weight:700;color:#a5b4fc;margin-bottom:8px}
@@ -402,1870 +411,1683 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <div class="page" id="page-education">
 <div class="top-bar">
 <button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1>📚 <span data-i18n="education">آموزش</span></h1><p data-i18n="classes">کلاس‌ها</p></div>
+<div class="app-title"><h1>📚 <span data-i18n="education">آموزش</span></h1><p data-i18n="eduSub">کلاس‌ها و دوره‌ها</p></div>
 <button class="icon-btn" onclick="openEduModal()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
-</div>
-<div style="display:flex;gap:8px;margin-bottom:12px">
-<button class="action-btn" style="flex:1" onclick="openEduJoin()"><span style="font-size:18px">🔑</span><span data-i18n="joinWithCode">ورود با کد</span></button>
-<button class="action-btn" style="flex:1" onclick="openEduModal()"><span style="font-size:18px">➕</span><span data-i18n="createClass">ساخت کلاس</span></button>
 </div>
 <div id="edu-list"></div>
 </div>
 
-<!-- صفحه پنل کلاس -->
+<!-- پنل کلاس (Class Panel) -->
 <div class="page" id="page-class-panel">
 <div class="top-bar">
-<button class="icon-btn" onclick="closeClassPanel()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1 id="cp-title">📚 <span data-i18n="classes">کلاس</span></h1><p id="cp-sub" data-i18n="classPanel">پنل مدیریت</p></div>
-<div style="width:44px"></div>
+<button class="icon-btn" onclick="showPage('education')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+<div class="app-title"><h1 id="class-panel-title">کلاس</h1><p id="class-panel-sub">شرکت‌کنندگان</p></div>
+<button class="icon-btn" onclick="startClassCall()"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></button>
 </div>
-<div class="welcome-card" id="cp-code-card" style="margin-bottom:12px">
-<div class="welcome-avatar" style="font-size:22px">🔑</div>
-<div class="welcome-text"><h2 data-i18n="classCode">کد کلاس</h2><p style="font-size:18px;font-weight:900;letter-spacing:6px;direction:ltr;color:var(--p)" id="cp-code">------</p></div>
-<button class="lang-btn" onclick="copyCpCode()" data-i18n="copy">کپی</button>
+<div class="welcome-card">
+<div class="welcome-avatar" id="class-avatar">📚</div>
+<div class="welcome-text"><h2 id="class-name">نام کلاس</h2><p id="class-teacher">استاد: ...</p></div>
 </div>
-<div class="tabs" style="margin-bottom:12px">
-<button class="tab active" data-cp="videos" onclick="switchCpTab('videos')" data-i18n="videos">🎬 ویدیوها</button>
-<button class="tab" data-cp="members" onclick="switchCpTab('members')" data-i18n="members">👥 اعضا</button>
+<div class="tabs">
+<button class="tab active" onclick="switchClassTab('students')" data-i18n="students">دانش‌آموزان</button>
+<button class="tab" onclick="switchClassTab('lessons')" data-i18n="lessons">دروس</button>
+<button class="tab" onclick="switchClassTab('homework')" data-i18n="homework">تکالیف</button>
 </div>
-<div id="cp-videos">
-<button class="btn-primary" id="cp-add-video-btn" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="openAddVideoModal()" data-i18n="addVideo">➕ افزودن ویدیو</button>
-<div id="cp-videos-list"></div>
-</div>
-<div id="cp-members" style="display:none">
-<div id="cp-members-list"></div>
-</div>
+<div id="class-panel-content"></div>
 </div>
 
-<!-- چت روم -->
+<!-- اتاق چت (Chat Room) -->
 <div class="chat-room" id="chat-room">
 <div class="chat-header">
-<button class="back-btn" onclick="closeRoom()">→</button>
-<div class="room-avatar" id="room-avatar">?</div>
-<div class="room-info" id="room-info-click">
-<div class="room-name" id="room-name"></div>
-<div class="room-sub" id="room-sub"></div>
-<div id="chat-status" style="min-height:14px;margin-top:2px"></div>
+<button class="back-btn" onclick="closeChatRoom()">←</button>
+<div class="room-avatar" id="room-avatar">👤</div>
+<div class="room-info" onclick="openRoomInfo()">
+<div class="room-name" id="room-name">...</div>
+<div class="room-sub" id="room-sub">...</div>
 </div>
-<button class="back-btn call-start-btn" id="call-start-btn" style="display:none" onclick="startCallFromChat()">📞</button>
+<button class="icon-btn" onclick="startCall()"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button>
 </div>
 <div class="messages-area" id="messages-area"></div>
 <div class="reply-bar" id="reply-bar">
-<span style="color:var(--p);font-size:18px">↩</span>
 <div class="reply-bar-info"><div class="reply-bar-name" id="reply-bar-name"></div><div class="reply-bar-text" id="reply-bar-text"></div></div>
-<button class="reply-close" id="reply-close">✕</button>
-</div>
-<div class="input-area" id="input-area">
-<button class="attach" id="attach-btn">📎</button>
-<input type="text" class="msg-input" id="msg-input" placeholder="پیام..." data-i18n-ph="msgPlaceholder">
-<button class="send-btn" id="send-btn">➤</button>
+<button class="reply-close" onclick="cancelReply()">✕</button>
 </div>
 <div class="rec-bar" id="rec-bar">
 <div class="rec-dot"></div>
-<div class="rec-time" id="rec-time">0:00</div>
+<div class="rec-time" id="rec-time">00:00</div>
 <div class="rec-text" data-i18n="recording">در حال ضبط...</div>
-<button class="rec-btn rec-cancel" id="rec-cancel" data-i18n="cancel">لغو</button>
-<button class="rec-btn rec-send" id="rec-send" data-i18n="send">ارسال</button>
+<button class="rec-btn rec-cancel" onclick="cancelRecording()" data-i18n="cancel">لغو</button>
+<button class="rec-btn rec-send" onclick="sendVoice()" data-i18n="send">ارسال</button>
+</div>
+<div class="input-area">
+<button class="attach" onclick="toggleAttachMenu()">📎</button>
+<input class="msg-input" id="msg-input" placeholder="پیام..." onkeypress="if(event.key==='Enter')sendMsg()">
+<button class="send-btn" onclick="sendMsg()">➤</button>
 </div>
 </div>
 
-<!-- منوی ضمیمه -->
+<!-- منوی پیوست -->
 <div class="attach-menu" id="attach-menu">
-<button class="menu-item" onclick="pickImage()"><span class="menu-icon img">🖼️</span><span data-i18n="sendImage">ارسال عکس</span></button>
-<button class="menu-item" onclick="pickFile()"><span class="menu-icon fl">📄</span><span data-i18n="sendFile">ارسال فایل</span></button>
-<button class="menu-item" onclick="startRec()"><span class="menu-icon vc">🎤</span><span data-i18n="sendVoice">ضبط ویس</span></button>
+<button class="menu-item" onclick="pickImage()"><div class="menu-icon img">🖼</div><span data-i18n="image">تصویر</span></button>
+<button class="menu-item" onclick="pickFile()"><div class="menu-icon fl">📄</div><span data-i18n="file">فایل</span></button>
+<button class="menu-item" onclick="startRecording()"><div class="menu-icon vc">🎤</div><span data-i18n="voice">ویس</span></button>
 </div>
 
-<input type="file" id="file-img" accept="image/*" style="display:none">
-<input type="file" id="file-doc" style="display:none">
-<input type="file" id="file-story" accept="image/*,video/*" style="display:none">
-<input type="file" id="file-lib" accept="video/*,image/*" style="display:none">
+<!-- منوی پیام -->
+<div class="msg-menu" id="msg-menu">
+<button class="msg-menu-item reply" onclick="replyToMsg()">↩ <span data-i18n="reply">پاسخ</span></button>
+<button class="msg-menu-item" onclick="editMsg()">✏ <span data-i18n="edit">ویرایش</span></button>
+<button class="msg-menu-item delete" onclick="deleteMsg()">🗑 <span data-i18n="delete">حذف</span></button>
+</div>
+
+<!-- مودال ساخت مخاطب -->
+<div class="modal-overlay" id="modal-contact">
+<div class="modal">
+<h3 data-i18n="newContact">مخاطب جدید</h3>
+<p data-i18n="newContactSub">ایمیل مخاطب را وارد کنید</p>
+<label data-i18n="email">ایمیل</label>
+<input type="email" id="contact-email" placeholder="user@example.com" dir="ltr">
+<label data-i18n="name">نام</label>
+<input type="text" id="contact-name" placeholder="نام مخاطب">
+<div class="modal-btns">
+<button class="btn-cancel" onclick="closeModal('modal-contact')" data-i18n="cancel">لغو</button>
+<button class="btn-primary" onclick="addContact()" data-i18n="add">افزودن</button>
+</div>
+</div>
+</div>
+
+<!-- مودال ساخت گروه/کانال -->
+<div class="modal-overlay" id="modal-group">
+<div class="modal">
+<h3 id="group-modal-title" data-i18n="newGroup">گروه جدید</h3>
+<p data-i18n="groupSub">نام و اعضا را انتخاب کنید</p>
+<label data-i18n="name">نام</label>
+<input type="text" id="group-name" placeholder="نام گروه">
+<label data-i18n="members">اعضا</label>
+<input class="search-inp" id="member-search" placeholder="جستجو..." oninput="filterMembers()">
+<div class="contacts-picker" id="members-picker"></div>
+<div class="selected-count" id="selected-count"></div>
+<div class="modal-btns">
+<button class="btn-cancel" onclick="closeModal('modal-group')" data-i18n="cancel">لغو</button>
+<button class="btn-primary" onclick="createGroup()" data-i18n="create">ایجاد</button>
+</div>
+</div>
+</div>
+
+<!-- مودال کتابخانه -->
+<div class="modal-overlay" id="modal-lib">
+<div class="modal">
+<h3 data-i18n="addMedia">افزودن محتوا</h3>
+<label data-i18n="title">عنوان</label>
+<input type="text" id="lib-title" placeholder="عنوان">
+<label data-i18n="mediaType">نوع</label>
+<select class="settings-select" id="lib-type" style="width:100%;margin-bottom:12px">
+<option value="video">🎬 ویدیو</option>
+<option value="audio">🎵 صوتی</option>
+<option value="doc">📄 سند</option>
+</select>
+<div class="modal-btns">
+<button class="btn-cancel" onclick="closeModal('modal-lib')" data-i18n="cancel">لغو</button>
+<button class="btn-primary" onclick="addLibItem()" data-i18n="add">افزودن</button>
+</div>
+</div>
+</div>
+
+<!-- مودال ربات -->
+<div class="modal-overlay" id="modal-bot">
+<div class="modal">
+<h3 data-i18n="newBot">ربات جدید</h3>
+<label data-i18n="name">نام</label>
+<input type="text" id="bot-name" placeholder="نام ربات">
+<label data-i18n="desc">توضیحات</label>
+<textarea id="bot-desc" placeholder="توضیحات ربات"></textarea>
+<div class="modal-btns">
+<button class="btn-cancel" onclick="closeModal('modal-bot')" data-i18n="cancel">لغو</button>
+<button class="btn-primary" onclick="addBot()" data-i18n="create">ایجاد</button>
+</div>
+</div>
+</div>
+
+<!-- مودال آموزش -->
+<div class="modal-overlay" id="modal-edu">
+<div class="modal">
+<h3 data-i18n="newClass">کلاس جدید</h3>
+<label data-i18n="className">نام کلاس</label>
+<input type="text" id="edu-name" placeholder="نام کلاس">
+<label data-i18n="teacher">استاد</label>
+<input type="text" id="edu-teacher" placeholder="نام استاد">
+<div class="modal-btns">
+<button class="btn-cancel" onclick="closeModal('modal-edu')" data-i18n="cancel">لغو</button>
+<button class="btn-primary" onclick="addEduClass()" data-i18n="create">ایجاد</button>
+</div>
+</div>
+</div>
+
+<!-- مودال استوری -->
+<div class="modal-overlay" id="modal-story">
+<div class="modal">
+<h3 data-i18n="addStory">افزودن استوری</h3>
+<div class="story-preview empty" id="story-preview">پیش‌نمایش</div>
+<label data-i18n="caption">کپشن</label>
+<input type="text" id="story-caption" placeholder="متن...">
+<div class="modal-btns">
+<button class="btn-cancel" onclick="closeModal('modal-story')" data-i18n="cancel">لغو</button>
+<button class="btn-primary" onclick="addStory()" data-i18n="post">انتشار</button>
+</div>
+</div>
+</div>
+
+<!-- مودال پروفایل -->
+<div class="modal-overlay" id="modal-profile">
+<div class="modal">
+<h3 data-i18n="editProfile">ویرایش پروفایل</h3>
+<label data-i18n="name">نام</label>
+<input type="text" id="prof-name" placeholder="نام">
+<label data-i18n="bio">بیوگرافی</label>
+<textarea id="prof-bio" placeholder="درباره من..."></textarea>
+<div class="modal-btns">
+<button class="btn-cancel" onclick="closeModal('modal-profile')" data-i18n="cancel">لغو</button>
+<button class="btn-primary" onclick="saveProfile()" data-i18n="save">ذخیره</button>
+</div>
+</div>
+</div>
 
 <!-- استوری ویوئر -->
 <div class="story-viewer" id="story-viewer">
 <div class="story-prog"><div class="story-prog-bar" id="story-prog-bar"></div></div>
-<div class="story-head"><div class="story-head-av" id="story-head-av"></div><div class="story-head-info"><div class="story-head-name" id="story-head-name"></div><div class="story-head-time" id="story-head-time"></div></div><button class="story-close" onclick="closeStory()">✕</button></div>
+<div class="story-head">
+<div class="story-head-av" id="story-head-av"></div>
+<div class="story-head-info"><div class="story-head-name" id="story-head-name"></div><div class="story-head-time" id="story-head-time"></div></div>
+<button class="story-close" onclick="closeStoryViewer()">✕</button>
+</div>
+<div class="story-media" id="story-media"></div>
+<div class="story-cap" id="story-cap"></div>
 <button class="story-nav story-prev" onclick="prevStory()">‹</button>
 <button class="story-nav story-next" onclick="nextStory()">›</button>
-<div class="story-media" id="story-media"></div>
-<div class="story-cap" id="story-cap" style="display:none"></div>
 </div>
 
-<!-- مودال مخاطب -->
-<div class="modal-overlay" id="contact-modal"><div class="modal"><h3 data-i18n="newContactTitle">👤 مخاطب جدید</h3><p data-i18n="newContactDesc">ایمیل مخاطب را وارد کن</p><input type="email" id="contact-email" placeholder="friend@example.com"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('contact-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="contact-add" data-i18n="add">افزودن</button></div></div></div>
-
-<!-- مودال گروه -->
-<div class="modal-overlay" id="group-modal"><div class="modal"><h3 id="group-title" data-i18n="newGroupTitle">گروه جدید</h3><p data-i18n="newGroupDesc">اطلاعات را وارد کن</p><label data-i18n="nameLbl">نام</label><input type="text" id="group-name"><label data-i18n="descLbl">توضیحات</label><textarea id="group-desc"></textarea><label data-i18n="selectMembers">انتخاب اعضا</label><input type="text" class="search-inp" id="search-contacts" placeholder="جستجو..." data-i18n-ph="searchPlaceholder"><div class="contacts-picker" id="contacts-picker"></div><div class="selected-count" id="selected-count"></div><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('group-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="group-create" data-i18n="create">ساخت</button></div></div></div>
-
-<!-- مودال استوری -->
-<div class="modal-overlay" id="story-modal"><div class="modal"><h3 data-i18n="newStoryTitle">📸 استوری جدید</h3><p data-i18n="newStoryDesc">عکس یا ویدیو انتخاب کن</p><div class="story-preview empty" id="story-preview" data-i18n="nothingSelected">چیزی انتخاب نشده</div><button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="document.getElementById('file-story').click()" data-i18n="pickFile">📷 انتخاب فایل</button><label data-i18n="captionLbl">کپشن</label><input type="text" id="story-cap-inp"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('story-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="story-pub" data-i18n="publish">انتشار</button></div></div></div>
-
-<!-- مودال لیست استوری -->
-<div class="modal-overlay" id="stories-list-modal"><div class="modal"><h3 data-i18n="storiesListTitle">📸 استوری‌ها</h3><p data-i18n="pickUser">یک کاربر انتخاب کن</p><div id="stories-list-content" style="max-height:60vh;overflow-y:auto;margin-bottom:12px"></div><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('stories-list-modal')" data-i18n="close">بستن</button><button class="btn-primary" onclick="closeModal('stories-list-modal');openStoryModal()" data-i18n="addStory">افزودن استوری</button></div></div></div>
-
-<!-- مودال ویرایش -->
-<div class="modal-overlay" id="edit-modal"><div class="modal"><h3 data-i18n="editMsgTitle">✏️ ویرایش پیام</h3><p data-i18n="editMsgDesc">متن جدید را وارد کن</p><input type="text" id="edit-inp"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('edit-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="edit-save" data-i18n="save">ذخیره</button></div></div></div>
-
-<!-- مودال کتابخانه -->
-<div class="modal-overlay" id="lib-modal"><div class="modal"><h3 data-i18n="libAddTitle">🎬 افزودن به کتابخانه</h3><label data-i18n="titleLbl">عنوان</label><input type="text" id="lib-title"><label data-i18n="descLbl">توضیحات</label><textarea id="lib-desc"></textarea><div class="story-preview empty" id="lib-preview" data-i18n="nothingSelected">چیزی انتخاب نشده</div><button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="document.getElementById('file-lib').click()" data-i18n="pickFile">📷 انتخاب فایل</button><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('lib-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="lib-pub" data-i18n="add">افزودن</button></div></div></div>
-
-<!-- مودال ربات -->
-<div class="modal-overlay" id="bot-modal"><div class="modal"><h3 data-i18n="botNewTitle">🤖 ربات جدید</h3><label data-i18n="nameLbl">نام</label><input type="text" id="bot-name"><label data-i18n="descLbl">توضیحات</label><textarea id="bot-desc"></textarea><label data-i18n="autoReplyLbl">پاسخ خودکار</label><textarea id="bot-reply"></textarea><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('bot-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="bot-create" data-i18n="create">ساخت</button></div></div></div>
-
-<!-- مودال کلاس -->
-<div class="modal-overlay" id="edu-modal"><div class="modal"><h3 data-i18n="newClassTitle">📚 کلاس جدید</h3><label data-i18n="classNameLbl">نام کلاس</label><input type="text" id="edu-name"><label data-i18n="descLbl">توضیحات</label><textarea id="edu-desc"></textarea><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('edu-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="edu-create" data-i18n="create">ساخت</button></div></div></div>
-
-<!-- مودال ورود با کد -->
-<div class="modal-overlay" id="edu-join-modal"><div class="modal"><h3 data-i18n="joinTitle">🔑 ورود به کلاس</h3><p data-i18n="joinDesc">کد ۶ رقمی که معلم داده رو وارد کن</p><input type="text" id="edu-join-code" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="123456" style="text-align:center;font-size:24px;letter-spacing:8px;font-weight:800;direction:ltr"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('edu-join-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="edu-join-btn" data-i18n="enter">ورود</button></div></div></div>
-
-<!-- مودال نمایش کد کلاس -->
-<div class="modal-overlay" id="edu-code-modal"><div class="modal"><h3 data-i18n="classCreated">✅ کلاس ساخته شد!</h3><p data-i18n="giveCodeDesc">این کد رو به دانش‌آموزان بده:</p><div style="background:linear-gradient(135deg,rgba(0,212,255,.2),rgba(123,63,242,.2));border:2px dashed var(--p);border-radius:14px;padding:18px;text-align:center;font-size:34px;font-weight:900;letter-spacing:10px;direction:ltr;color:var(--p);margin:14px 0" id="edu-show-code">------</div><button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:8px" onclick="copyEduCode()" data-i18n="copyCode">📋 کپی کد</button><div class="modal-btns"><button class="btn-primary" onclick="closeModal('edu-code-modal');loadEdu()" data-i18n="ok">باشه</button></div></div></div>
-
-<!-- مودال افزودن ویدیو -->
-<div class="modal-overlay" id="add-video-modal"><div class="modal"><h3 data-i18n="addVideoTitle">🎬 افزودن ویدیو</h3>
-<div class="tabs" style="margin-bottom:12px">
-<button class="tab active" data-vmode="upload" onclick="switchVideoMode('upload')" data-i18n="uploadFromDevice">📤 آپلود از دستگاه</button>
-<button class="tab" data-vmode="link" onclick="switchVideoMode('link')" data-i18n="linkTab">🔗 لینک</button>
-</div>
-<label data-i18n="videoTitleLbl">عنوان ویدیو</label>
-<input type="text" id="v-title" placeholder="مثلاً: جلسه ۱ - مقدمه" data-i18n-ph="videoTitlePh">
-<label data-i18n="descOptional">توضیحات (اختیاری)</label>
-<textarea id="v-desc" placeholder="توضیح کوتاه..." data-i18n-ph="descPh"></textarea>
-<div id="v-upload-section">
-<div class="story-preview empty" id="v-preview" style="height:180px" data-i18n="nothingSelected">ویدیویی انتخاب نشده</div>
-<input type="file" id="v-file" accept="video/*" style="display:none">
-<button class="btn-primary" style="width:100%;padding:11px;border-radius:12px;margin-bottom:12px;font-family:inherit;font-weight:700;cursor:pointer" onclick="document.getElementById('v-file').click()" data-i18n="pickVideo">📹 انتخاب ویدیو از دستگاه</button>
-<p style="font-size:11px;color:var(--mut);margin-top:-6px;margin-bottom:12px" data-i18n="maxSize">حداکثر حجم: ۵۰ مگابایت</p>
-<div id="v-upload-progress" style="display:none;margin-bottom:12px">
-<div style="background:rgba(0,212,255,.1);border-radius:10px;height:8px;overflow:hidden;margin-bottom:6px">
-<div id="v-progress-bar" style="height:100%;background:linear-gradient(90deg,#00d4ff,#7b3ff2);width:0%;transition:width .3s"></div>
-</div>
-<div style="font-size:11px;color:var(--p);text-align:center" id="v-progress-text">۰٪</div>
-</div>
-</div>
-<div id="v-link-section" style="display:none">
-<label data-i18n="videoUrlLbl">لینک ویدیو (URL)</label>
-<input type="url" id="v-url" placeholder="https://..." style="direction:ltr">
-<p style="font-size:11px;color:var(--mut);margin-top:-6px;margin-bottom:12px" data-i18n="linkHint">میتونی از یوتیوب، آپارات یا هر لینک mp4 استفاده کنی</p>
-</div>
-<div class="modal-btns"><button class="btn-cancel" onclick="closeModal('add-video-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="v-add-btn" data-i18n="add">افزودن</button></div></div></div>
-
-<div class="msg-menu" id="msg-menu"></div>
-<!-- صفحه پروفایل -->
-<div class="page" id="page-profile">
-<div class="top-bar">
-<button class="icon-btn" onclick="closeProfile()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1 data-i18n="profile">پروفایل</h1><p id="profile-email-lbl">...</p></div>
-<button class="icon-btn" id="profile-edit-btn" onclick="openEditProfile()"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-</div>
-
-<div class="profile-card">
-<div class="profile-avatar-wrap">
-<div class="profile-avatar" id="profile-avatar">?</div>
-<div class="profile-avatar-edit" onclick="document.getElementById('avatar-file').click()">📷</div>
-</div>
-<h2 class="profile-name" id="profile-name">...</h2>
-<p class="profile-username" id="profile-username">@...</p>
-<p class="profile-bio" id="profile-bio">—</p>
-</div>
-
-<div class="profile-info">
-<div class="profile-info-item">
-<span class="profile-info-label" data-i18n="phoneLbl">📱 شماره تماس</span>
-<span class="profile-info-value" id="profile-phone">—</span>
-</div>
-<div class="profile-info-item">
-<span class="profile-info-label" data-i18n="emailLbl">✉️ ایمیل</span>
-<span class="profile-info-value" id="profile-email-txt">—</span>
-</div>
-</div>
-
-<input type="file" id="avatar-file" accept="image/*" style="display:none">
-</div>
-
-<!-- صفحه تنظیمات -->
-<div class="page" id="page-settings">
-<div class="top-bar">
-<button class="icon-btn" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-<div class="app-title"><h1 data-i18n="settings">تنظیمات</h1></div>
-<div style="width:44px"></div>
-</div>
-
-<div class="settings-section">
-<h3 data-i18n="accountSection">👤 حساب کاربری</h3>
-<div class="settings-item" onclick="openMyProfile()">
-<div class="settings-icon">👤</div>
-<div class="settings-info">
-<div class="settings-title" data-i18n="profile">پروفایل</div>
-<div class="settings-desc" data-i18n="profileDesc">نام، عکس، بیوگرافی</div>
-</div>
-<div class="settings-arrow">‹</div>
-</div>
-</div>
-
-<div class="settings-section">
-<h3 data-i18n="languageSection">🌐 زبان</h3>
-<div class="settings-item">
-<div class="settings-icon">🌐</div>
-<div class="settings-info">
-<div class="settings-title" data-i18n="language">زبان</div>
-<div class="settings-desc" data-i18n="languageDesc">فارسی یا انگلیسی</div>
-</div>
-<select class="settings-select" id="lang-select" onchange="changeLang(this.value)">
-<option value="fa">فارسی</option>
-<option value="en">English</option>
-</select>
-</div>
-</div>
-
-<div class="settings-section">
-<h3 data-i18n="securitySection">🔒 امنیت</h3>
-<div class="settings-item" onclick="openTwoFA()">
-<div class="settings-icon">🔐</div>
-<div class="settings-info">
-<div class="settings-title" data-i18n="twoFA">رمز دو مرحله‌ای</div>
-<div class="settings-desc" id="twofa-status" data-i18n="twoFADesc">محافظت بیشتر از حساب</div>
-</div>
-<div class="settings-arrow">‹</div>
-</div>
-<div class="settings-item" onclick="showSessions()">
-<div class="settings-icon">📱</div>
-<div class="settings-info">
-<div class="settings-title" data-i18n="activeSessions">نشست‌های فعال</div>
-<div class="settings-desc" data-i18n="activeSessionsDesc">دستگاه‌های متصل</div>
-</div>
-<div class="settings-arrow">‹</div>
-</div>
-<div class="settings-item" onclick="changePassword()">
-<div class="settings-icon">🔑</div>
-<div class="settings-info">
-<div class="settings-title" data-i18n="changePassword">تغییر رمز عبور</div>
-<div class="settings-desc" data-i18n="changePasswordDesc">رمز جدید تنظیم کن</div>
-</div>
-<div class="settings-arrow">‹</div>
-</div>
-</div>
-
-<div class="settings-section">
-<h3 data-i18n="aboutSection">ℹ️ درباره</h3>
-<div class="settings-item" onclick="alert('بله مله - نسخه ۱.۰\nساخته شده توسط استودیو MMA')">
-<div class="settings-icon">📱</div>
-<div class="settings-info">
-<div class="settings-title" data-i18n="appVersion">نسخه برنامه</div>
-<div class="settings-desc">1.0.0</div>
-</div>
-<div class="settings-arrow">‹</div>
-</div>
-<div class="settings-item" onclick="logout()">
-<div class="settings-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)">🚪</div>
-<div class="settings-info">
-<div class="settings-title" style="color:#ef4444" data-i18n="logoutBtn">خروج از حساب</div>
-<div class="settings-desc" data-i18n="logoutDesc">خارج شدن از این دستگاه</div>
-</div>
-<div class="settings-arrow">‹</div>
-</div>
-</div>
-</div>
-
-<!-- مودال ویرایش پروفایل -->
-<div class="modal-overlay" id="edit-profile-modal">
-<div class="modal">
-<h3 data-i18n="editProfileTitle">✏️ ویرایش پروفایل</h3>
-<label data-i18n="nameLbl">نام</label>
-<input type="text" id="ep-name" placeholder="مثلاً: سبحان">
-<label data-i18n="usernameLbl">نام کاربری</label>
-<input type="text" id="ep-username" placeholder="sobhann" style="direction:ltr">
-<p style="font-size:10px;color:var(--mut);margin-top:-6px;margin-bottom:12px" data-i18n="usernameHint">فقط حروف انگلیسی، اعداد و _ (بدون @)</p>
-<label data-i18n="bioLbl">درباره من</label>
-<textarea id="ep-bio" placeholder="یه توضیح کوتاه..."></textarea>
-<label data-i18n="phoneLbl2">شماره تماس (اختیاری)</label>
-<input type="tel" id="ep-phone" placeholder="09123456789" style="direction:ltr">
-<div class="modal-btns">
-<button class="btn-cancel" onclick="closeModal('edit-profile-modal')" data-i18n="cancel">انصراف</button>
-<button class="btn-primary" id="ep-save" data-i18n="save">ذخیره</button>
-</div>
-</div>
-</div>
-
-<!-- مودال نمایش پروفایل بقیه -->
-<div class="modal-overlay" id="view-profile-modal">
-<div class="modal">
-<div style="text-align:center;margin-bottom:14px">
-<div class="profile-avatar" id="vp-avatar" style="width:80px;height:80px;font-size:32px;margin:0 auto 12px">?</div>
-<h3 id="vp-name" style="margin-bottom:4px">...</h3>
-<p id="vp-username" style="font-size:12px;color:var(--p);margin-bottom:10px">@...</p>
-<p id="vp-bio" style="font-size:12px;color:var(--mut);line-height:1.5">—</p>
-</div>
-<div class="modal-btns">
-<button class="btn-primary" id="vp-chat-btn" data-i18n="startChat">شروع گفتگو</button>
-<button class="btn-cancel" onclick="closeModal('view-profile-modal')" data-i18n="close">بستن</button>
-</div>
-</div>
-</div>
-
-<!-- مودال 2FA -->
-<div class="modal-overlay" id="twofa-modal">
-<div class="modal">
-<h3 data-i18n="twoFATitle">🔐 رمز دو مرحله‌ای</h3>
-<p data-i18n="twoFADesc2">با فعال‌سازی، هنگام ورود یک کد ۶ رقمی به ایمیلت فرستاده می‌شود.</p>
-<div id="twofa-step1">
-<button class="btn-primary" style="width:100%;padding:12px;border-radius:12px;font-family:inherit;font-weight:700;cursor:pointer;margin-bottom:10px" id="twofa-enable-btn" data-i18n="twoFAEnable">فعال‌سازی</button>
-</div>
-<div id="twofa-step2" style="display:none">
-<label data-i18n="twoFACodeLbl">کد ۶ رقمی</label>
-<input type="text" id="twofa-code-inp" maxlength="6" inputmode="numeric" placeholder="123456" style="text-align:center;font-size:20px;letter-spacing:6px;direction:ltr">
-<p style="font-size:11px;color:var(--mut);text-align:center;margin-top:-6px;margin-bottom:12px" id="twofa-hint"></p>
-<button class="btn-primary" style="width:100%;padding:12px;border-radius:12px;font-family:inherit;font-weight:700;cursor:pointer" id="twofa-verify-btn" data-i18n="verify">تأیید</button>
-</div>
-<div class="modal-btns" style="margin-top:8px">
-<button class="btn-cancel" onclick="closeModal('twofa-modal')" data-i18n="cancel">انصراف</button>
-</div>
-</div>
-</div>
-
-<!-- مودال نشست‌های فعال -->
-<div class="modal-overlay" id="sessions-modal">
-<div class="modal">
-<h3 data-i18n="sessionsTitle">📱 نشست‌های فعال</h3>
-<p data-i18n="sessionsDesc">دستگاه‌هایی که با حساب تو لاگین کردن:</p>
-<div id="sessions-list" style="max-height:50vh;overflow-y:auto;margin-bottom:12px"></div>
-<div class="modal-btns">
-<button class="btn-cancel" style="background:rgba(239,68,68,.2);color:#fca5a5" onclick="logoutAll()" data-i18n="logoutAll">خروج از همه</button>
-<button class="btn-primary" onclick="closeModal('sessions-modal')" data-i18n="close">بستن</button>
-</div>
-</div>
-</div>
-
-<!-- مودال تغییر رمز -->
-<div class="modal-overlay" id="password-modal">
-<div class="modal">
-<h3 data-i18n="changePasswordTitle">🔑 تغییر رمز عبور</h3>
-<label data-i18n="newPassword">رمز جدید</label>
-<input type="password" id="new-password" placeholder="••••••••">
-<label data-i18n="confirmPassword">تکرار رمز جدید</label>
-<input type="password" id="confirm-password" placeholder="••••••••">
-<div class="modal-btns">
-<button class="btn-cancel" onclick="closeModal('password-modal')" data-i18n="cancel">انصراف</button>
-<button class="btn-primary" id="password-save" data-i18n="save">ذخیره</button>
-</div>
-</div>
-</div>
-
-<!-- مودال تماس صوتی گروهی -->
+<!-- مودال تماس -->
 <div class="call-modal" id="call-modal">
-<div class="call-header">
-<div class="call-title" id="call-title">📞 تماس گروهی</div>
-<div class="call-sub" id="call-sub">در حال اتصال...</div>
-</div>
+<div class="call-header"><div class="call-title" id="call-title">تماس</div><div class="call-sub" id="call-sub">در حال اتصال...</div></div>
 <div class="call-participants" id="call-participants"></div>
 <div class="call-status" id="call-status"></div>
 <div class="call-controls">
-<button class="call-btn mic" id="call-mic-btn">🎤</button>
-<button class="call-btn end" id="call-end-btn">📞</button>
+<button class="call-btn mic" id="call-mic" onclick="toggleMic()">🎤</button>
+<button class="call-btn end" onclick="endCall()">📞</button>
 </div>
 </div>
-
-<!-- نوار پایین -->
-<div class="bottom-nav">
-<button class="nav-item active" id="nav-home" onclick="showPage('home')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span data-i18n="home">خانه</span></button>
-<button class="nav-item" id="nav-chats" onclick="showPage('chats')"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span data-i18n="chats">چت‌ها</span></button>
-<button class="nav-item center" onclick="showPage('chats')"><div class="center-circle">✈</div></button>
-<button class="nav-item" id="nav-library" onclick="showPage('library')"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg><span data-i18n="library">کتابخانه</span></button>
-<button class="nav-item" id="nav-more" onclick="showPage('settings')"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><span data-i18n="settings">تنظیمات</span></button>
-</div>
-<script type="module">
-import{createClient}from'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-const SB='https://sgjrwmnfvrpjtshlabva.supabase.co';
-const AK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnanJ3bW5mdnJwanRzaGxhYnZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwNTYwNzcsImV4cCI6MjEwNDYzMjA3N30._BOp-ONPTEbaM2mnGdJbdvjN-7qqA87zvannrOv02Eo';
-const sb=createClient(SB,AK);
-
-const{data:{session}}=await sb.auth.getSession();
-if(!session?.user?.email){location.href='index.html'}
-const myEmail=session.user.email;
-document.getElementById('my-email-lbl').textContent=myEmail;
-
-const esc=s=>{const d=document.createElement('div');d.textContent=s||'';return d.innerHTML};
-const ini=s=>(s||'?').charAt(0).toUpperCase();
-const fmtT=s=>{const m=Math.floor(s/60),ss=Math.floor(s%60);return`${m}:${ss.toString().padStart(2,'0')}`};
-const fmtSz=b=>{if(!b)return'0 B';if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';if(b<1073741824)return(b/1048576).toFixed(1)+' MB';return(b/1073741824).toFixed(2)+' GB'};
-const ago=d=>{const s=Math.floor((Date.now()-d.getTime())/1000),m=Math.floor(s/60),h=Math.floor(m/60),dd=Math.floor(h/24);if(s<60)return t('justNow');if(m<60)return m+' '+t('minAgo');if(h<24)return h+' '+t('hrAgo');return dd+' '+t('dayAgo')};
-
-// ============ دیکشنری ============
-const I18N={
-fa:{
-appName:'بله مله',appTagline:'سوپر اپلیکیشن',welcome:'سلام!',welcomeSub:'به بله مله خوش آمدید',
-groups:'گروه‌ها',channels:'کانال‌ها',contacts:'مخاطبین',chats:'گفتگوها',library:'کتابخانه',bots:'ربات‌ها',finance:'خدمات مالی',financeShort:'مالی',education:'آموزش',home:'خانه',more:'بیشتر',privateTab:'خصوصی',
-secTitle:'امنیت بالا',secSub:'با رمزنگاری پیشرفته',spdTitle:'سرعت بالا',spdSub:'ارسال و دریافت سریع',cldTitle:'فضای ابری',cldSub:'دسترسی از همه جا',freTitle:'رایگان',freSub:'بدون هزینه، همیشه',
-librarySub:'ویدیوها و محتوا',botsSub:'پاسخ خودکار',financeSub:'شارژ، بسته، پرداخت',classes:'کلاس‌ها',classPanel:'پنل مدیریت',
-wallet:'کیف پول',balance:'موجودی',chargeSection:'📱 شارژ و بسته اینترنت',mci:'همراه اول',irancell:'ایرانسل',rightel:'رایتل',otherOperators:'سایر اپراتورها',chargeDesc:'شارژ / بسته اینترنت',servicePortal:'سامانه خدمات',otherServices:'🧾 خدمات دیگر',payElectricity:'پرداخت برق',payGas:'پرداخت گاز',payWater:'پرداخت آب',payPhone:'پرداخت تلفن',
-newContact:'مخاطب',newGroup:'گروه',newChannel:'کانال',joinWithCode:'ورود با کد',createClass:'ساخت کلاس',
-newContactTitle:'👤 مخاطب جدید',newContactDesc:'ایمیل مخاطب را وارد کن',
-newGroupTitle:'گروه جدید',newGroupDesc:'اطلاعات را وارد کن',nameLbl:'نام',descLbl:'توضیحات',selectMembers:'انتخاب اعضا',searchPlaceholder:'جستجو...',
-newStoryTitle:'📸 استوری جدید',newStoryDesc:'عکس یا ویدیو انتخاب کن',nothingSelected:'چیزی انتخاب نشده',pickFile:'📷 انتخاب فایل',captionLbl:'کپشن',publish:'انتشار',
-storiesListTitle:'📸 استوری‌ها',pickUser:'یک کاربر انتخاب کن',close:'بستن',addStory:'افزودن استوری',
-editMsgTitle:'✏️ ویرایش پیام',editMsgDesc:'متن جدید را وارد کن',libAddTitle:'🎬 افزودن به کتابخانه',titleLbl:'عنوان',
-botNewTitle:'🤖 ربات جدید',autoReplyLbl:'پاسخ خودکار',newClassTitle:'📚 کلاس جدید',classNameLbl:'نام کلاس',
-joinTitle:'🔑 ورود به کلاس',joinDesc:'کد ۶ رقمی که معلم داده رو وارد کن',enter:'ورود',
-classCreated:'✅ کلاس ساخته شد!',giveCodeDesc:'این کد رو به دانش‌آموزان بده:',copyCode:'📋 کپی کد',
-addVideoTitle:'🎬 افزودن ویدیو',uploadFromDevice:'📤 آپلود از دستگاه',linkTab:'🔗 لینک',videoTitleLbl:'عنوان ویدیو',videoTitlePh:'مثلاً: جلسه ۱ - مقدمه',descOptional:'توضیحات (اختیاری)',descPh:'توضیح کوتاه...',pickVideo:'📹 انتخاب ویدیو از دستگاه',maxSize:'حداکثر حجم: ۵۰ مگابایت',videoUrlLbl:'لینک ویدیو (URL)',linkHint:'میتونی از یوتیوب، آپارات یا هر لینک mp4 استفاده کنی',
-msgPlaceholder:'پیام...',sendImage:'ارسال عکس',sendFile:'ارسال فایل',sendVoice:'ضبط ویس',recording:'در حال ضبط...',
-send:'ارسال',cancel:'انصراف',save:'ذخیره',delete:'حذف',add:'افزودن',create:'ساخت',ok:'باشه',copy:'کپی',
-videos:'🎬 ویدیوها',members:'👥 اعضا',addVideo:'➕ افزودن ویدیو',classCode:'کد کلاس',
-loading:'در حال بارگذاری...',noClasses:'هنوز کلاسی نیست',noContacts:'هنوز مخاطبی نداری',error:'خطا',
-teacher:'معلم',student:'دانش‌آموز',emptyChat:'هنوز پیامی نیست',emptyVideo:'هنوز ویدیویی نیست',emptyMembers:'هنوز دانش‌آموزی نیست',
-logoutConfirm:'خارج می‌شوی؟',justNow:'الان',minAgo:'دقیقه پیش',hrAgo:'ساعت پیش',dayAgo:'روز پیش',
-you:'شما',replyLabel:'پاسخ',editLabel:'✏️ ویرایش',voiceMsg:'🎤 ویس',imageMsg:'🖼️ عکس',fileMsg:'📄 فایل',
-edited:'ویرایش شده',invalidEmail:'ایمیل معتبر نیست',cantChatSelf:'نمی‌تونی با خودت چت کنی!',
-onlyTeacher:'فقط معلم می‌تونه ویدیو اضافه کنه',deleteVideo:'این ویدیو حذف شود؟',deleteStudent:'این دانش‌آموز از کلاس حذف شود؟',copySuccess:'کد کپی شد',
-profile:'پروفایل',editProfileTitle:'✏️ ویرایش پروفایل',usernameLbl:'نام کاربری',usernameHint:'فقط حروف انگلیسی، اعداد و _ (بدون @)',bioLbl:'درباره من',phoneLbl:'📱 شماره تماس',phoneLbl2:'شماره تماس (اختیاری)',emailLbl:'✉️ ایمیل',startChat:'شروع گفتگو',noBio:'درباره من چیزی ننوشتی',
-settings:'تنظیمات',accountSection:'👤 حساب کاربری',profileDesc:'نام، عکس، بیوگرافی',languageSection:'🌐 زبان',language:'زبان',languageDesc:'فارسی یا انگلیسی',securitySection:'🔒 امنیت',twoFA:'رمز دو مرحله‌ای',twoFADesc:'محافظت بیشتر از حساب',twoFATitle:'🔐 رمز دو مرحله‌ای',twoFADesc2:'با فعال‌سازی، هنگام ورود یک کد ۶ رقمی به ایمیلت فرستاده می‌شود.',twoFAEnable:'فعال‌سازی',twoFACodeLbl:'کد ۶ رقمی',verify:'تأیید',activeSessions:'نشست‌های فعال',activeSessionsDesc:'دستگاه‌های متصل',sessionsTitle:'📱 نشست‌های فعال',sessionsDesc:'دستگاه‌هایی که با حساب تو لاگین کردن:',logoutAll:'خروج از همه',changePassword:'تغییر رمز عبور',changePasswordDesc:'رمز جدید تنظیم کن',changePasswordTitle:'🔑 تغییر رمز عبور',newPassword:'رمز جدید',confirmPassword:'تکرار رمز جدید',aboutSection:'ℹ️ درباره',appVersion:'نسخه برنامه',logoutBtn:'خروج از حساب',logoutDesc:'خارج شدن از این دستگاه',
-callStart:'شروع تماس',callGroup:'تماس گروهی',callPrivate:'تماس خصوصی',callConnecting:'در حال اتصال...',callConnected:'متصل شد',callError:'خطا در تماس',
-deleteForAll:'حذف برای همه',deleteForMe:'حذف فقط برای من',deletedMsg:'این پیام حذف شد',deleteConfirmAll:'OK = حذف برای همه، Cancel = حذف فقط برای من',deleteConfirmMe:'این پیام برای تو حذف شود؟',
-typing:'در حال نوشتن...',recordingVoice:'در حال ضبط ویس...',uploadingFile:'در حال ارسال فایل...',online:'آنلاین',lastSeen:'آخرین بازدید',onlineCount:'آنلاین',
-},
-en:{
-appName:'Bale Melle',appTagline:'Super App',welcome:'Hello!',welcomeSub:'Welcome to Bale Melle',
-groups:'Groups',channels:'Channels',contacts:'Contacts',chats:'Chats',library:'Library',bots:'Bots',finance:'Finance',financeShort:'Finance',education:'Education',home:'Home',more:'More',privateTab:'Private',
-secTitle:'High Security',secSub:'Advanced encryption',spdTitle:'High Speed',spdSub:'Fast send & receive',cldTitle:'Cloud Space',cldSub:'Access anywhere',freTitle:'Free',freSub:'No cost, always',
-librarySub:'Videos & content',botsSub:'Auto reply',financeSub:'Top-up, packages, payments',classes:'Classes',classPanel:'Admin Panel',
-wallet:'Wallet',balance:'Balance',chargeSection:'📱 Top-up & Internet',mci:'MCI',irancell:'Irancell',rightel:'Rightel',otherOperators:'Other operators',chargeDesc:'Top-up / Internet',servicePortal:'Service portal',otherServices:'🧾 Other Services',payElectricity:'Pay Electricity',payGas:'Pay Gas',payWater:'Pay Water',payPhone:'Pay Phone',
-newContact:'Contact',newGroup:'Group',newChannel:'Channel',joinWithCode:'Join with Code',createClass:'Create Class',
-newContactTitle:'👤 New Contact',newContactDesc:'Enter the contact email',
-newGroupTitle:'New Group',newGroupDesc:'Enter the information',nameLbl:'Name',descLbl:'Description',selectMembers:'Select members',searchPlaceholder:'Search...',
-newStoryTitle:'📸 New Story',newStoryDesc:'Pick an image or video',nothingSelected:'Nothing selected',pickFile:'📷 Pick a file',captionLbl:'Caption',publish:'Publish',
-storiesListTitle:'📸 Stories',pickUser:'Pick a user',close:'Close',addStory:'Add Story',
-editMsgTitle:'✏️ Edit Message',editMsgDesc:'Enter new text',libAddTitle:'🎬 Add to Library',titleLbl:'Title',
-botNewTitle:'🤖 New Bot',autoReplyLbl:'Auto reply',newClassTitle:'📚 New Class',classNameLbl:'Class Name',
-joinTitle:'🔑 Join Class',joinDesc:'Enter the 6-digit code from your teacher',enter:'Enter',
-classCreated:'✅ Class Created!',giveCodeDesc:'Give this code to students:',copyCode:'📋 Copy Code',
-addVideoTitle:'🎬 Add Video',uploadFromDevice:'📤 Upload from device',linkTab:'🔗 Link',videoTitleLbl:'Video title',videoTitlePh:'E.g. Session 1 - Intro',descOptional:'Description (optional)',descPh:'Short description...',pickVideo:'📹 Pick video from device',maxSize:'Max size: 50 MB',videoUrlLbl:'Video URL',linkHint:'You can use YouTube, Aparat or any mp4 link',
-msgPlaceholder:'Message...',sendImage:'Send image',sendFile:'Send file',sendVoice:'Record voice',recording:'Recording...',
-send:'Send',cancel:'Cancel',save:'Save',delete:'Delete',add:'Add',create:'Create',ok:'OK',copy:'Copy',
-videos:'🎬 Videos',members:'👥 Members',addVideo:'➕ Add Video',classCode:'Class Code',
-loading:'Loading...',noClasses:'No classes yet',noContacts:'No contacts yet',error:'Error',
-teacher:'Teacher',student:'Student',emptyChat:'No messages yet',emptyVideo:'No videos yet',emptyMembers:'No students yet',
-logoutConfirm:'Log out?',justNow:'Just now',minAgo:'min ago',hrAgo:'hr ago',dayAgo:'day ago',
-you:'You',replyLabel:'Reply',editLabel:'✏️ Edit',voiceMsg:'🎤 Voice',imageMsg:'🖼️ Image',fileMsg:'📄 File',
-edited:'edited',invalidEmail:'Invalid email',cantChatSelf:"You can't chat with yourself!",
-onlyTeacher:'Only the teacher can add videos',deleteVideo:'Delete this video?',deleteStudent:'Remove this student from class?',copySuccess:'Code copied',
-profile:'Profile',editProfileTitle:'✏️ Edit Profile',usernameLbl:'Username',usernameHint:'Only a-z, 0-9, _ (no @)',bioLbl:'About me',phoneLbl:'📱 Phone',phoneLbl2:'Phone (optional)',emailLbl:'✉️ Email',startChat:'Start Chat',noBio:'No bio yet',
-settings:'Settings',accountSection:'👤 Account',profileDesc:'Name, photo, bio',languageSection:'🌐 Language',language:'Language',languageDesc:'Persian or English',securitySection:'🔒 Security',twoFA:'Two-Factor Auth',twoFADesc:'Extra account protection',twoFATitle:'🔐 Two-Factor Auth',twoFADesc2:'When enabled, a 6-digit code is sent to your email on login.',twoFAEnable:'Enable',twoFACodeLbl:'6-digit code',verify:'Verify',activeSessions:'Active Sessions',activeSessionsDesc:'Connected devices',sessionsTitle:'📱 Active Sessions',sessionsDesc:'Devices logged into your account:',logoutAll:'Log out all',changePassword:'Change Password',changePasswordDesc:'Set a new password',changePasswordTitle:'🔑 Change Password',newPassword:'New password',confirmPassword:'Confirm new password',aboutSection:'ℹ️ About',appVersion:'App Version',logoutBtn:'Log out',logoutDesc:'Sign out from this device',
-callStart:'Start Call',callGroup:'Group Call',callPrivate:'Private Call',callConnecting:'Connecting...',callConnected:'Connected',callError:'Call error',
-deleteForAll:'Delete for everyone',deleteForMe:'Delete for me only',deletedMsg:'This message was deleted',deleteConfirmAll:'OK = Delete for everyone, Cancel = Delete for me only',deleteConfirmMe:'Delete this message for you?',
-typing:'typing...',recordingVoice:'Recording voice...',uploadingFile:'Uploading file...',online:'Online',lastSeen:'Last seen',onlineCount:'online',
-}
+<script>
+/* ================= State ================= */
+const APP = {
+  user: null,
+  lang: localStorage.getItem('bm_lang') || 'fa',
+  currentPage: 'home',
+  currentTab: 'private',
+  contacts: JSON.parse(localStorage.getItem('bm_contacts') || '[]'),
+  groups: JSON.parse(localStorage.getItem('bm_groups') || '[]'),
+  channels: JSON.parse(localStorage.getItem('bm_channels') || '[]'),
+  chats: JSON.parse(localStorage.getItem('bm_chats') || '{}'),
+  messages: JSON.parse(localStorage.getItem('bm_messages') || '{}'),
+  stories: JSON.parse(localStorage.getItem('bm_stories') || '[]'),
+  library: JSON.parse(localStorage.getItem('bm_library') || '[]'),
+  bots: JSON.parse(localStorage.getItem('bm_bots') || '[]'),
+  eduClasses: JSON.parse(localStorage.getItem('bm_edu') || '[]'),
+  wallet: parseInt(localStorage.getItem('bm_wallet') || '0'),
+  currentRoom: null,
+  replyTo: null,
+  editingMsg: null,
+  selectedMembers: [],
+  currentStoryIdx: 0,
+  storyTimer: null,
+  mediaRecorder: null,
+  audioChunks: [],
+  recStartTime: 0,
+  recInterval: null,
+  peer: null,
+  ws: null
 };
 
-let lang=localStorage.getItem('lang')||'fa';
-function t(k){return(I18N[lang]&&I18N[lang][k])||(I18N.fa[k])||k}
-function applyLang(){
-document.documentElement.lang=lang;
-document.documentElement.dir=lang==='fa'?'rtl':'ltr';
-document.body.classList.toggle('lang-en',lang==='en');
-document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});
-document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=t(el.dataset.i18nPh)});
-const lbl=document.getElementById('lang-lbl');if(lbl)lbl.textContent=lang==='fa'?'EN':'FA';
-const sel=document.getElementById('lang-select');if(sel)sel.value=lang;
-localStorage.setItem('lang',lang);
-}
-window.toggleLang=()=>{lang=lang==='fa'?'en':'fa';applyLang()};
-window.changeLang=(newLang)=>{lang=newLang;applyLang()};
-
-let curTab='private',curChat=null,rtCh=null,allCts=[],selCts=[],grpType='group';
-let mr=null,ac=[],recStart=null,recTmr=null,curAud=null;
-let allSt=[],stByUser={},curStUser=null,curStIdx=0,stTmr=null,stRt=null,selStFile=null;
-let editId=null,menuTgt=null,replyTo=null;
-let selLibFile=null;
-let curClass=null,curCpTab='videos',vMode='upload',vFile=null;
-
-// ============ پروفایل ============
-const namesCache={};
-const avatarsCache={};
-let myProfile=null;
-
-async function getProfile(email){
-if(!email)return null;
-const{data}=await sb.from('profiles').select('*').eq('email',email).maybeSingle();
-if(data){
-namesCache[email]=data.name||email.split('@')[0];
-avatarsCache[email]=data.avatar_url||null;
-}
-return data;
-}
-
-async function getName(email){
-if(!email)return '?';
-if(namesCache[email])return namesCache[email];
-const{data}=await sb.from('profiles').select('name').eq('email',email).maybeSingle();
-const name=data?.name||email.split('@')[0];
-namesCache[email]=name;
-return name;
-}
-
-async function loadAllNames(emails){
-const unique=[...new Set(emails.filter(e=>e&&!namesCache[e]))];
-if(!unique.length)return;
-const{data}=await sb.from('profiles').select('email,name,avatar_url').in('email',unique);
-(data||[]).forEach(p=>{namesCache[p.email]=p.name||p.email.split('@')[0];avatarsCache[p.email]=p.avatar_url||null});
-}
-
-async function loadMyProfile(){
-let{data}=await sb.from('profiles').select('*').eq('email',myEmail).maybeSingle();
-if(!data){
-const defaultName=myEmail.split('@')[0];
-await sb.from('profiles').insert({email:myEmail,name:defaultName,username:defaultName});
-const{data:newData}=await sb.from('profiles').select('*').eq('email',myEmail).maybeSingle();
-data=newData;
-}
-myProfile=data;
-if(data?.name)namesCache[myEmail]=data.name;
-if(data?.avatar_url)avatarsCache[myEmail]=data.avatar_url;
-return data;
-}
-
-window.openMyProfile=async()=>{
-const p=await loadMyProfile();
-document.getElementById('profile-email-lbl').textContent=myEmail;
-document.getElementById('profile-email-txt').textContent=myEmail;
-const av=document.getElementById('profile-avatar');
-if(p?.avatar_url){av.textContent='';av.style.backgroundImage=`url('${p.avatar_url}')`}
-else{av.textContent=ini(p?.name||myEmail);av.style.backgroundImage=''}
-document.getElementById('profile-name').textContent=p?.name||myEmail.split('@')[0];
-document.getElementById('profile-username').textContent=p?.username?'@'+p.username:'@'+(myEmail.split('@')[0]);
-document.getElementById('profile-bio').textContent=p?.bio||t('noBio');
-document.getElementById('profile-phone').textContent=p?.phone||'—';
-showPage('profile');
+const I18N = {
+  fa: {
+    appName: 'بله مله', appTagline: 'سوپر اپلیکیشن',
+    welcome: 'سلام!', welcomeSub: 'به بله مله خوش آمدید',
+    groups: 'گروه‌ها', channels: 'کانال‌ها', contacts: 'مخاطبین', chats: 'گفتگوها',
+    library: 'کتابخانه', bots: 'ربات‌ها', financeShort: 'مالی', education: 'آموزش',
+    secTitle: 'امنیت بالا', secSub: 'با رمزنگاری پیشرفته',
+    spdTitle: 'سرعت بالا', spdSub: 'ارسال و دریافت سریع',
+    cldTitle: 'فضای ابری', cldSub: 'دسترسی از همه جا',
+    freTitle: 'رایگان', freSub: 'بدون هزینه، همیشه',
+    privateTab: 'خصوصی', newContact: 'مخاطب', newGroup: 'گروه', newChannel: 'کانال',
+    librarySub: 'ویدیوها و محتوا', botsSub: 'پاسخ خودکار',
+    finance: 'خدمات مالی', financeSub: 'شارژ، بسته، پرداخت',
+    wallet: 'کیف پول', balance: 'موجودی',
+    chargeSection: '📱 شارژ و بسته اینترنت', otherServices: '🧾 خدمات دیگر',
+    mci: 'همراه اول', irancell: 'ایرانسل', rightel: 'رایتل',
+    otherOperators: 'سایر اپراتورها', servicePortal: 'سامانه خدمات',
+    chargeDesc: 'شارژ / بسته اینترنت',
+    payElectricity: 'پرداخت برق', payGas: 'پرداخت گاز',
+    payWater: 'پرداخت آب', payPhone: 'پرداخت تلفن',
+    eduSub: 'کلاس‌ها و دوره‌ها', students: 'دانش‌آموزان',
+    lessons: 'دروس', homework: 'تکالیف',
+    recording: 'در حال ضبط...', cancel: 'لغو', send: 'ارسال',
+    image: 'تصویر', file: 'فایل', voice: 'ویس',
+    reply: 'پاسخ', edit: 'ویرایش', delete: 'حذف',
+    email: 'ایمیل', name: 'نام', add: 'افزودن', create: 'ایجاد',
+    newContactSub: 'ایمیل مخاطب را وارد کنید',
+    groupSub: 'نام و اعضا را انتخاب کنید', members: 'اعضا',
+    addMedia: 'افزودن محتوا', title: 'عنوان', mediaType: 'نوع',
+    desc: 'توضیحات', newBot: 'ربات جدید',
+    newClass: 'کلاس جدید', className: 'نام کلاس', teacher: 'استاد',
+    addStory: 'افزودن استوری', caption: 'کپشن', post: 'انتشار',
+    editProfile: 'ویرایش پروفایل', bio: 'بیوگرافی', save: 'ذخیره',
+    emptyChats: 'هنوز گفتگویی ندارید', emptyChatsSub: 'یک مخاطب یا گروه بسازید',
+    emptyLib: 'کتابخانه خالی است', emptyBots: 'ربات‌ای ندارید',
+    emptyEdu: 'کلاسی وجود ندارد', login: 'ورود', signup: 'ثبت‌نام',
+    logout: 'خروج', password: 'رمز عبور', loginBtn: 'ورود',
+    signupBtn: 'ثبت‌نام', noAccount: 'حساب ندارید؟', haveAccount: 'حساب دارید؟',
+    myProfile: 'پروفایل من', settings: 'تنظیمات', online: 'آنلاین',
+    lastSeen: 'آخرین بازدید', typing: 'در حال نوشتن...',
+    today: 'امروز', yesterday: 'دیروز'
+  },
+  en: {
+    appName: 'Bale Melle', appTagline: 'Super App',
+    welcome: 'Hello!', welcomeSub: 'Welcome to Bale Melle',
+    groups: 'Groups', channels: 'Channels', contacts: 'Contacts', chats: 'Chats',
+    library: 'Library', bots: 'Bots', financeShort: 'Finance', education: 'Education',
+    secTitle: 'High Security', secSub: 'With advanced encryption',
+    spdTitle: 'High Speed', spdSub: 'Fast send & receive',
+    cldTitle: 'Cloud Storage', cldSub: 'Access from anywhere',
+    freTitle: 'Free', freSub: 'No cost, always',
+    privateTab: 'Private', newContact: 'Contact', newGroup: 'Group', newChannel: 'Channel',
+    librarySub: 'Videos & content', botsSub: 'Auto reply',
+    finance: 'Finance', financeSub: 'Charge, package, pay',
+    wallet: 'Wallet', balance: 'Balance',
+    chargeSection: '📱 Charge & Internet', otherServices: '🧾 Other Services',
+    mci: 'MCI', irancell: 'Irancell', rightel: 'Rightel',
+    otherOperators: 'Other Operators', servicePortal: 'Service Portal',
+    chargeDesc: 'Charge / Internet',
+    payElectricity: 'Electricity', payGas: 'Gas',
+    payWater: 'Water', payPhone: 'Phone',
+    eduSub: 'Classes & courses', students: 'Students',
+    lessons: 'Lessons', homework: 'Homework',
+    recording: 'Recording...', cancel: 'Cancel', send: 'Send',
+    image: 'Image', file: 'File', voice: 'Voice',
+    reply: 'Reply', edit: 'Edit', delete: 'Delete',
+    email: 'Email', name: 'Name', add: 'Add', create: 'Create',
+    newContactSub: 'Enter contact email',
+    groupSub: 'Choose name and members', members: 'Members',
+    addMedia: 'Add Media', title: 'Title', mediaType: 'Type',
+    desc: 'Description', newBot: 'New Bot',
+    newClass: 'New Class', className: 'Class Name', teacher: 'Teacher',
+    addStory: 'Add Story', caption: 'Caption', post: 'Post',
+    editProfile: 'Edit Profile', bio: 'Bio', save: 'Save',
+    emptyChats: 'No chats yet', emptyChatsSub: 'Create a contact or group',
+    emptyLib: 'Library is empty', emptyBots: 'No bots',
+    emptyEdu: 'No classes', login: 'Login', signup: 'Sign Up',
+    logout: 'Logout', password: 'Password', loginBtn: 'Login',
+    signupBtn: 'Sign Up', noAccount: "Don't have an account?", haveAccount: 'Have an account?',
+    myProfile: 'My Profile', settings: 'Settings', online: 'Online',
+    lastSeen: 'Last seen', typing: 'typing...',
+    today: 'Today', yesterday: 'Yesterday'
+  }
 };
 
-window.closeProfile=()=>{showPage('home')};
-
-window.openProfile=async(email)=>{
-const targetEmail=email||myEmail;
-const isMe=targetEmail===myEmail;
-const p=await getProfile(targetEmail);
-if(!p){alert(t('error'));return}
-document.getElementById('vp-avatar').textContent=p.avatar_url?'':ini(p.name||p.email);
-document.getElementById('vp-avatar').style.backgroundImage=p.avatar_url?`url('${p.avatar_url}')`:'';
-document.getElementById('vp-avatar').style.backgroundSize='cover';
-document.getElementById('vp-avatar').style.backgroundPosition='center';
-document.getElementById('vp-name').textContent=p.name||p.email.split('@')[0];
-document.getElementById('vp-username').textContent=p.username?'@'+p.username:'';
-document.getElementById('vp-bio').textContent=p.bio||t('noBio');
-const chatBtn=document.getElementById('vp-chat-btn');
-if(isMe){
-chatBtn.textContent=lang==='fa'?'✏️ ویرایش پروفایل':'✏️ Edit Profile';
-chatBtn.onclick=()=>{closeModal('view-profile-modal');openEditProfile()};
-}else{
-chatBtn.textContent=lang==='fa'?'💬 شروع گفتگو':'💬 Start Chat';
-chatBtn.onclick=()=>{closeModal('view-profile-modal');openRoom('private',targetEmail)};
-}
-document.getElementById('view-profile-modal').classList.add('show');
+/* ================= Helpers ================= */
+const $ = id => document.getElementById(id);
+const save = () => {
+  localStorage.setItem('bm_contacts', JSON.stringify(APP.contacts));
+  localStorage.setItem('bm_groups', JSON.stringify(APP.groups));
+  localStorage.setItem('bm_channels', JSON.stringify(APP.channels));
+  localStorage.setItem('bm_chats', JSON.stringify(APP.chats));
+  localStorage.setItem('bm_messages', JSON.stringify(APP.messages));
+  localStorage.setItem('bm_stories', JSON.stringify(APP.stories));
+  localStorage.setItem('bm_library', JSON.stringify(APP.library));
+  localStorage.setItem('bm_bots', JSON.stringify(APP.bots));
+  localStorage.setItem('bm_edu', JSON.stringify(APP.eduClasses));
+  localStorage.setItem('bm_wallet', APP.wallet.toString());
 };
-
-window.openEditProfile=async()=>{
-const p=await loadMyProfile();
-document.getElementById('ep-name').value=p?.name||'';
-document.getElementById('ep-username').value=p?.username||'';
-document.getElementById('ep-bio').value=p?.bio||'';
-document.getElementById('ep-phone').value=p?.phone||'';
-document.getElementById('edit-profile-modal').classList.add('show');
+const t = key => (I18N[APP.lang] && I18N[APP.lang][key]) || key;
+const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const fmtTime = ts => {
+  const d = new Date(ts);
+  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
 };
-
-document.getElementById('ep-save').onclick=async()=>{
-const name=document.getElementById('ep-name').value.trim();
-const username=document.getElementById('ep-username').value.trim().toLowerCase();
-const bio=document.getElementById('ep-bio').value.trim();
-const phone=document.getElementById('ep-phone').value.trim();
-if(!name){alert(t('nameLbl'));return}
-if(username&&!/^[a-z0-9_]{3,20}$/.test(username)){alert(t('usernameHint'));return}
-const btn=document.getElementById('ep-save');btn.disabled=true;btn.textContent='...';
-try{
-if(username){
-const{data:ex}=await sb.from('profiles').select('email').eq('username',username).neq('email',myEmail).maybeSingle();
-if(ex){alert(lang==='fa'?'این نام کاربری قبلاً گرفته شده':'Username already taken');btn.disabled=false;btn.textContent=t('save');return}
-}
-const{error}=await sb.from('profiles').update({name,username:username||null,bio,phone,updated_at:new Date().toISOString()}).eq('email',myEmail);
-if(error){alert(t('error')+': '+error.message);btn.disabled=false;btn.textContent=t('save');return}
-namesCache[myEmail]=name;myProfile=null;
-closeModal('edit-profile-modal');await openMyProfile();
-}catch(e){alert(t('error')+': '+e.message)}
-btn.disabled=false;btn.textContent=t('save');
+const fmtDate = ts => {
+  const d = new Date(ts), now = new Date();
+  if (d.toDateString() === now.toDateString()) return t('today');
+  const y = new Date(now); y.setDate(y.getDate() - 1);
+  if (d.toDateString() === y.toDateString()) return t('yesterday');
+  return d.toLocaleDateString(APP.lang === 'fa' ? 'fa-IR' : 'en-US');
 };
-
-document.getElementById('avatar-file').onchange=async(e)=>{
-const f=e.target.files[0];if(!f)return;e.target.value='';
-if(!f.type.startsWith('image/')){alert(lang==='fa'?'فقط عکس':'Images only');return}
-if(f.size>5*1024*1024){alert(lang==='fa'?'حجم عکس زیاد':'Image too large');return}
-const ext=f.name.split('.').pop()||'jpg';
-const fn=`avatar-${myEmail.replace(/[^a-z0-9]/gi,'_')}-${Date.now()}.${ext}`;
-const{error:ue}=await sb.storage.from('avatars').upload(fn,f,{contentType:f.type,upsert:true});
-if(ue){alert(t('error')+': '+ue.message);return}
-const{data:ud}=sb.storage.from('avatars').getPublicUrl(fn);
-const{error:pe}=await sb.from('profiles').update({avatar_url:ud.publicUrl,updated_at:new Date().toISOString()}).eq('email',myEmail);
-if(pe){alert(t('error')+': '+pe.message);return}
-avatarsCache[myEmail]=ud.publicUrl;
-await openMyProfile();
+const fmtSize = bytes => {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1048576).toFixed(1) + ' MB';
 };
+const initials = name => (name || '?').trim().charAt(0).toUpperCase();
 
-// ============ نشست‌ها و 2FA ============
-async function registerSession(){
-const ua=navigator.userAgent;
-let device='Unknown device';
-if(/Android/i.test(ua))device='Android';
-else if(/iPhone|iPad|iPod/i.test(ua))device='iPhone/iPad';
-else if(/Windows/i.test(ua))device='Windows';
-else if(/Mac/i.test(ua))device='Mac';
-else if(/Linux/i.test(ua))device='Linux';
-if(/Chrome/i.test(ua))device+=' • Chrome';
-else if(/Firefox/i.test(ua))device+=' • Firefox';
-else if(/Safari/i.test(ua))device+=' • Safari';
-const sessionId=localStorage.getItem('session_id');
-if(sessionId){
-await sb.from('sessions').update({last_active:new Date().toISOString()}).eq('id',sessionId);
-}else{
-const{data}=await sb.from('sessions').insert({user_email:myEmail,device_info:device,user_agent:ua}).select().single();
-if(data)localStorage.setItem('session_id',data.id);
+/* ================= i18n ================= */
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (I18N[APP.lang][key]) el.textContent = I18N[APP.lang][key];
+  });
+  $('lang-lbl').textContent = APP.lang === 'fa' ? 'EN' : 'FA';
+  document.documentElement.lang = APP.lang;
+  document.documentElement.dir = APP.lang === 'fa' ? 'rtl' : 'ltr';
+  document.body.classList.toggle('lang-en', APP.lang === 'en');
 }
-}
-
-window.showSessions=async()=>{
-const list=document.getElementById('sessions-list');
-list.innerHTML='<div style="text-align:center;padding:20px;color:var(--mut)">...</div>';
-const{data}=await sb.from('sessions').select('*').eq('user_email',myEmail).order('last_active',{ascending:false});
-if(!data?.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--mut)">'+(lang==='fa'?'نشستی نیست':'No sessions')+'</div>';return}
-const currentSessionId=localStorage.getItem('session_id');
-list.innerHTML='';
-data.forEach(s=>{
-const isCurrent=s.id===currentSessionId;
-const diff=Math.floor((Date.now()-new Date(s.last_active).getTime())/1000);
-const timeAgo=diff<60?(lang==='fa'?'الان':'Just now'):diff<3600?Math.floor(diff/60)+(lang==='fa'?' دقیقه پیش':' min ago'):Math.floor(diff/3600)+(lang==='fa'?' ساعت پیش':' hr ago');
-const it=document.createElement('div');
-it.className='session-card';
-it.innerHTML=`<div class="session-header"><div class="session-icon">📱</div><div class="session-info"><div class="session-device">${esc(s.device_info||'?')}</div><div class="session-time">${timeAgo}</div></div>${isCurrent?'<span class="session-current">'+(lang==='fa'?'فعلی':'Current')+'</span>':''}</div>`;
-if(!isCurrent){
-const btn=document.createElement('button');
-btn.style.cssText='width:100%;padding:8px;border-radius:10px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.2);color:#fca5a5;border:none';
-btn.textContent=lang==='fa'?'خروج از این دستگاه':'Log out this device';
-btn.onclick=async()=>{
-if(!confirm(lang==='fa'?'از این دستگاه خارج شوی؟':'Log out from this device?'))return;
-await sb.from('sessions').delete().eq('id',s.id);
-showSessions();
-};
-it.appendChild(btn);
-}
-list.appendChild(it);
-});
-document.getElementById('sessions-modal').classList.add('show');
-};
-
-window.logoutAll=async()=>{
-if(!confirm(lang==='fa'?'از همه دستگاه‌ها خارج شوی؟':'Log out from all devices?'))return;
-await sb.from('sessions').delete().eq('user_email',myEmail);
-localStorage.removeItem('session_id');
-await sb.auth.signOut();
-localStorage.removeItem('my_email');
-location.href='index.html';
-};
-
-let twofaCode=null;
-
-window.openTwoFA=async()=>{
-const p=await loadMyProfile();
-const enabled=p?.twofa_enabled===true;
-if(enabled){
-if(!confirm(lang==='fa'?'رمز دو مرحله‌ای غیرفعال شود؟':'Disable 2FA?'))return;
-await sb.from('profiles').update({twofa_enabled:false,twofa_code:null,twofa_expires:null}).eq('email',myEmail);
-alert(lang==='fa'?'✅ غیرفعال شد':'✅ Disabled');
-updateTwoFAStatus();
-return;
-}
-document.getElementById('twofa-step1').style.display='block';
-document.getElementById('twofa-step2').style.display='none';
-document.getElementById('twofa-modal').classList.add('show');
-};
-
-document.getElementById('twofa-enable-btn').onclick=async()=>{
-twofaCode=String(Math.floor(100000+Math.random()*900000));
-const expires=new Date(Date.now()+5*60*1000).toISOString();
-await sb.from('profiles').update({twofa_code:twofaCode,twofa_expires:expires}).eq('email',myEmail);
-document.getElementById('twofa-step1').style.display='none';
-document.getElementById('twofa-step2').style.display='block';
-document.getElementById('twofa-hint').textContent=(lang==='fa'?'کد (برای تست): ':'Code (test): ')+twofaCode;
-};
-
-document.getElementById('twofa-verify-btn').onclick=async()=>{
-const code=document.getElementById('twofa-code-inp').value.trim();
-if(!/^\d{6}$/.test(code)){alert(lang==='fa'?'کد ۶ رقمی':'6-digit code');return}
-const{data}=await sb.from('profiles').select('twofa_code,twofa_expires').eq('email',myEmail).maybeSingle();
-if(!data?.twofa_code||data.twofa_code!==code){alert(lang==='fa'?'❌ کد اشتباه':'❌ Wrong code');return}
-if(new Date(data.twofa_expires)<new Date()){alert(lang==='fa'?'❌ کد منقضی شده':'❌ Code expired');return}
-await sb.from('profiles').update({twofa_enabled:true,twofa_code:null,twofa_expires:null}).eq('email',myEmail);
-closeModal('twofa-modal');
-alert(lang==='fa'?'✅ فعال شد':'✅ Enabled');
-updateTwoFAStatus();
-};
-
-async function updateTwoFAStatus(){
-const p=await loadMyProfile();
-const el=document.getElementById('twofa-status');
-if(el)el.textContent=p?.twofa_enabled?(lang==='fa'?'✅ فعال':'✅ Enabled'):(lang==='fa'?'غیرفعال - برای فعال‌سازی بزن':'Disabled - tap to enable');
+function toggleLang() {
+  APP.lang = APP.lang === 'fa' ? 'en' : 'fa';
+  localStorage.setItem('bm_lang', APP.lang);
+  applyI18n();
+  renderList();
+  renderStories();
+  renderLibrary();
+  renderBots();
+  renderEdu();
 }
 
-window.changePassword=()=>{
-document.getElementById('new-password').value='';
-document.getElementById('confirm-password').value='';
-document.getElementById('password-modal').classList.add('show');
-};
-
-document.getElementById('password-save').onclick=async()=>{
-const np=document.getElementById('new-password').value;
-const cp=document.getElementById('confirm-password').value;
-if(np.length<6){alert(lang==='fa'?'رمز باید حداقل ۶ کاراکتر باشد':'Password min 6 chars');return}
-if(np!==cp){alert(lang==='fa'?'رمزها یکی نیستند':'Passwords do not match');return}
-const btn=document.getElementById('password-save');btn.disabled=true;btn.textContent='...';
-const{error}=await sb.auth.updateUser({password:np});
-btn.disabled=false;btn.textContent=t('save');
-if(error){alert(t('error')+': '+error.message);return}
-closeModal('password-modal');
-alert(lang==='fa'?'✅ رمز تغییر کرد':'✅ Password changed');
-};
-
-// ============ صفحه‌ها ============
-window.showPage=p=>{
-document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-document.getElementById('page-'+p).classList.add('active');
-document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-const nm={home:'nav-home',chats:'nav-chats',library:'nav-library',settings:'nav-more'};
-if(nm[p])document.getElementById(nm[p])?.classList.add('active');
-if(p==='chats')renderList();
-if(p==='library')loadLib();
-if(p==='bots')loadBots();
-if(p==='education')loadEdu();
-if(p==='payments')loadWallet();
-if(p==='settings'){const sel=document.getElementById('lang-select');if(sel)sel.value=lang;updateTwoFAStatus()}
-};
-window.goTab=x=>{showPage('chats');switchTab(x)};
-window.switchTab=x=>{curTab=x;document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.dataset.tab===x));renderList()};
-window.logout=async()=>{
-if(!confirm(t('logoutConfirm')))return;
-const sessionId=localStorage.getItem('session_id');
-if(sessionId)await sb.from('sessions').delete().eq('id',sessionId);
-try{await setOffline()}catch(e){}
-await sb.auth.signOut();
-localStorage.removeItem('my_email');
-localStorage.removeItem('session_id');
-location.href='index.html';
-};
-window.showNotif=()=>alert(lang==='fa'?'اعلان‌ها به زودی...':'Notifications coming soon...');
-window.closeModal=id=>document.getElementById(id).classList.remove('show');
-// ============================================
-// ===== وضعیت کاربران (آنلاین، تایپ، ضبط ویس، آپلود) =====
-// ============================================
-let typingTimer=null;
-let myStatusChannel=null;
-let statusChannel=null;
-let isCurrentlyTyping=false;
-let isCurrentlyRecording=false;
-let isCurrentlyUploading=false;
-const statusCache={};
-
-async function updateMyStatus(updates){
-try{
-const payload={
-user_email:myEmail,
-chat_id:curChat?.id||null,
-updated_at:new Date().toISOString(),
-last_seen:new Date().toISOString(),
-...updates
-};
-await sb.from('user_status').upsert(payload,{onConflict:'user_email'});
-}catch(e){console.error('updateStatus:',e)}
+/* ================= Navigation ================= */
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = $('page-' + name);
+  if (page) page.classList.add('active');
+  APP.currentPage = name;
+  if (name === 'library') renderLibrary();
+  if (name === 'bots') renderBots();
+  if (name === 'education') renderEdu();
+  if (name === 'payments') updateWallet();
+  if (name === 'chats') { renderStories(); renderList(); }
+}
+function goTab(tab) {
+  showPage('chats');
+  switchTab(tab);
+}
+function switchTab(tab) {
+  APP.currentTab = tab;
+  document.querySelectorAll('.tab[data-tab]').forEach(t => {
+    t.classList.toggle('active', t.getAttribute('data-tab') === tab);
+  });
+  renderList();
+}
+function updateWallet() {
+  const val = APP.wallet.toLocaleString(APP.lang === 'fa' ? 'fa-IR' : 'en-US');
+  $('wallet-bal').textContent = val + (APP.lang === 'fa' ? ' تومان' : ' T');
 }
 
-function onTyping(){
-if(!curChat)return;
-if(!isCurrentlyTyping){
-isCurrentlyTyping=true;
-updateMyStatus({is_typing:true,chat_id:curChat.id||null});
+/* ================= Auth ================= */
+function initAuth() {
+  const saved = localStorage.getItem('bm_user');
+  if (saved) {
+    APP.user = JSON.parse(saved);
+    enterApp();
+  } else {
+    showAuthScreen();
+  }
 }
-clearTimeout(typingTimer);
-typingTimer=setTimeout(()=>{
-isCurrentlyTyping=false;
-updateMyStatus({is_typing:false});
-},1500);
+function showAuthScreen() {
+  let overlay = $('auth-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'auth-overlay';
+    overlay.className = 'modal-overlay show';
+    overlay.innerHTML = `
+      <div class="modal">
+        <h3 style="font-size:22px;text-align:center;background:linear-gradient(135deg,#00d4ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent">✈ بله مله</h3>
+        <p style="text-align:center">${t('appTagline')}</p>
+        <label>${t('email')}</label>
+        <input type="email" id="auth-email" placeholder="user@example.com" dir="ltr">
+        <label>${t('password')}</label>
+        <input type="password" id="auth-pass" placeholder="••••••••" dir="ltr">
+        <label>${t('name')}</label>
+        <input type="text" id="auth-name" placeholder="${t('name')}" style="display:none">
+        <div class="modal-btns">
+          <button class="btn-primary" id="auth-submit" onclick="doAuth()">${t('loginBtn')}</button>
+        </div>
+        <p style="text-align:center;margin-top:14px;font-size:12px;cursor:pointer;color:var(--p)" onclick="toggleAuthMode()">
+          <span id="auth-toggle-txt">${t('noAccount')}</span>
+        </p>
+      </div>`;
+    document.body.appendChild(overlay);
+  }
+  overlay.classList.add('show');
+  $('auth-toggle-txt').textContent = APP.authMode === 'signup' ? t('haveAccount') : t('noAccount');
 }
-
-function onRecordingStart(){
-isCurrentlyRecording=true;
-updateMyStatus({is_recording:true,chat_id:curChat?.id||null});
+function toggleAuthMode() {
+  APP.authMode = APP.authMode === 'signup' ? 'login' : 'signup';
+  const isSignup = APP.authMode === 'signup';
+  $('auth-name').style.display = isSignup ? 'block' : 'none';
+  $('auth-submit').textContent = isSignup ? t('signupBtn') : t('loginBtn');
+  $('auth-toggle-txt').textContent = isSignup ? t('haveAccount') : t('noAccount');
 }
-function onRecordingStop(){
-isCurrentlyRecording=false;
-updateMyStatus({is_recording:false});
+function doAuth() {
+  const email = $('auth-email').value.trim().toLowerCase();
+  const pass = $('auth-pass').value.trim();
+  const name = ($('auth-name').value || '').trim();
+  if (!email || !pass) return alert('ایمیل و رمز را وارد کنید');
+  if (APP.authMode === 'signup' && !name) return alert('نام را وارد کنید');
+  APP.user = {
+    id: uid(),
+    email,
+    name: name || email.split('@')[0],
+    avatar: null,
+    bio: '',
+    createdAt: Date.now()
+  };
+  localStorage.setItem('bm_user', JSON.stringify(APP.user));
+  const overlay = $('auth-overlay');
+  if (overlay) overlay.remove();
+  enterApp();
 }
-
-function onUploadStart(){
-isCurrentlyUploading=true;
-updateMyStatus({is_uploading:true,chat_id:curChat?.id||null});
+function logout() {
+  if (!confirm('از حساب خارج می‌شوید؟')) return;
+  localStorage.removeItem('bm_user');
+  APP.user = null;
+  showAuthScreen();
 }
-function onUploadStop(){
-isCurrentlyUploading=false;
-updateMyStatus({is_uploading:false});
-}
-
-async function setOnline(){
-await updateMyStatus({is_online:true,last_seen:new Date().toISOString()});
-}
-async function setOffline(){
-await updateMyStatus({is_online:false,last_seen:new Date().toISOString(),is_typing:false,is_recording:false,is_uploading:false});
-}
-
-setInterval(()=>{
-if(document.hidden){
-setOffline();
-}else{
-setOnline();
-}
-},30000);
-
-function getStatusText(email){
-const st=statusCache[email];
-if(!st)return '';
-if(curChat&&curChat.type!=='private'&&st.chat_id&&st.chat_id!==curChat.id)return '';
-if(st.is_recording)return `<span class="status-text rec">🎤 ${lang==='fa'?'در حال ضبط ویس...':'Recording voice...'}</span>`;
-if(st.is_uploading)return `<span class="status-text up">📎 ${lang==='fa'?'در حال ارسال فایل...':'Uploading file...'}</span>`;
-if(st.is_typing)return `<span class="status-text"><span class="typing-dots"><span></span><span></span><span></span></span> ${lang==='fa'?'در حال نوشتن...':'typing...'}</span>`;
-if(st.is_online)return `<span class="status-text"><span class="status-online"></span> ${lang==='fa'?'آنلاین':'Online'}</span>`;
-if(st.last_seen){
-const diff=Math.floor((Date.now()-new Date(st.last_seen).getTime())/1000);
-if(diff<60)return `<span class="status-text">${lang==='fa'?'آخرین بازدید: الان':'Last seen: Just now'}</span>`;
-if(diff<3600)return `<span class="status-text">${lang==='fa'?'آخرین بازدید: ':'Last seen: '}${Math.floor(diff/60)} ${lang==='fa'?'دقیقه پیش':'min ago'}</span>`;
-if(diff<86400)return `<span class="status-text">${lang==='fa'?'آخرین بازدید: ':'Last seen: '}${Math.floor(diff/3600)} ${lang==='fa'?'ساعت پیش':'hr ago'}</span>`;
-return `<span class="status-text">${lang==='fa'?'آخرین بازدید: ':'Last seen: '}${Math.floor(diff/86400)} ${lang==='fa'?'روز پیش':'day ago'}</span>`;
-}
-return '';
-}
-
-function updateChatStatus(){
-const st=document.getElementById('chat-status');
-if(!st)return;
-if(!curChat){st.innerHTML='';return}
-if(curChat.type==='private'){
-st.innerHTML=getStatusText(curChat.email);
-}else{
-const members=Object.entries(statusCache).filter(([email,s])=>email!==myEmail&&s.is_online);
-if(members.length===0){st.innerHTML='';return}
-st.innerHTML=`<span class="status-text"><span class="status-online"></span> ${members.length} ${lang==='fa'?'آنلاین':'online'}</span>`;
-}
-}
-
-async function loadAllStatus(){
-try{
-const{data}=await sb.from('user_status').select('*');
-(data||[]).forEach(s=>{statusCache[s.user_email]=s});
-updateChatStatus();
-}catch(e){console.error(e)}
-}
-
-function setupStatusRealtime(){
-if(statusChannel)sb.removeChannel(statusChannel);
-statusChannel=sb.channel('status-rt')
-.on('postgres_changes',{event:'*',schema:'public',table:'user_status'},p=>{
-const s=p.new;
-statusCache[s.user_email]=s;
-if(curChat){
-if(curChat.type==='private'&&s.user_email===curChat.email){
-updateChatStatus();
-}
-if(curChat.type!=='private'){
-updateChatStatus();
-}
-}
-updateListStatus();
-})
-.subscribe();
+function enterApp() {
+  $('my-email-lbl').textContent = APP.user.email;
+  const av = $('home-avatar');
+  if (APP.user.avatar) {
+    av.style.backgroundImage = `url(${APP.user.avatar})`;
+    av.textContent = '';
+  } else {
+    av.textContent = initials(APP.user.name);
+  }
+  $('home-greeting').textContent = t('welcome') + ' ' + APP.user.name;
+  showPage('home');
+  renderList();
+  renderStories();
 }
 
-function updateListStatus(){
-document.querySelectorAll('.list-item').forEach(it=>{
-const av=it.querySelector('.list-avatar');
-if(!av)return;
-const email=av.dataset.email;
-if(!email)return;
-const st=statusCache[email];
-let statusEl=it.querySelector('.list-item-status');
-if(!st||(!st.is_online&&!st.is_typing&&!st.is_recording&&!st.is_uploading)){
-if(statusEl)statusEl.remove();
-return;
-}
-let txt='';
-if(st.is_recording)txt='🎤 '+(lang==='fa'?'در حال ضبط...':'Recording...');
-else if(st.is_uploading)txt='📎 '+(lang==='fa'?'در حال ارسال...':'Uploading...');
-else if(st.is_typing)txt='✍️ '+(lang==='fa'?'در حال نوشتن...':'typing...');
-else if(st.is_online)txt='🟢 '+(lang==='fa'?'آنلاین':'Online');
-if(!statusEl){
-statusEl=document.createElement('div');
-statusEl.className='list-item-status';
-const info=it.querySelector('.list-info');
-if(info)info.appendChild(statusEl);
-}
-statusEl.textContent=txt;
-});
+/* ================= Notifications ================= */
+function showNotif() {
+  const notifs = [
+    '🔔 پیام جدید از سارا',
+    '🎬 ویدیوی جدید در کتابخانه',
+    '💰 شارژ کیف پول موفق',
+    '📚 کلاس جدید اضافه شد'
+  ];
+  alert(notifs[Math.floor(Math.random() * notifs.length)]);
 }
 
-setInterval(()=>{
-updateChatStatus();
-updateListStatus();
-},10000);
-// ============ لیست چت‌ها ============
-const listC=document.getElementById('list-container');
-async function renderList(){
-listC.innerHTML='<div class="empty-state"><div class="icon">⏳</div><h3>'+t('loading')+'</h3></div>';
-if(curTab==='private')await renderPrivate();else await renderGrpCh(curTab);
-}
-async function renderPrivate(){
-const{data,error}=await sb.from('messages').select('sender_email,receiver_email').is('chat_id',null).or(`sender_email.eq.${myEmail},receiver_email.eq.${myEmail}`);
-if(error){listC.innerHTML='<div class="empty-state"><div class="icon">❌</div><h3>'+t('error')+'</h3></div>';return}
-const set=new Set();
-data.forEach(m=>{if(m.sender_email!==myEmail)set.add(m.sender_email);if(m.receiver_email!==myEmail)set.add(m.receiver_email)});
-const cts=[...set];
-if(!cts.length){listC.innerHTML='<div class="empty-state"><div class="icon">👤</div><h3>'+t('noContacts')+'</h3></div>';return}
-await loadAllNames(cts);
-listC.innerHTML='';
-cts.forEach(e=>{
-const it=document.createElement('div');it.className='list-item';
-const dispName=namesCache[e]||e.split('@')[0];
-it.innerHTML=`<div class="list-avatar" data-email="${esc(e)}">${ini(dispName)}</div><div class="list-info"><div class="list-name">${esc(dispName)}</div><div class="list-sub">${esc(e)}</div></div>`;
-const av=it.querySelector('.list-avatar');
-if(avatarsCache[e]){av.textContent='';av.style.backgroundImage=`url('${avatarsCache[e]}')`}
-av.onclick=(ev)=>{ev.stopPropagation();openProfile(e)};
-it.querySelector('.list-info').onclick=()=>openRoom('private',e);
-const st=statusCache[e];
-if(st){
-const statusEl=document.createElement('div');
-statusEl.className='list-item-status';
-let txt='';
-if(st.is_recording)txt='🎤 '+(lang==='fa'?'در حال ضبط...':'Recording...');
-else if(st.is_uploading)txt='📎 '+(lang==='fa'?'در حال ارسال...':'Uploading...');
-else if(st.is_typing)txt='✍️ '+(lang==='fa'?'در حال نوشتن...':'typing...');
-else if(st.is_online)txt='🟢 '+(lang==='fa'?'آنلاین':'Online');
-if(txt){statusEl.textContent=txt;it.querySelector('.list-info').appendChild(statusEl)}
-}
-listC.appendChild(it);
-});
-}
-async function renderGrpCh(type){
-const{data:mem}=await sb.from('chat_members').select('chat_id').eq('member_email',myEmail);
-const emptyMsg=`<div class="empty-state"><div class="icon">${type==='group'?'👥':'📢'}</div><h3>${t('noClasses')}</h3></div>`;
-if(!mem?.length){listC.innerHTML=emptyMsg;return}
-const ids=mem.map(m=>m.chat_id);
-const{data:chs}=await sb.from('chats').select('*').in('id',ids).eq('type',type).order('created_at',{ascending:false});
-if(!chs?.length){listC.innerHTML=emptyMsg;return}
-listC.innerHTML='';chs.forEach(c=>{const it=document.createElement('div');it.className='list-item';
-it.innerHTML=`<div class="list-avatar">${type==='group'?'👥':'📢'}</div><div class="list-info"><div class="list-name">${esc(c.name)}</div><div class="list-sub">${esc(c.description||'—')}</div></div>`;
-it.onclick=()=>openRoom(type,c);listC.appendChild(it)});
-}
-
-// ============ چت روم ============
-const room=document.getElementById('chat-room'),msgArea=document.getElementById('messages-area');
-const roomAv=document.getElementById('room-avatar'),roomNm=document.getElementById('room-name'),roomSub=document.getElementById('room-sub');
-const callStartBtn=document.getElementById('call-start-btn');
-
-window.openRoom=async(type,data)=>{
-if(type==='private'){
-curChat={type:'private',email:data};
-const dispName=await getName(data);
-roomAv.textContent=ini(dispName);
-roomNm.textContent=dispName;
-roomSub.textContent=data;
-if(avatarsCache[data]){roomAv.textContent='';roomAv.style.backgroundImage=`url('${avatarsCache[data]}')`}
-else{roomAv.style.backgroundImage=''}
-roomAv.onclick=()=>openProfile(data);
-document.getElementById('room-info-click').onclick=()=>openProfile(data);
-// ✅ تماس خصوصی فعال
-callStartBtn.style.display='flex';
-const sorted=[myEmail,data].sort();
-callStartBtn.dataset.room='private_'+sorted[0]+'_'+sorted[1];
-callStartBtn.dataset.name=dispName;
-callStartBtn.dataset.type='private';
-}else{
-curChat={type,id:data.id,name:data.name};
-roomAv.textContent=type==='group'?'👥':'📢';
-roomAv.style.backgroundImage='';
-roomNm.textContent=data.name;
-roomSub.textContent=data.description||'';
-document.getElementById('room-info-click').onclick=null;
-// فقط برای گروه‌ها، نه کانال‌ها
-callStartBtn.style.display=type==='group'?'flex':'none';
-callStartBtn.dataset.room='room_'+data.id;
-callStartBtn.dataset.name=data.name;
-callStartBtn.dataset.type='group';
-}
-room.classList.add('active');
-await loadMsgs();
-setupRT();
-updateChatStatus();
-};
-
-window.closeRoom=()=>{room.classList.remove('active');curChat=null;if(rtCh)sb.removeChannel(rtCh);cancelReply()};
-
-async function loadMsgs(){
-if(!curChat)return;let q;
-if(curChat.type==='private'){q=sb.from('messages').select('*').is('chat_id',null).or(`and(sender_email.eq.${myEmail},receiver_email.eq.${curChat.email}),and(sender_email.eq.${curChat.email},receiver_email.eq.${myEmail})`).order('created_at',{ascending:true})}
-else{q=sb.from('messages').select('*').eq('chat_id',curChat.id).order('created_at',{ascending:true})}
-const{data}=await q;
-const{data:myDeleted}=await sb.from('deleted_messages').select('message_id').eq('user_email',myEmail);
-const deletedIds=new Set((myDeleted||[]).map(d=>d.message_id));
-msgArea.innerHTML='';
-(data||[]).forEach(m=>{
-if(deletedIds.has(m.id))return;
-addMsg(m);
-});
-await markMessagesRead();
-await updateGroupChecks();
-}
-
-function addMsg(m){
-if(m.deleted_for_all){
-const d=document.createElement('div');
-d.className='msg deleted '+(m.sender_email===myEmail?'mine':'other');
-d.dataset.id=m.id;d.dataset.type='deleted';
-let h='';
-if(curChat.type!=='private'&&m.sender_email!==myEmail){
-const dispName=namesCache[m.sender_email]||m.sender_email.split('@')[0];
-h+=`<div class="msg-sender">${esc(dispName)}</div>`;
-}
-h+=`<div class="msg-deleted-txt">🚫 ${t('deletedMsg')}</div>`;
-h+=`<div class="msg-actions" data-id="${m.id}">⋯</div>`;
-d.innerHTML=h;msgArea.appendChild(d);msgArea.scrollTop=msgArea.scrollHeight;
-return;
-}
-const d=document.createElement('div');
-d.className='msg '+(m.sender_email===myEmail?'mine':'other');
-d.dataset.id=m.id;d.dataset.type=m.message_type;
-let h='';
-if(curChat.type!=='private'&&m.sender_email!==myEmail){
-const dispName=namesCache[m.sender_email]||m.sender_email.split('@')[0];
-h+=`<div class="msg-sender" onclick="openProfile('${esc(m.sender_email)}')" style="cursor:pointer">${esc(dispName)}</div>`;
-}
-if(m.reply_to_id){const rt=m.reply_to_type||'text';let rtx=m.reply_to_content;if(!rtx||!rtx.trim()){if(rt==='voice')rtx=t('voiceMsg');else if(rt==='image')rtx=t('imageMsg');else if(rt==='file')rtx=t('fileMsg');else rtx='...'}
-h+=`<div class="reply-preview" data-rid="${esc(m.reply_to_id)}"><div class="reply-name">${esc((m.reply_to_sender||'').split('@')[0])}</div><div class="reply-text">${esc(rtx)}</div></div>`}
-if(m.message_type==='voice'&&m.audio_url){const du=m.audio_duration||0;h+=`<div class="voice-wrap"><button class="voice-play" data-url="${esc(m.audio_url)}">▶</button><div class="voice-wave">${Array.from({length:18},()=>`<span style="height:${Math.random()*18+6}px"></span>`).join('')}</div><div class="voice-dur">${fmtT(du)}</div></div>`}
-else if(m.message_type==='image'&&m.file_url){h+=`<div class="img-msg"><img src="${esc(m.file_url)}" data-full="${esc(m.file_url)}"></div>`}
-else if(m.message_type==='file'&&m.file_url){h+=`<div class="file-msg"><div class="file-icon">📄</div><div class="file-info"><div class="file-name">${esc(m.file_name||'file')}</div><div class="file-size">${fmtSz(m.file_size)}</div></div><a class="file-dl" href="${esc(m.file_url)}" download="${esc(m.file_name||'')}" target="_blank">⬇</a></div>`}
-else{h+=`<div>${esc(m.content||'')}</div>`}
-if(m.edited_at)h+=`<div class="msg-edited">${t('edited')}</div>`;
-if(m.sender_email===myEmail){
-if(curChat.type==='private'){
-const isRead=m.read_at?true:false;
-h+=`<div class="msg-meta">${isRead?'<span class="msg-check read">✓✓</span>':'<span class="msg-check sent">✓</span>'}</div>`;
-}else{
-h+=`<div class="msg-meta" data-check="${m.id}"><span class="msg-check sent">✓</span></div>`;
-}
-}
-h+=`<div class="msg-actions" data-id="${m.id}">⋯</div>`;
-d.innerHTML=h;msgArea.appendChild(d);msgArea.scrollTop=msgArea.scrollHeight;
-}
-
-function setupRT(){
-if(rtCh)sb.removeChannel(rtCh);
-rtCh=sb.channel('r-'+Date.now())
-.on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},async p=>{
-const m=p.new;
-let ok=false;
-if(curChat.type==='private'){
-ok=(m.sender_email===myEmail&&m.receiver_email===curChat.email)||(m.sender_email===curChat.email&&m.receiver_email===myEmail);
-if(ok&&!m.chat_id){
-addMsg(m);
-if(m.sender_email===curChat.email){await markMessagesRead()}
-}
-}else{
-if(m.chat_id===curChat.id){addMsg(m);await markMessagesRead();updateGroupChecks()}
-}
-})
-.on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages'},p=>{
-const m=p.new;
-let ok=false;
-if(curChat.type==='private'){
-ok=(m.sender_email===myEmail&&m.receiver_email===curChat.email)||(m.sender_email===curChat.email&&m.receiver_email===myEmail);
-}else{ok=m.chat_id===curChat.id}
-if(ok){
-const o=msgArea.querySelector(`[data-id="${m.id}"]`);
-if(o)o.remove();
-addMsg(m);
-updateGroupChecks();
-}
-})
-.on('postgres_changes',{event:'INSERT',schema:'public',table:'message_reads'},()=>{
-updateGroupChecks();
-})
-.on('postgres_changes',{event:'INSERT',schema:'public',table:'deleted_messages'},async p=>{
-const dd=p.new;
-if(dd.user_email===myEmail){
-const el=msgArea.querySelector(`[data-id="${dd.message_id}"]`);
-if(el)el.remove();
-}
-})
-.subscribe();
-}
-
-async function markMessagesRead(){
-if(!curChat)return;
-try{
-if(curChat.type==='private'){
-await sb.from('messages')
-.update({read_at:new Date().toISOString()})
-.is('chat_id',null)
-.eq('sender_email',curChat.email)
-.eq('receiver_email',myEmail)
-.is('read_at',null);
-}else{
-const{data:unread}=await sb.from('messages')
-.select('id')
-.eq('chat_id',curChat.id)
-.neq('sender_email',myEmail);
-if(!unread?.length)return;
-const ids=unread.map(m=>m.id);
-const{data:already}=await sb.from('message_reads')
-.select('message_id')
-.in('message_id',ids)
-.eq('user_email',myEmail);
-const alreadyIds=new Set((already||[]).map(r=>r.message_id));
-const toInsert=ids.filter(id=>!alreadyIds.has(id)).map(id=>({message_id:id,user_email:myEmail}));
-if(toInsert.length){
-await sb.from('message_reads').insert(toInsert);
-}
-}
-}catch(e){console.error('markRead:',e)}
-}
-
-async function updateGroupChecks(){
-if(!curChat||curChat.type==='private')return;
-const myMsgs=[...msgArea.querySelectorAll('.msg.mine')];
-if(!myMsgs.length)return;
-const ids=myMsgs.map(el=>el.dataset.id);
-const{data:members}=await sb.from('chat_members').select('member_email').eq('chat_id',curChat.id);
-const totalOthers=(members||[]).filter(m=>m.member_email!==myEmail).length;
-if(totalOthers===0)return;
-const{data:reads}=await sb.from('message_reads').select('message_id').in('message_id',ids);
-const readCount={};
-(reads||[]).forEach(r=>{readCount[r.message_id]=(readCount[r.message_id]||0)+1});
-myMsgs.forEach(el=>{
-const id=el.dataset.id;
-const cnt=readCount[id]||0;
-const checkEl=el.querySelector('[data-check]');
-if(!checkEl)return;
-if(cnt>=totalOthers){
-checkEl.innerHTML='<span class="msg-check read">✓✓</span>';
-}else{
-checkEl.innerHTML='<span class="msg-check sent">✓</span>';
-}
-});
-}
-
-// ============ ارسال پیام ============
-const msgIn=document.getElementById('msg-input'),sendBtn=document.getElementById('send-btn');
-async function sendTxt(){
-const c=msgIn.value.trim();if(!c||!curChat)return;
-let pl=curChat.type==='private'?{content:c,sender_email:myEmail,receiver_email:curChat.email,message_type:'text'}:{content:c,sender_email:myEmail,receiver_email:'',chat_id:curChat.id,message_type:'text'};
-if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.reply_to_sender=replyTo.sender;pl.reply_to_type=replyTo.type}
-const{error}=await sb.from('messages').insert(pl);
-if(error)alert(t('error')+': '+error.message);
-else{
-msgIn.value='';
-cancelReply();
-if(isCurrentlyTyping){isCurrentlyTyping=false;clearTimeout(typingTimer);updateMyStatus({is_typing:false})}
-}
-}
-sendBtn.onclick=sendTxt;
-msgIn.addEventListener('input',()=>{if(msgIn.value.trim().length>0)onTyping()});
-msgIn.addEventListener('keypress',e=>{if(e.key==='Enter')sendTxt()});
-
-const attachM=document.getElementById('attach-menu'),attachB=document.getElementById('attach-btn');
-attachB.onclick=e=>{e.stopPropagation();attachM.classList.toggle('show')};
-document.addEventListener('click',e=>{if(!attachM.classList.contains('show'))return;if(e.target.closest('#attach-menu')||e.target.closest('#attach-btn'))return;attachM.classList.remove('show')});
-window.pickImage=()=>{attachM.classList.remove('show');document.getElementById('file-img').click()};
-window.pickFile=()=>{attachM.classList.remove('show');document.getElementById('file-doc').click()};
-
-document.getElementById('file-img').onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value='';
-if(!f.type.startsWith('image/')){alert(lang==='fa'?'فقط عکس':'Images only');return}
-if(f.size>5*1024*1024){alert(lang==='fa'?'حجم عکس زیاد':'Image too large');return}
-const td=document.createElement('div');td.className='msg mine';td.innerHTML='<div>'+t('loading')+'</div>';msgArea.appendChild(td);
-onUploadStart();
-const fn=`${Date.now()}-${Math.random().toString(36).slice(2)}.${f.name.split('.').pop()}`;
-const{error:ue}=await sb.storage.from('chat-files').upload(fn,f,{contentType:f.type});
-if(ue){td.remove();onUploadStop();alert(t('error')+': '+ue.message);return}
-const{data:ud}=sb.storage.from('chat-files').getPublicUrl(fn);
-let pl=curChat.type==='private'?{content:'',sender_email:myEmail,receiver_email:curChat.email,message_type:'image',file_url:ud.publicUrl,file_name:f.name,file_size:f.size}:{content:'',sender_email:myEmail,receiver_email:'',chat_id:curChat.id,message_type:'image',file_url:ud.publicUrl,file_name:f.name,file_size:f.size};
-if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.reply_to_sender=replyTo.sender;pl.reply_to_type=replyTo.type}
-await sb.from('messages').insert(pl);td.remove();onUploadStop();cancelReply();
-};
-
-document.getElementById('file-doc').onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value='';
-if(f.size>20*1024*1024){alert(lang==='fa'?'حجم فایل زیاد':'File too large');return}
-const td=document.createElement('div');td.className='msg mine';td.innerHTML='<div>'+t('loading')+'</div>';msgArea.appendChild(td);
-onUploadStart();
-const fn=`file-${Date.now()}-${Math.random().toString(36).slice(2)}.${f.name.split('.').pop()}`;
-const{error:ue}=await sb.storage.from('chat-files').upload(fn,f,{contentType:f.type||'application/octet-stream'});
-if(ue){td.remove();onUploadStop();alert(t('error')+': '+ue.message);return}
-const{data:ud}=sb.storage.from('chat-files').getPublicUrl(fn);
-let pl=curChat.type==='private'?{content:'',sender_email:myEmail,receiver_email:curChat.email,message_type:'file',file_url:ud.publicUrl,file_name:f.name,file_size:f.size}:{content:'',sender_email:myEmail,receiver_email:'',chat_id:curChat.id,message_type:'file',file_url:ud.publicUrl,file_name:f.name,file_size:f.size};
-if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.reply_to_sender=replyTo.sender;pl.reply_to_type=replyTo.type}
-await sb.from('messages').insert(pl);td.remove();onUploadStop();cancelReply();
-};
-
-const recBar=document.getElementById('rec-bar'),recTime=document.getElementById('rec-time');
-window.startRec=async()=>{attachM.classList.remove('show');
-try{const st=await navigator.mediaDevices.getUserMedia({audio:true});ac=[];mr=new MediaRecorder(st);
-mr.ondataavailable=e=>{if(e.data.size>0)ac.push(e.data)};mr.onstop=()=>st.getTracks().forEach(t=>t.stop());
-mr.start();recStart=Date.now();recBar.classList.add('show');document.getElementById('input-area').style.display='none';
-onRecordingStart();
-recTime.textContent='0:00';recTmr=setInterval(()=>{const s=Math.floor((Date.now()-recStart)/1000);recTime.textContent=fmtT(s);if(s>=60)stopRec(false)},500);
-}catch(e){alert(lang==='fa'?'دسترسی به میکروفون داده نشد':'Microphone access denied')}};
-function stopRec(c){if(!mr)return;if(mr.state!=='inactive')mr.stop();if(recTmr){clearInterval(recTmr);recTmr=null}recBar.classList.remove('show');document.getElementById('input-area').style.display='flex';onRecordingStop();if(c){ac=[];mr=null;recStart=null}}
-document.getElementById('rec-cancel').onclick=()=>stopRec(true);
-document.getElementById('rec-send').onclick=async()=>{const du=Math.floor((Date.now()-recStart)/1000);stopRec(false);
-setTimeout(async()=>{if(!ac.length)return;const bl=new Blob(ac,{type:'audio/webm'});ac=[];mr=null;
-const fn=`voice-${myEmail.replace(/[^a-z0-9]/gi,'_')}-${Date.now()}.webm`;
-const{error:ue}=await sb.storage.from('voice-messages').upload(fn,bl,{contentType:'audio/webm'});
-if(ue){alert(t('error')+': '+ue.message);return}
-const{data:ud}=sb.storage.from('voice-messages').getPublicUrl(fn);
-let pl=curChat.type==='private'?{content:'',sender_email:myEmail,receiver_email:curChat.email,message_type:'voice',audio_url:ud.publicUrl,audio_duration:du}:{content:'',sender_email:myEmail,receiver_email:'',chat_id:curChat.id,message_type:'voice',audio_url:ud.publicUrl,audio_duration:du};
-if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.reply_to_sender=replyTo.sender;pl.reply_to_type=replyTo.type}
-await sb.from('messages').insert(pl);cancelReply();
-},200)};
-
-// ============ منوی پیام ============
-const msgMenu=document.getElementById('msg-menu');
-msgArea.addEventListener('click',e=>{
-const ab=e.target.closest('.msg-actions');
-if(ab){e.stopPropagation();const id=ab.dataset.id;const d=ab.closest('.msg');
-const ty=d.dataset.type;const snd=d.classList.contains('mine')?myEmail:(curChat.type==='private'?curChat.email:'');
-const isMine=d.classList.contains('mine');
-const ct=d.querySelector('div:not(.msg-sender):not(.reply-preview):not(.msg-actions):not(.voice-wrap):not(.img-msg):not(.file-msg):not(.msg-meta):not(.msg-deleted-txt)')?.textContent||'';
-menuTgt={id,ty,ct,snd,isMine};
-let h=`<button class="msg-menu-item reply" data-a="reply">↩ ${t('replyLabel')}</button>`;
-if(ty==='text'&&isMine)h+=`<button class="msg-menu-item" data-a="edit">${t('editLabel')}</button>`;
-h+=`<button class="msg-menu-item delete" data-a="delete">🗑️ ${t('delete')}</button>`;
-msgMenu.innerHTML=h;
-let items=2;if(ty==='text'&&isMine)items=3;
-const w=180,h2=items*45+16;
-let x=ab.getBoundingClientRect().left,y=ab.getBoundingClientRect().bottom+5;
-if(document.dir==='rtl')x=ab.getBoundingClientRect().right-w;
-x=Math.max(10,Math.min(x,innerWidth-w-10));y=Math.min(y,innerHeight-h2-10);
-msgMenu.style.top=y+'px';msgMenu.style.left=x+'px';msgMenu.classList.add('show');return}
-const vb=e.target.closest('.voice-play');if(vb){const u=vb.dataset.url;
-if(curAud){curAud.pause();curAud=null;document.querySelectorAll('.voice-play').forEach(b=>b.textContent='▶')}
-if(vb.textContent==='▶'){curAud=new Audio(u);curAud.play();vb.textContent='⏸';curAud.onended=()=>{vb.textContent='▶';curAud=null}}else{vb.textContent='▶'}}
-const im=e.target.closest('.img-msg img');if(im){window.open(im.dataset.full||im.src,'_blank')}
-const rp=e.target.closest('.reply-preview');if(rp){const tid=rp.dataset.rid;const tm=msgArea.querySelector(`[data-id="${tid}"]`);if(tm){tm.scrollIntoView({behavior:'smooth',block:'center'});tm.style.background='rgba(255,243,205,.3)';setTimeout(()=>tm.style.background='',1500)}}
-});
-
-msgMenu.addEventListener('click',async e=>{
-const it=e.target.closest('.msg-menu-item');if(!it||!menuTgt)return;
-const a=it.dataset.a;const{id,ty,ct,snd,isMine}=menuTgt;msgMenu.classList.remove('show');
-if(a==='edit'){const{data}=await sb.from('messages').select('content').eq('id',id).single();
-if(data){editId=id;document.getElementById('edit-inp').value=data.content;document.getElementById('edit-modal').classList.add('show')}}
-else if(a==='reply'){let rc=ct;
-if(ty==='voice'){const{data}=await sb.from('messages').select('audio_duration').eq('id',id).single();rc=t('voiceMsg')+' ('+fmtT(data?.audio_duration||0)+')'}
-else if(ty==='image')rc=t('imageMsg');
-else if(ty==='file'){const{data}=await sb.from('messages').select('file_name').eq('id',id).single();rc=t('fileMsg')+' '+(data?.file_name||'')}
-else if(ty==='deleted')rc=t('deletedMsg');
-replyTo={id,sender:snd,content:rc,type:ty};
-document.getElementById('reply-bar-name').textContent=snd.split('@')[0];
-document.getElementById('reply-bar-text').textContent=rc;
-document.getElementById('reply-bar').classList.add('show');msgIn.focus()}
-else if(a==='delete'){
-if(isMine){
-const choice=confirm(t('deleteConfirmAll'));
-if(choice){
-const{error}=await sb.from('messages').update({deleted_for_all:true,content:null,file_url:null,audio_url:null,file_name:null}).eq('id',id);
-if(error){alert(t('error')+': '+error.message);return}
-}else{
-await sb.from('deleted_messages').insert({message_id:id,user_email:myEmail});
-const el=msgArea.querySelector(`[data-id="${id}"]`);
-if(el)el.remove();
-}
-}else{
-if(!confirm(t('deleteConfirmMe')))return;
-await sb.from('deleted_messages').insert({message_id:id,user_email:myEmail});
-const el=msgArea.querySelector(`[data-id="${id}"]`);
-if(el)el.remove();
-}
-}
-});
-
-document.addEventListener('click',e=>{if(!msgMenu.classList.contains('show'))return;if(e.target.closest('#msg-menu')||e.target.closest('.msg-actions'))return;msgMenu.classList.remove('show')});
-function cancelReply(){replyTo=null;document.getElementById('reply-bar')?.classList.remove('show')}
-document.getElementById('reply-close').onclick=cancelReply;
-
-document.getElementById('edit-save').onclick=async()=>{
-const v=document.getElementById('edit-inp').value.trim();if(!v){alert(lang==='fa'?'خالی':'Empty');return}
-const{error}=await sb.from('messages').update({content:v,edited_at:new Date().toISOString()}).eq('id',editId);
-if(error)alert(t('error')+': '+error.message);else{closeModal('edit-modal');editId=null}
-};
-
-// ============ مخاطب و گروه جدید ============
-window.openNewContact=()=>document.getElementById('contact-modal').classList.add('show');
-document.getElementById('contact-add').onclick=async()=>{
-const em=document.getElementById('contact-email').value.trim().toLowerCase();
-if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){alert(t('invalidEmail'));return}
-if(em===myEmail){alert(t('cantChatSelf'));return}
-closeModal('contact-modal');await renderList();openRoom('private',em);
-};
-
-window.openNewGroup=ty=>{grpType=ty;selCts=[];document.getElementById('group-title').textContent=ty==='group'?'👥 '+t('newGroupTitle'):'📢 '+t('newGroupTitle');
-document.getElementById('group-name').value='';document.getElementById('group-desc').value='';document.getElementById('search-contacts').value='';
-document.getElementById('group-modal').classList.add('show');loadCtsPicker();
-};
-async function loadCtsPicker(){
-const p=document.getElementById('contacts-picker');p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">...</div>';
-const{data}=await sb.from('messages').select('sender_email,receiver_email').is('chat_id',null).or(`sender_email.eq.${myEmail},receiver_email.eq.${myEmail}`);
-if(!data){p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">'+t('noContacts')+'</div>';return}
-const s=new Set();data.forEach(m=>{if(m.sender_email!==myEmail)s.add(m.sender_email);if(m.receiver_email!==myEmail)s.add(m.receiver_email)});
-allCts=[...s];
-if(!allCts.length){p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">'+t('noContacts')+'</div>';return}
-await loadAllNames(allCts);
-renderCtsPicker(allCts);
-}
-function renderCtsPicker(cts){const p=document.getElementById('contacts-picker'),sc=document.getElementById('selected-count');
-if(!cts.length){p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">—</div>';sc.textContent='';return}
-p.innerHTML='';cts.forEach(e=>{const sel=selCts.includes(e);const it=document.createElement('div');it.className='contact-chk'+(sel?' selected':'');
-const dispName=namesCache[e]||e.split('@')[0];
-it.innerHTML=`<input type="checkbox" ${sel?'checked':''}><div class="chk-avatar">${ini(dispName)}</div><div class="chk-info"><div class="chk-name">${esc(dispName)}</div><div class="chk-email">${esc(e)}</div></div>`;
-it.onclick=ev=>{ev.preventDefault();const i=selCts.indexOf(e);if(i>-1)selCts.splice(i,1);else selCts.push(e);renderCtsPicker(allCts)};p.appendChild(it)});
-sc.textContent=selCts.length>0?(lang==='fa'?'انتخاب شده: '+selCts.length:'Selected: '+selCts.length):'';
-}
-document.getElementById('search-contacts').addEventListener('input',e=>{
-const q=e.target.value.trim().toLowerCase();if(!q){renderCtsPicker(allCts);return}
-renderCtsPicker(allCts.filter(x=>x.toLowerCase().includes(q)));
-});
-document.getElementById('group-create').onclick=async()=>{
-const nm=document.getElementById('group-name').value.trim(),dc=document.getElementById('group-desc').value.trim();
-if(!nm){alert(t('nameLbl'));return}
-const{data,error}=await sb.from('chats').insert({name:nm,description:dc,type:grpType,owner_email:myEmail}).select().single();
-if(error){alert(t('error')+': '+error.message);return}
-const mem=[{chat_id:data.id,member_email:myEmail,role:'owner'},...selCts.filter(e=>e!==myEmail).map(e=>({chat_id:data.id,member_email:e,role:'member'}))];
-await sb.from('chat_members').insert(mem);closeModal('group-modal');selCts=[];
-switchTab(grpType);openRoom(grpType,data);
-};
-
-// ============ استوری ============
-const stBar=document.getElementById('stories-bar');
-async function loadStories(){
-const{data}=await sb.from('stories').select('*').order('created_at',{ascending:false});
-if(!data||!data.length){allSt=[];stByUser={};renderStories();return}
-allSt=data;stByUser={};
-data.forEach(s=>{if(!stByUser[s.user_email])stByUser[s.user_email]=[];stByUser[s.user_email].push(s)});
-const emails=Object.keys(stByUser);
-await loadAllNames(emails);
-renderStories();
-}
-function renderStories(){
-if(!stBar)return;stBar.innerHTML='';
-const ad=document.createElement('div');ad.className='story-item';
-ad.innerHTML=`<div class="story-avatar add-story"><div style="width:100%;height:100%;border-radius:50%;background:rgba(5,6,26,.9);display:flex;align-items:center;justify-content:center;font-size:20px;color:#00d4ff;font-weight:700">+</div></div><div class="story-name">${lang==='fa'?'استوری من':'My Story'}</div>`;
-ad.onclick=openStoryModal;stBar.appendChild(ad);
-const us=Object.keys(stByUser);if(!us.length)return;
-const sorted=us.sort((a,b)=>{if(a===myEmail)return-1;if(b===myEmail)return 1;return 0});
-sorted.forEach(email=>{
-const sts=stByUser[email];if(!sts?.length)return;
-const it=document.createElement('div');it.className='story-item';
-const last=sts[0],isV=last.media_type==='video',mine=email===myEmail,cnt=sts.length;
-let thumb=isV?`<div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#000,#7b3ff2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px">▶</div>`:`<img src="${esc(last.media_url)}" onerror="this.style.display='none'">`;
-const dispName=namesCache[email]||email.split('@')[0];
-it.innerHTML=`<div class="story-avatar has-story">${thumb}${mine?'<div class="plus">+</div>':''}${!mine&&cnt>1?`<div style="position:absolute;top:-2px;left:-2px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;border:2px solid #05061a">${cnt}</div>`:''}</div><div class="story-name">${mine?(lang==='fa'?'استوری من':'My Story'):esc(dispName)}</div>`;
-it.onclick=()=>{if(mine){if(sts.length>0)viewStory(email);else openStoryModal()}else viewStory(email)};
-stBar.appendChild(it);
-});
-}
-window.openStoryModal=()=>{selStFile=null;const p=document.getElementById('story-preview');p.innerHTML=t('nothingSelected');p.classList.add('empty');document.getElementById('story-cap-inp').value='';document.getElementById('story-modal').classList.add('show')};
-document.getElementById('file-story').onchange=e=>{const f=e.target.files[0];if(!f)return;e.target.value='';
-const isI=f.type.startsWith('image/'),isV=f.type.startsWith('video/');
-if(!isI&&!isV){alert(lang==='fa'?'فقط عکس یا ویدیو':'Images or videos only');return}
-if(isI&&f.size>10*1048576){alert(lang==='fa'?'عکس زیاد':'Image too large');return}
-if(isV&&f.size>150*1048576){alert(lang==='fa'?'ویدیو زیاد':'Video too large');return}
-selStFile=f;const p=document.getElementById('story-preview');p.classList.remove('empty');
-if(isI){const r=new FileReader();r.onload=ev=>{p.innerHTML=`<img src="${ev.target.result}">`};r.readAsDataURL(f)}
-else{const u=URL.createObjectURL(f);p.innerHTML=`<video src="${u}" controls></video>`}
-};
-document.getElementById('story-pub').onclick=async()=>{
-if(!selStFile){alert(t('nothingSelected'));return}
-const cap=document.getElementById('story-cap-inp').value.trim();const btn=document.getElementById('story-pub');btn.disabled=true;btn.textContent='...';
-const isV=selStFile.type.startsWith('video/');const mt=isV?'video':'image';
-try{const fn=`story-${myEmail.replace(/[^a-z0-9]/gi,'_')}-${Date.now()}.${selStFile.name.split('.').pop()}`;
-const{error:ue}=await sb.storage.from('stories').upload(fn,selStFile,{contentType:selStFile.type});
-if(ue){alert(t('error')+': '+ue.message);btn.disabled=false;btn.textContent=t('publish');return}
-const{data:ud}=sb.storage.from('stories').getPublicUrl(fn);
-const ex=new Date(Date.now()+24*60*60*1000).toISOString();
-await sb.from('stories').insert({user_email:myEmail,media_url:ud.publicUrl,media_type:mt,caption:cap,expires_at:ex});
-closeModal('story-modal');await loadStories();
-}catch(e){alert(t('error')+': '+e.message)}
-btn.disabled=false;btn.textContent=t('publish');
-};
-window.viewStory=em=>{curStUser=em;curStIdx=0;document.getElementById('story-viewer').classList.add('show');showStory()};
-function showStory(){
-if(!curStUser)return;const sts=stByUser[curStUser];if(!sts?.length){closeStory();return}
-const s=sts[curStIdx];if(!s){closeStory();return}
-const md=document.getElementById('story-media');
-md.innerHTML=s.media_type==='video'?`<video src="${esc(s.media_url)}" autoplay controls playsinline></video>`:`<img src="${esc(s.media_url)}">`;
-document.getElementById('story-head-av').textContent=ini(namesCache[curStUser]||curStUser);
-document.getElementById('story-head-name').textContent=namesCache[curStUser]||curStUser;
-document.getElementById('story-head-time').textContent=ago(new Date(s.created_at));
-if(s.caption){document.getElementById('story-cap').textContent=s.caption;document.getElementById('story-cap').style.display='block'}
-else document.getElementById('story-cap').style.display='none';
-const pb=document.getElementById('story-prog-bar');pb.style.width='0%';if(stTmr)clearInterval(stTmr);
-if(s.media_type==='video'){const v=md.querySelector('video');if(v){v.onended=nextStory;v.onloadedmetadata=()=>{const du=v.duration*1000,t0=Date.now();stTmr=setInterval(()=>{const p=Math.min(((Date.now()-t0)/du)*100,100);pb.style.width=p+'%';if(p>=100){clearInterval(stTmr);nextStory()}},50)}}}
-else{const du=5000,t0=Date.now();stTmr=setInterval(()=>{const p=Math.min(((Date.now()-t0)/du)*100,100);pb.style.width=p+'%';if(p>=100){clearInterval(stTmr);nextStory()}},50)}
-}
-window.nextStory=()=>{if(!curStUser)return;const sts=stByUser[curStUser];if(curStIdx<sts.length-1){curStIdx++;showStory()}else{const us=Object.keys(stByUser);const i=us.indexOf(curStUser);if(i<us.length-1){curStUser=us[i+1];curStIdx=0;showStory()}else closeStory()}};
-window.prevStory=()=>{if(!curStUser)return;if(curStIdx>0){curStIdx--;showStory()}else{const us=Object.keys(stByUser);const i=us.indexOf(curStUser);if(i>0){curStUser=us[i-1];curStIdx=stByUser[curStUser].length-1;showStory()}}};
-window.closeStory=()=>{document.getElementById('story-viewer').classList.remove('show');if(stTmr){clearInterval(stTmr);stTmr=null}document.getElementById('story-media').innerHTML='';curStUser=null;curStIdx=0};
-
-// ============ کتابخانه ============
-async function loadLib(){
-const list=document.getElementById('lib-list');list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
-const{data}=await sb.from('library').select('*').order('created_at',{ascending:false});
-if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">🎬</div><h3>'+(lang==='fa'?'هنوز محتوایی نیست':'No content yet')+'</h3></div>';return}
-list.innerHTML='';data.forEach(l=>{
-const it=document.createElement('div');it.className='list-item';
-const thumb=l.media_type==='video'?`<div class="list-avatar" style="font-size:22px">🎬</div>`:`<div class="list-avatar" style="background-image:url('${esc(l.media_url)}')"></div>`;
-it.innerHTML=`${thumb}<div class="list-info"><div class="list-name">${esc(l.title||'—')}</div><div class="list-sub">${esc(l.description||'—')}</div></div>`;
-it.onclick=()=>{
-if(l.media_type==='video'){const w=window.open('','_blank');w.document.write(`<video src="${l.media_url}" autoplay controls style="width:100%;height:100%;background:#000"></video>`)}
-else window.open(l.media_url,'_blank');
-};
-list.appendChild(it);
-});
-}
-window.openLibModal=()=>{selLibFile=null;document.getElementById('lib-title').value='';document.getElementById('lib-desc').value='';const p=document.getElementById('lib-preview');p.innerHTML=t('nothingSelected');p.classList.add('empty');document.getElementById('lib-modal').classList.add('show')};
-document.getElementById('file-lib').onchange=e=>{const f=e.target.files[0];if(!f)return;e.target.value='';
-selLibFile=f;const p=document.getElementById('lib-preview');p.classList.remove('empty');
-if(f.type.startsWith('image/')){const r=new FileReader();r.onload=ev=>{p.innerHTML=`<img src="${ev.target.result}">`};r.readAsDataURL(f)}
-else{const u=URL.createObjectURL(f);p.innerHTML=`<video src="${u}" controls></video>`}
-};
-document.getElementById('lib-pub').onclick=async()=>{
-if(!selLibFile){alert(t('nothingSelected'));return}
-const ti=document.getElementById('lib-title').value.trim()||(lang==='fa'?'بدون عنوان':'Untitled');
-const d=document.getElementById('lib-desc').value.trim();
-const isV=selLibFile.type.startsWith('video/');const mt=isV?'video':'image';
-const btn=document.getElementById('lib-pub');btn.disabled=true;btn.textContent='...';
-const fn=`lib-${Date.now()}-${Math.random().toString(36).slice(2)}.${selLibFile.name.split('.').pop()}`;
-const{error:ue}=await sb.storage.from('chat-files').upload(fn,selLibFile,{contentType:selLibFile.type});
-if(ue){alert(t('error')+': '+ue.message);btn.disabled=false;btn.textContent=t('add');return}
-const{data:ud}=sb.storage.from('chat-files').getPublicUrl(fn);
-await sb.from('library').insert({title:ti,description:d,media_url:ud.publicUrl,media_type:mt,owner_email:myEmail});
-closeModal('lib-modal');loadLib();btn.disabled=false;btn.textContent=t('add');
-};
-
-// ============ ربات ============
-async function loadBots(){
-const list=document.getElementById('bots-list');list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
-const{data}=await sb.from('bots').select('*').order('created_at',{ascending:false});
-if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">🤖</div><h3>'+(lang==='fa'?'هنوز رباتی نیست':'No bots yet')+'</h3></div>';return}
-list.innerHTML='';data.forEach(b=>{
-const it=document.createElement('div');it.className='bot-card';
-it.innerHTML=`<div class="bot-head"><div class="bot-avatar">🤖</div><div class="bot-name">${esc(b.name)}</div></div><div class="bot-desc">${esc(b.description||'—')}</div><div class="bot-desc" style="color:var(--p)">${lang==='fa'?'پاسخ':'Reply'}: ${esc(b.reply||'—')}</div><div class="bot-actions"><button class="bot-start">${lang==='fa'?'شروع':'Start'}</button>${b.owner_email===myEmail?'<button class="bot-del">'+t('delete')+'</button>':''}</div>`;
-it.querySelector('.bot-start').onclick=()=>alert((lang==='fa'?'ربات "'+b.name+'" فعال شد. پاسخ: ':'Bot "'+b.name+'" activated. Reply: ')+b.reply);
-if(b.owner_email===myEmail){it.querySelector('.bot-del').onclick=async()=>{if(!confirm(lang==='fa'?'حذف شود؟':'Delete?'))return;await sb.from('bots').delete().eq('id',b.id);loadBots()}}
-list.appendChild(it);
-});
-}
-window.openBotModal=()=>{document.getElementById('bot-name').value='';document.getElementById('bot-desc').value='';document.getElementById('bot-reply').value='';document.getElementById('bot-modal').classList.add('show')};
-document.getElementById('bot-create').onclick=async()=>{
-const n=document.getElementById('bot-name').value.trim();
-const d=document.getElementById('bot-desc').value.trim();
-const r=document.getElementById('bot-reply').value.trim();
-if(!n){alert(t('nameLbl'));return}
-if(!r){alert(t('autoReplyLbl'));return}
-const{error}=await sb.from('bots').insert({name:n,description:d,reply:r,owner_email:myEmail});
-if(error){alert(t('error')+': '+error.message);return}
-closeModal('bot-modal');loadBots();
-};
-// ===== آموزش =====
-async function loadEdu(){
-const list=document.getElementById('edu-list');
-list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
-const{data,error}=await sb.from('education').select('*').order('created_at',{ascending:false});
-if(error){list.innerHTML='<div class="empty-state"><div class="icon">❌</div><h3>'+t('error')+'</h3></div>';return}
-if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">📚</div><h3>'+t('noClasses')+'</h3></div>';return}
-const myClasses=data.filter(c=>c.owner_email===myEmail||(c.members||[]).includes(myEmail));
-if(!myClasses.length){
-list.innerHTML='<div class="empty-state"><div class="icon">🔒</div><h3>'+(lang==='fa'?'هنوز عضو هیچ کلاسی نیستی':'Not a member of any class')+'</h3><p style="font-size:12px;margin-top:6px;line-height:1.6">'+(lang==='fa'?'با دکمه <b>🔑 ورود با کد</b> کد کلاس رو وارد کن<br>یا اگه معلمی، با دکمه <b>➕ ساخت کلاس</b> کلاس بساز':'Use <b>🔑 Join with Code</b> to enter<br>or <b>➕ Create Class</b> if you teach')+'</p></div>';
-return;
-}
-list.innerHTML='';
-myClasses.forEach(c=>{
-const it=document.createElement('div');it.className='edu-class';
-const isOwner=c.owner_email===myEmail;
-const codeValid=/^\d{6}$/.test(c.code||'');
-const codeDisplay=codeValid?esc(c.code):'<span style="color:#ef4444">'+(lang==='fa'?'نامعتبر':'Invalid')+'</span>';
-it.innerHTML=`<div class="edu-head"><div class="edu-avatar">📚</div><div class="edu-name">${esc(c.name)}</div>${isOwner?'<span style="font-size:10px;background:var(--p);color:#000;padding:2px 8px;border-radius:8px;font-weight:700">'+t('teacher')+'</span>':'<span style="font-size:10px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:2px 8px;border-radius:8px;font-weight:700">'+t('student')+'</span>'}</div><div class="edu-info">${esc(c.description||'—')}</div><div class="edu-info" style="margin-top:6px;color:var(--p);font-size:11px">👥 ${(c.members||[]).length+1} ${lang==='fa'?'عضو':'members'}${isOwner?` • ${lang==='fa'?'کد':'Code'}: <b style="direction:ltr;display:inline-block">${codeDisplay}</b>`:''}</div><div style="margin-top:8px"><button class="edu-enter-btn" style="width:100%;padding:8px;border:none;border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#00d4ff,#7b3ff2);color:#fff">${isOwner?'⚙️ '+t('classPanel'):'📖 '+(lang==='fa'?'ورود به کلاس':'Enter Class')}</button></div>`;
-it.querySelector('.edu-enter-btn').onclick=(ev)=>{ev.stopPropagation();openClassPanel(c.id)};
-list.appendChild(it);
-});
-}
-window.openEduModal=()=>{document.getElementById('edu-name').value='';document.getElementById('edu-desc').value='';document.getElementById('edu-modal').classList.add('show')};
-function genCode(){return String(Math.floor(100000+Math.random()*900000))}
-async function genUniqueCode(){
-for(let i=0;i<15;i++){
-const c=genCode();
-if(!/^\d{6}$/.test(c))continue;
-const{data,error}=await sb.from('education').select('id').eq('code',c).maybeSingle();
-if(!error && !data)return c;
-}
-return String(Date.now()).slice(-6).padStart(6,'0');
-}
-document.getElementById('edu-create').onclick=async()=>{
-const n=document.getElementById('edu-name').value.trim();
-const d=document.getElementById('edu-desc').value.trim();
-if(!n){alert(t('classNameLbl'));return}
-const btn=document.getElementById('edu-create');btn.disabled=true;btn.textContent='...';
-const code=await genUniqueCode();
-if(!/^\d{6}$/.test(code)){alert(t('error'));btn.disabled=false;btn.textContent=t('create');return}
-const{data,error}=await sb.from('education').insert({name:n,description:d,owner_email:myEmail,code,members:[]}).select().single();
-btn.disabled=false;btn.textContent=t('create');
-if(error){alert(t('error')+': '+error.message);return}
-closeModal('edu-modal');
-document.getElementById('edu-show-code').textContent=code;
-document.getElementById('edu-code-modal').classList.add('show');
-};
-window.openEduJoin=()=>{document.getElementById('edu-join-code').value='';document.getElementById('edu-join-modal').classList.add('show');setTimeout(()=>document.getElementById('edu-join-code').focus(),200)};
-document.getElementById('edu-join-btn').onclick=async()=>{
-const code=document.getElementById('edu-join-code').value.trim();
-if(!/^\d{6}$/.test(code)){alert(lang==='fa'?'کد باید ۶ رقم عددی باشه':'Code must be 6 digits');return}
-const btn=document.getElementById('edu-join-btn');btn.disabled=true;btn.textContent='...';
-try{
-const{data,error}=await sb.rpc('join_edu_class',{p_code:code});
-btn.disabled=false;btn.textContent=t('enter');
-if(error){alert('❌ '+(error.message||t('error')));return}
-if(!data){alert(t('error'));return}
-if(!data.ok){alert(data.msg||t('error'));if(data.owner){closeModal('edu-join-modal');loadEdu()}return}
-closeModal('edu-join-modal');
-if(data.msg==='قبلاً عضو بودی'||data.msg==='Already member'){alert('✅ '+(lang==='fa'?'قبلاً عضو بودی':'Already member'))}
-else{alert('🎉 '+(lang==='fa'?'خوش آمدی':'Welcome')+' "'+data.name+'"')}
-loadEdu();
-}catch(e){
-btn.disabled=false;btn.textContent=t('enter');
-alert(t('error')+': '+e.message);
-}
-};
-window.copyEduCode=()=>{
-const c=document.getElementById('edu-show-code').textContent;
-if(navigator.clipboard){navigator.clipboard.writeText(c).then(()=>alert('✅ '+t('copySuccess')+': '+c)).catch(()=>alert(c))}else alert(c);
-};
-
-// ===== پنل کلاس =====
-window.openClassPanel=async(clsId)=>{
-const{data,error}=await sb.from('education').select('*').eq('id',clsId).single();
-if(error||!data){alert(t('error'));return}
-curClass=data;
-const isOwner=data.owner_email===myEmail;
-document.getElementById('cp-title').textContent='📚 '+data.name;
-document.getElementById('cp-sub').textContent=isOwner?t('classPanel'):(lang==='fa'?'کلاس آموزشی':'Class');
-document.getElementById('cp-code').textContent=data.code||'—';
-const membersTab=document.querySelector('[data-cp="members"]');
-if(membersTab)membersTab.style.display=isOwner?'block':'none';
-const addVideoBtn=document.getElementById('cp-add-video-btn');
-if(addVideoBtn)addVideoBtn.style.display=isOwner?'block':'none';
-const codeCard=document.getElementById('cp-code-card');
-if(codeCard)codeCard.style.display=isOwner?'flex':'none';
-showPage('class-panel');
-switchCpTab('videos');
-};
-window.closeClassPanel=()=>{curClass=null;showPage('education')};
-window.copyCpCode=()=>{
-if(!curClass?.code)return;
-if(navigator.clipboard){navigator.clipboard.writeText(curClass.code).then(()=>alert('✅ '+t('copySuccess'))).catch(()=>alert(curClass.code))}else alert(curClass.code);
-};
-window.switchCpTab=x=>{
-curCpTab=x;
-document.querySelectorAll('[data-cp]').forEach(el=>el.classList.toggle('active',el.dataset.cp===x));
-document.getElementById('cp-videos').style.display=x==='videos'?'block':'none';
-document.getElementById('cp-members').style.display=x==='members'?'block':'none';
-const addVideoBtn=document.getElementById('cp-add-video-btn');
-if(addVideoBtn)addVideoBtn.style.display=(curClass?.owner_email===myEmail)?'block':'none';
-if(x==='videos')loadClassVideos();
-if(x==='members')loadClassMembers();
-};
-window.switchVideoMode=m=>{
-vMode=m;
-document.querySelectorAll('[data-vmode]').forEach(el=>el.classList.toggle('active',el.dataset.vmode===m));
-document.getElementById('v-upload-section').style.display=m==='upload'?'block':'none';
-document.getElementById('v-link-section').style.display=m==='link'?'block':'none';
-};
-window.openAddVideoModal=()=>{
-if(!curClass||curClass.owner_email!==myEmail){alert(t('onlyTeacher'));return}
-vFile=null;vMode='upload';
-document.getElementById('v-title').value='';document.getElementById('v-desc').value='';document.getElementById('v-url').value='';
-const p=document.getElementById('v-preview');p.innerHTML=t('nothingSelected');p.classList.add('empty');
-document.getElementById('v-upload-progress').style.display='none';
-document.getElementById('v-progress-bar').style.width='0%';
-document.getElementById('v-progress-text').textContent='0%';
-switchVideoMode('upload');
-document.getElementById('add-video-modal').classList.add('show');
-};
-document.getElementById('v-file').onchange=e=>{
-const f=e.target.files[0];if(!f)return;e.target.value='';
-if(!f.type.startsWith('video/')){alert(lang==='fa'?'فقط ویدیو':'Video only');return}
-if(f.size>50*1024*1024){alert(t('maxSize'));return}
-vFile=f;
-const p=document.getElementById('v-preview');p.classList.remove('empty');
-const u=URL.createObjectURL(f);
-p.innerHTML=`<video src="${u}" controls style="max-width:100%;max-height:180px;border-radius:12px"></video>`;
-};
-document.getElementById('v-add-btn').onclick=async()=>{
-if(!curClass){alert(t('error'));return}
-if(curClass.owner_email!==myEmail){alert(t('onlyTeacher'));return}
-const ti=document.getElementById('v-title').value.trim();
-const d=document.getElementById('v-desc').value.trim();
-if(!ti){alert(t('videoTitleLbl'));return}
-const btn=document.getElementById('v-add-btn');btn.disabled=true;
-if(vMode==='link'){
-const u=document.getElementById('v-url').value.trim();
-if(!u){alert(t('videoUrlLbl'));btn.disabled=false;return}
-if(!/^https?:\/\//i.test(u)){alert(lang==='fa'?'لینک باید با http یا https شروع بشه':'URL must start with http or https');btn.disabled=false;return}
-btn.textContent='...';
-const{error}=await sb.from('edu_videos').insert({class_id:curClass.id,title:ti,description:d,video_url:u,owner_email:myEmail,mime_type:'link'});
-btn.disabled=false;btn.textContent=t('add');
-if(error){alert(t('error')+': '+error.message);return}
-closeModal('add-video-modal');loadClassVideos();return;
-}
-if(!vFile){alert(t('nothingSelected'));btn.disabled=false;return}
-btn.textContent=t('loading');
-document.getElementById('v-upload-progress').style.display='block';
-const ext=vFile.name.split('.').pop()||'mp4';
-const fn=`edu-${curClass.id}-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-try{
-const{error:ue}=await sb.storage.from('edu-videos').upload(fn,vFile,{contentType:vFile.type||'video/mp4',cacheControl:'3600',upsert:false});
-if(ue){alert(t('error')+': '+ue.message);btn.disabled=false;btn.textContent=t('add');document.getElementById('v-upload-progress').style.display='none';return}
-let prog=0;
-const int=setInterval(()=>{prog=Math.min(prog+15,100);document.getElementById('v-progress-bar').style.width=prog+'%';document.getElementById('v-progress-text').textContent=prog+'%';if(prog>=100)clearInterval(int)},150);
-await new Promise(r=>setTimeout(r,800));
-const{data:ud}=sb.storage.from('edu-videos').getPublicUrl(fn);
-const{error:ie}=await sb.from('edu_videos').insert({class_id:curClass.id,title:ti,description:d,video_url:ud.publicUrl,owner_email:myEmail,storage_path:fn,file_size:vFile.size,mime_type:vFile.type||'video/mp4'});
-if(ie){alert(t('error')+': '+ie.message);await sb.storage.from('edu-videos').remove([fn]);btn.disabled=false;btn.textContent=t('add');return}
-closeModal('add-video-modal');vFile=null;loadClassVideos();
-}catch(err){alert(t('error')+': '+err.message);btn.disabled=false;btn.textContent=t('add');document.getElementById('v-upload-progress').style.display='none'}
-};
-async function loadClassVideos(){
-if(!curClass)return;
-const list=document.getElementById('cp-videos-list');
-list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
-const{data}=await sb.from('edu_videos').select('*').eq('class_id',curClass.id).order('created_at',{ascending:false});
-if(!data?.length){list.innerHTML='<div class="empty-state"><div class="icon">🎬</div><h3>'+t('emptyVideo')+'</h3></div>';return}
-const isOwner=curClass.owner_email===myEmail;
-list.innerHTML='';data.forEach(v=>{
-const it=document.createElement('div');it.className='list-item';
-const isUploaded=v.storage_path&&v.mime_type!=='link';
-const badge=isUploaded?`<span style="font-size:9px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:2px 6px;border-radius:6px;font-weight:700">${lang==='fa'?'آپلود شده':'Uploaded'}</span>`:`<span style="font-size:9px;background:linear-gradient(135deg,#00d4ff,#7b3ff2);color:#fff;padding:2px 6px;border-radius:6px;font-weight:700">${lang==='fa'?'لینک':'Link'}</span>`;
-const delBtn=(isOwner&&v.owner_email===myEmail)?`<button class="bot-del" style="padding:6px 12px;border:none;border-radius:8px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.2);color:#fca5a5">${t('delete')}</button>`:'';
-it.innerHTML=`<div class="list-avatar" style="font-size:22px">🎬</div><div class="list-info"><div class="list-name">${esc(v.title)} ${badge}</div><div class="list-sub">${esc(v.description||'—')}${v.file_size?' • '+fmtSz(v.file_size):''}</div></div>${delBtn}`;
-it.querySelector('.list-info').onclick=()=>{
-const w=window.open('','_blank');
-w.document.write(`<html dir="rtl"><head><title>${esc(v.title)}</title><style>body{margin:0;background:#000;color:#fff;font-family:Vazirmatn,Tahoma,sans-serif}video{width:100%;height:100vh;background:#000}h2{padding:14px;margin:0;font-size:16px;background:#0a0e28}p{padding:0 14px 14px;color:#8b9dc3;font-size:13px}</style></head><body><h2>${esc(v.title)}</h2><video src="${esc(v.video_url)}" autoplay controls></video>${v.description?`<p>${esc(v.description)}</p>`:''}</body></html>`);
-};
-const delBtnEl=it.querySelector('.bot-del');
-if(delBtnEl)delBtnEl.onclick=async(ev)=>{
-ev.stopPropagation();
-if(!confirm(t('deleteVideo')))return;
-if(v.storage_path){await sb.storage.from('edu-videos').remove([v.storage_path])}
-await sb.from('edu_videos').delete().eq('id',v.id);
-loadClassVideos();
-};
-list.appendChild(it);
-});
-}
-async function loadClassMembers(){
-if(!curClass)return;
-if(curClass.owner_email!==myEmail)return;
-const list=document.getElementById('cp-members-list');
-list.innerHTML='<div class="empty-state"><div class="icon">⏳</div></div>';
-const members=curClass.members||[];
-await loadAllNames([curClass.owner_email,...members]);
-list.innerHTML='';
-const teacherName=namesCache[curClass.owner_email]||curClass.owner_email.split('@')[0];
-const teacherItem=document.createElement('div');teacherItem.className='list-item';
-teacherItem.innerHTML=`<div class="list-avatar" style="background:linear-gradient(135deg,#f59e0b,#f97316)">${ini(teacherName)}</div><div class="list-info"><div class="list-name">${esc(teacherName)}</div><div class="list-sub">${esc(curClass.owner_email)}</div></div><span style="font-size:10px;background:var(--p);color:#000;padding:2px 8px;border-radius:8px;font-weight:700">${t('teacher')}</span>`;
-list.appendChild(teacherItem);
-if(!members.length){
-const empty=document.createElement('div');empty.className='empty-state';empty.style.padding='30px 20px';
-empty.innerHTML='<div class="icon" style="font-size:40px">👥</div><h3>'+t('emptyMembers')+'</h3>';
-list.appendChild(empty);
-return;
-}
-members.forEach(em=>{
-const dispName=namesCache[em]||em.split('@')[0];
-const it=document.createElement('div');it.className='list-item';
-it.innerHTML=`<div class="list-avatar">${ini(dispName)}</div><div class="list-info"><div class="list-name">${esc(dispName)}</div><div class="list-sub">${esc(em)}</div></div><button class="bot-del" style="padding:6px 12px;border:none;border-radius:8px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.2);color:#fca5a5">${t('delete')}</button>`;
-it.querySelector('.bot-del').onclick=async()=>{
-if(!confirm(t('deleteStudent')))return;
-const newMembers=members.filter(x=>x!==em);
-const{error}=await sb.from('education').update({members:newMembers}).eq('id',curClass.id);
-if(error){alert(t('error')+': '+error.message);return}
-curClass.members=newMembers;
-loadClassMembers();
-};
-list.appendChild(it);
-});
-}
-
-// ===== کیف پول =====
-async function loadWallet(){
-const el=document.getElementById('wallet-bal');if(!el)return;
-const{data}=await sb.from('wallets').select('balance').eq('user_email',myEmail).maybeSingle();
-const bal=data?.balance||0;
-el.textContent=Number(bal).toLocaleString(lang==='fa'?'fa-IR':'en-US')+(lang==='fa'?' تومان':' Toman');
-}
-
-// ============================================
-// ===== تماس صوتی (خصوصی + گروهی) با LiveKit =====
-// ============================================
-const LK_URL='wss://tms-bxlk0q2o.livekit.cloud';
-const LK_KEY='APIBhvnBREQa54D';
-const LK_SECRET='18fup4uYJKd3zv7JLeY2JLAPpxtlpi7RvGOEBZcGrQh';
-let lkRoom=null;
-
-async function generateLKToken(roomName,identity){
-const header={alg:'HS256',typ:'JWT'};
-const now=Math.floor(Date.now()/1000);
-const payload={
-exp:now+3600,
-iss:LK_KEY,
-sub:identity,
-nbf:now-10,
-name:identity,
-video:{
-roomJoin:true,
-room:roomName,
-canPublish:true,
-canSubscribe:true,
-canPublishData:true
-}
-};
-const enc=s=>btoa(JSON.stringify(s)).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
-const headerB64=enc(header);
-const payloadB64=enc(payload);
-const data=headerB64+'.'+payloadB64;
-
-// ✅ اصلاح: name به جای alg
-const key=await crypto.subtle.importKey(
-'raw',
-new TextEncoder().encode(LK_SECRET),
-{name:'HMAC',hash:'SHA-256'},
-false,
-['sign']
-);
-
-const sig=await crypto.subtle.sign(
-'HMAC',
-key,
-new TextEncoder().encode(data)
-);
-const sigB64=btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
-return data+'.'+sigB64;
-}
-
-window.startCall=async(roomName,displayName,callType)=>{
-if(!roomName){alert(t('error'));return}
-try{
-document.getElementById('call-modal').classList.add('show');
-const titleText=callType==='private'?'📞 '+t('callPrivate')+' - ':'📞 '+(displayName||t('callGroup'));
-document.getElementById('call-title').textContent=callType==='private'?('📞 '+t('callPrivate')+' - '+displayName):('📞 '+(displayName||t('callGroup')));
-document.getElementById('call-sub').textContent=t('callConnecting');
-document.getElementById('call-status').textContent='';
-document.getElementById('call-participants').innerHTML='';
-const identity=myEmail.split('@')[0]+'_'+Date.now();
-const token=await generateLKToken(roomName,identity);
-lkRoom=new LivekitClient.Room({adaptiveStream:true,dynacast:true,audioCaptureDefaults:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
-lkRoom.on(LivekitClient.RoomEvent.ParticipantConnected,()=>renderParticipants());
-lkRoom.on(LivekitClient.RoomEvent.ParticipantDisconnected,()=>renderParticipants());
-lkRoom.on(LivekitClient.RoomEvent.TrackSubscribed,(track)=>{if(track.kind==='audio'){const el=track.attach();el.autoplay=true;el.style.display='none';document.body.appendChild(el)}renderParticipants()});
-lkRoom.on(LivekitClient.RoomEvent.TrackUnsubscribed,(track)=>{track.detach();renderParticipants()});
-lkRoom.on(LivekitClient.RoomEvent.ActiveSpeakersChanged,()=>renderParticipants());
-lkRoom.on(LivekitClient.RoomEvent.Disconnected,()=>endCall());
-await lkRoom.connect(LK_URL,token);
-document.getElementById('call-sub').textContent=t('callConnected');
-await lkRoom.localParticipant.setMicrophoneEnabled(true);
-renderParticipants();
-updateMicBtn();
-}catch(e){console.error(e);alert(t('callError')+': '+e.message);endCall()}
-};
-
-window.startCallFromChat=()=>{
-const btn=document.getElementById('call-start-btn');
-if(!btn.dataset.room){alert(t('error'));return}
-startCall(btn.dataset.room,btn.dataset.name,btn.dataset.type||'group');
-};
-
-function renderParticipants(){
-if(!lkRoom)return;
-const cont=document.getElementById('call-participants');cont.innerHTML='';
-const all=[lkRoom.localParticipant,...Array.from(lkRoom.remoteParticipants.values())];
-all.forEach(p=>{
-const isLocal=p===lkRoom.localParticipant;
-const isSpeaking=p.isSpeaking;
-const isMuted=!p.isMicrophoneEnabled;
-const rawName=p.identity.split('_')[0];
-const name=isLocal?t('you'):(namesCache[rawName]||rawName);
-const initial=(name||'?').charAt(0).toUpperCase();
-const d=document.createElement('div');
-d.className='participant'+(isSpeaking?' speaking':'');
-d.innerHTML=`<div class="participant-avatar">${initial}${isMuted?'<div class="participant-muted">🔇</div>':''}</div><div class="participant-name">${esc(name)}</div>`;
-cont.appendChild(d);
-});
-}
-
-window.toggleMic=async()=>{
-if(!lkRoom)return;
-const enabled=lkRoom.localParticipant.isMicrophoneEnabled;
-await lkRoom.localParticipant.setMicrophoneEnabled(!enabled);
-updateMicBtn();renderParticipants();
-};
-
-function updateMicBtn(){
-const btn=document.getElementById('call-mic-btn');if(!lkRoom)return;
-if(lkRoom.localParticipant.isMicrophoneEnabled){btn.classList.remove('muted');btn.textContent='🎤'}
-else{btn.classList.add('muted');btn.textContent='🔇'}
-}
-
-window.endCall=async()=>{
-try{if(lkRoom){await lkRoom.disconnect();lkRoom=null}}catch(e){}
-document.querySelectorAll('audio').forEach(a=>{if(a.srcObject)a.remove()});
-document.getElementById('call-modal').classList.remove('show');
-};
-
-document.getElementById('call-mic-btn').onclick=toggleMic;
-document.getElementById('call-end-btn').onclick=endCall;
-
-// ===== شروع =====
-(async()=>{
-applyLang();
-await loadMyProfile();
-await registerSession();
-await loadStories();
-await setOnline();
-await loadAllStatus();
-setupStatusRealtime();
-const homeAv=document.getElementById('home-avatar');
-if(homeAv&&avatarsCache[myEmail]){
-homeAv.textContent='';
-homeAv.style.backgroundImage=`url('${avatarsCache[myEmail]}')`;
-}
-const greeting=document.getElementById('home-greeting');
-if(greeting&&namesCache[myEmail]){
-greeting.textContent=(lang==='fa'?'سلام، ':'Hi, ')+namesCache[myEmail]+'!';
-}
-stRt=sb.channel('stories-rt').on('postgres_changes',{event:'*',schema:'public',table:'stories'},()=>loadStories()).subscribe();
-})();
-
-window.addEventListener('beforeunload',()=>{
-try{setOffline()}catch(e){}
-if(rtCh)sb.removeChannel(rtCh);
-if(stRt)sb.removeChannel(stRt);
-if(statusChannel)sb.removeChannel(statusChannel);
-if(lkRoom){try{lkRoom.disconnect()}catch(e){}}
+/* ================= Init ================= */
+window.addEventListener('DOMContentLoaded', () => {
+  applyI18n();
+  initAuth();
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#attach-menu') && !e.target.closest('.attach')) {
+      $('attach-menu').classList.remove('show');
+    }
+    if (!e.target.closest('#msg-menu') && !e.target.closest('.msg-actions')) {
+      $('msg-menu').classList.remove('show');
+    }
+  });
 });
 </script>
-</body>
-</html>
+<script>
+/* ================= Chats List ================= */
+function renderList() {
+  const c = $('list-container');
+  if (!c) return;
+  let items = [];
+  if (APP.currentTab === 'private') items = APP.contacts;
+  else if (APP.currentTab === 'group') items = APP.groups;
+  else if (APP.currentTab === 'channel') items = APP.channels;
+
+  if (!items.length) {
+    c.innerHTML = `<div class="empty-state">
+      <div class="icon">💬</div>
+      <h3>${t('emptyChats')}</h3>
+      <p>${t('emptyChatsSub')}</p>
+    </div>`;
+    return;
+  }
+
+  c.innerHTML = items.map(it => {
+    const chatId = it.id;
+    const msgs = APP.messages[chatId] || [];
+    const last = msgs[msgs.length - 1];
+    const unread = APP.chats[chatId]?.unread || 0;
+    const lastTxt = last
+      ? (last.type === 'voice' ? '🎤 ' + t('voice')
+        : last.type === 'image' ? '🖼 ' + t('image')
+        : last.type === 'file' ? '📄 ' + (last.fileName || t('file'))
+        : last.type === 'deleted' ? '🚫 حذف شد'
+        : esc(last.text || ''))
+      : '<span style="opacity:.5">شروع گفتگو...</span>';
+    const prefix = last && last.from === 'me' ? 'شما: ' : '';
+    const avatarStyle = it.avatar ? `background-image:url(${it.avatar})` : '';
+    const avatarTxt = it.avatar ? '' : (it.emoji || initials(it.name));
+
+    return `<div class="list-item ${unread ? 'unread' : ''}" onclick="openRoom('${chatId}','${APP.currentTab}')">
+      <div class="list-avatar" style="${avatarStyle}">${avatarTxt}</div>
+      <div class="list-info">
+        <div class="list-name">${esc(it.name)}</div>
+        ${it.email ? `<div class="list-sub">${esc(it.email)}</div>` : ''}
+        <div class="list-last-msg ${last && last.from === 'me' ? 'mine-prefix' : ''}">${prefix}${lastTxt}</div>
+      </div>
+      ${last ? `<div class="list-time ${unread ? 'unread-time' : ''}">${fmtTime(last.ts)}</div>` : ''}
+      ${unread ? `<div class="unread-badge">${unread}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+/* ================= Stories ================= */
+function renderStories() {
+  const bar = $('stories-bar');
+  if (!bar) return;
+  const addBtn = `<div class="story-item" onclick="openStoryModal()">
+    <div class="story-avatar add-story"><div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;border:2px solid #05061a">+</div></div>
+    <div class="story-name">استوری من</div>
+  </div>`;
+
+  const myStories = APP.stories.filter(s => s.owner === 'me');
+  const others = {};
+  APP.stories.filter(s => s.owner !== 'me').forEach(s => {
+    if (!others[s.owner]) others[s.owner] = [];
+    others[s.owner].push(s);
+  });
+
+  let html = addBtn;
+  if (myStories.length) {
+    html += `<div class="story-item" onclick="openStoryViewer('me',0)">
+      <div class="story-avatar has-story">
+        <div style="width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#7b3ff2);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;border:2px solid #05061a">${initials(APP.user.name)}</div>
+      </div>
+      <div class="story-name">${esc(APP.user.name)}</div>
+    </div>`;
+  }
+  Object.keys(others).forEach(owner => {
+    const first = others[owner][0];
+    const avStyle = first.avatar ? `background-image:url(${first.avatar})` : '';
+    const avTxt = first.avatar ? '' : initials(owner);
+    html += `<div class="story-item" onclick="openStoryViewer('${owner}',0)">
+      <div class="story-avatar has-story">
+        <div style="width:100%;height:100%;border-radius:50%;${avStyle};background-color:#1a1f40;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;border:2px solid #05061a">${avTxt}</div>
+      </div>
+      <div class="story-name">${esc(owner)}</div>
+    </div>`;
+  });
+  bar.innerHTML = html;
+}
+
+function openStoryModal() {
+  $('story-preview').className = 'story-preview empty';
+  $('story-preview').innerHTML = 'پیش‌نمایش';
+  $('story-caption').value = '';
+  APP.pendingStoryMedia = null;
+  $('modal-story').classList.add('show');
+  // picker
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'image/*,video/*';
+  inp.onchange = e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const url = URL.createObjectURL(f);
+    APP.pendingStoryMedia = { url, type: f.type.startsWith('video') ? 'video' : 'image' };
+    const prev = $('story-preview');
+    prev.className = 'story-preview';
+    prev.innerHTML = f.type.startsWith('video')
+      ? `<video src="${url}" controls></video>`
+      : `<img src="${url}">`;
+  };
+  inp.click();
+}
+
+function addStory() {
+  if (!APP.pendingStoryMedia) return alert('یک تصویر یا ویدیو انتخاب کنید');
+  APP.stories.push({
+    id: uid(),
+    owner: 'me',
+    ownerName: APP.user.name,
+    avatar: APP.user.avatar,
+    media: APP.pendingStoryMedia.url,
+    type: APP.pendingStoryMedia.type,
+    caption: $('story-caption').value.trim(),
+    ts: Date.now(),
+    expires: Date.now() + 86400000
+  });
+  save();
+  closeModal('modal-story');
+  renderStories();
+}
+
+let storyQueue = [], storyIdx = 0;
+function openStoryViewer(owner, idx) {
+  storyQueue = APP.stories.filter(s => s.owner === owner);
+  if (!storyQueue.length) return;
+  storyIdx = idx || 0;
+  $('story-viewer').classList.add('show');
+  showStory();
+}
+function showStory() {
+  const s = storyQueue[storyIdx];
+  if (!s) return closeStoryViewer();
+  const av = $('story-head-av');
+  if (s.avatar) { av.style.backgroundImage = `url(${s.avatar})`; av.textContent = ''; }
+  else { av.style.backgroundImage = ''; av.textContent = initials(s.ownerName || s.owner); }
+  $('story-head-name').textContent = s.ownerName || s.owner;
+  $('story-head-time').textContent = fmtTime(s.ts);
+  $('story-media').innerHTML = s.type === 'video'
+    ? `<video src="${s.media}" autoplay muted></video>`
+    : `<img src="${s.media}">`;
+  $('story-cap').textContent = s.caption || '';
+  const bar = $('story-prog-bar');
+  bar.style.width = '0%';
+  let p = 0;
+  clearInterval(APP.storyTimer);
+  APP.storyTimer = setInterval(() => {
+    p += 2;
+    bar.style.width = p + '%';
+    if (p >= 100) { clearInterval(APP.storyTimer); nextStory(); }
+  }, 100);
+}
+function nextStory() {
+  if (storyIdx < storyQueue.length - 1) { storyIdx++; showStory(); }
+  else closeStoryViewer();
+}
+function prevStory() {
+  if (storyIdx > 0) { storyIdx--; showStory(); }
+}
+function closeStoryViewer() {
+  clearInterval(APP.storyTimer);
+  $('story-viewer').classList.remove('show');
+}
+
+/* ================= Chat Room ================= */
+function openRoom(chatId, type) {
+  APP.currentRoom = { id: chatId, type };
+  const room = type === 'group' ? APP.groups.find(g => g.id === chatId)
+    : type === 'channel' ? APP.channels.find(c => c.id === chatId)
+    : APP.contacts.find(c => c.id === chatId);
+  if (!room) return;
+  $('room-name').textContent = room.name;
+  $('room-sub').textContent = room.email || (type === 'group' ? 'گروه' : type === 'channel' ? 'کانال' : '');
+  const av = $('room-avatar');
+  if (room.avatar) { av.style.backgroundImage = `url(${room.avatar})`; av.textContent = ''; }
+  else { av.style.backgroundImage = ''; av.textContent = room.emoji || initials(room.name); }
+  $('chat-room').classList.add('active');
+  APP.chats[chatId] = APP.chats[chatId] || { unread: 0 };
+  APP.chats[chatId].unread = 0;
+  save();
+  renderMessages();
+  renderList();
+  setTimeout(() => $('msg-input').focus(), 100);
+}
+function closeChatRoom() {
+  $('chat-room').classList.remove('active');
+  APP.currentRoom = null;
+  renderList();
+}
+
+function renderMessages() {
+  const area = $('messages-area');
+  if (!area || !APP.currentRoom) return;
+  const msgs = APP.messages[APP.currentRoom.id] || [];
+  if (!msgs.length) {
+    area.innerHTML = `<div class="empty-state"><div class="icon">💬</div><p>اولین پیام را بفرستید</p></div>`;
+    return;
+  }
+  let lastDate = '';
+  area.innerHTML = msgs.map((m, i) => {
+    const d = fmtDate(m.ts);
+    let dateSep = '';
+    if (d !== lastDate) { dateSep = `<div style="text-align:center;font-size:11px;color:var(--mut);margin:8px 0">${d}</div>`; lastDate = d; }
+    return dateSep + renderMsg(m, i);
+  }).join('');
+  area.scrollTop = area.scrollHeight;
+}
+
+function renderMsg(m, idx) {
+  const mine = m.from === 'me';
+  if (m.type === 'deleted') {
+    return `<div class="msg ${mine ? 'mine' : 'other'} deleted">
+      <div class="msg-deleted-txt">🚫 این پیام حذف شد</div>
+      <div class="msg-meta"><span>${fmtTime(m.ts)}</span></div>
+    </div>`;
+  }
+  let body = '';
+  if (m.type === 'voice') {
+    body = `<div class="voice-wrap">
+      <button class="voice-play" onclick="playVoice(this)">▶</button>
+      <div class="voice-wave">${Array.from({length:18}).map((_,i)=>`<span style="height:${6+Math.random()*18}px"></span>`).join('')}</div>
+      <span class="voice-dur">${m.duration || 0}s</span>
+    </div>`;
+  } else if (m.type === 'image') {
+    body = `<div class="img-msg" onclick="viewImage('${m.media}')"><img src="${m.media}"></div>`;
+  } else if (m.type === 'file') {
+    body = `<div class="file-msg">
+      <div class="file-icon">📄</div>
+      <div class="file-info"><div class="file-name">${esc(m.fileName)}</div><div class="file-size">${m.fileSize || ''}</div></div>
+      <a class="file-dl" href="${m.media}" download="${esc(m.fileName)}">⬇</a>
+    </div>`;
+  } else {
+    body = esc(m.text || '');
+  }
+  const sender = !mine && m.senderName ? `<div class="msg-sender">${esc(m.senderName)}</div>` : '';
+  const reply = m.replyTo ? `<div class="reply-preview"><div class="reply-name">${esc(m.replyTo.name)}</div><div class="reply-text">${esc(m.replyTo.text)}</div></div>` : '';
+  const edited = m.edited ? `<div class="msg-edited">(ویرایش شد)</div>` : '';
+  const check = mine ? `<span class="msg-check ${m.read ? 'read' : 'sent'}">${m.read ? '✓✓' : '✓'}</span>` : '';
+  return `<div class="msg ${mine ? 'mine' : 'other'}" oncontextmenu="showMsgMenu(event,${idx});return false">
+    ${reply}${sender}${body}${edited}
+    <div class="msg-actions" onclick="showMsgMenu(event,${idx})">⋯</div>
+    <div class="msg-meta"><span>${fmtTime(m.ts)}</span>${check}</div>
+  </div>`;
+}
+
+function sendMsg() {
+  if (!APP.currentRoom) return;
+  const inp = $('msg-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  const msgs = APP.messages[APP.currentRoom.id] || (APP.messages[APP.currentRoom.id] = []);
+  const m = {
+    id: uid(), from: 'me', type: 'text', text,
+    ts: Date.now(), read: false
+  };
+  if (APP.replyTo) { m.replyTo = APP.replyTo; cancelReply(); }
+  if (APP.editingMsg !== null) {
+    const old = msgs[APP.editingMsg];
+    old.text = text; old.edited = true;
+    APP.editingMsg = null;
+    inp.value = '';
+    save(); renderMessages(); renderList();
+    return;
+  }
+  msgs.push(m);
+  inp.value = '';
+  save();
+  renderMessages();
+  renderList();
+  // bot auto-reply
+  if (APP.currentRoom.type === 'private') {
+    const bot = APP.bots.find(b => b.contactId === APP.currentRoom.id);
+    if (bot) setTimeout(() => botReply(bot, APP.currentRoom.id), 800);
+  }
+}
+
+function botReply(bot, chatId) {
+  const msgs = APP.messages[chatId] || (APP.messages[chatId] = []);
+  msgs.push({ id: uid(), from: 'them', type: 'text', text: bot.reply || 'سلام! چطور می‌تونم کمک کنم؟', ts: Date.now(), senderName: bot.name });
+  save();
+  if (APP.currentRoom && APP.currentRoom.id === chatId) renderMessages();
+  renderList();
+}
+
+/* ================= Message Menu ================= */
+let menuMsgIdx = null;
+function showMsgMenu(e, idx) {
+  e.stopPropagation();
+  menuMsgIdx = idx;
+  const menu = $('msg-menu');
+  menu.style.top = Math.min(e.clientY, window.innerHeight - 160) + 'px';
+  menu.style.left = Math.min(e.clientX, window.innerWidth - 180) + 'px';
+  menu.classList.add('show');
+}
+function replyToMsg() {
+  const msgs = APP.messages[APP.currentRoom.id] || [];
+  const m = msgs[menuMsgIdx];
+  if (!m) return;
+  APP.replyTo = { name: m.from === 'me' ? APP.user.name : (m.senderName || 'کاربر'), text: m.text || '📎 پیوست' };
+  $('reply-bar').classList.add('show');
+  $('reply-bar-name').textContent = APP.replyTo.name;
+  $('reply-bar-text').textContent = APP.replyTo.text;
+  $('msg-menu').classList.remove('show');
+  $('msg-input').focus();
+}
+function cancelReply() {
+  APP.replyTo = null;
+  $('reply-bar').classList.remove('show');
+}
+function editMsg() {
+  const msgs = APP.messages[APP.currentRoom.id] || [];
+  const m = msgs[menuMsgIdx];
+  if (!m || m.from !== 'me' || m.type !== 'text') { $('msg-menu').classList.remove('show'); return; }
+  $('msg-input').value = m.text;
+  APP.editingMsg = menuMsgIdx;
+  $('msg-menu').classList.remove('show');
+  $('msg-input').focus();
+}
+function deleteMsg() {
+  const msgs = APP.messages[APP.currentRoom.id] || [];
+  if (!msgs[menuMsgIdx]) return;
+  msgs[menuMsgIdx].type = 'deleted';
+  msgs[menuMsgIdx].text = '';
+  msgs[menuMsgIdx].media = null;
+  $('msg-menu').classList.remove('show');
+  save(); renderMessages(); renderList();
+}
+
+/* ================= Attach ================= */
+function toggleAttachMenu() {
+  $('attach-menu').classList.toggle('show');
+}
+function pickImage() {
+  $('attach-menu').classList.remove('show');
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'image/*';
+  inp.onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const msgs = APP.messages[APP.currentRoom.id] || (APP.messages[APP.currentRoom.id] = []);
+      msgs.push({ id: uid(), from: 'me', type: 'image', media: ev.target.result, ts: Date.now(), read: false });
+      save(); renderMessages(); renderList();
+    };
+    reader.readAsDataURL(f);
+  };
+  inp.click();
+}
+function pickFile() {
+  $('attach-menu').classList.remove('show');
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const msgs = APP.messages[APP.currentRoom.id] || (APP.messages[APP.currentRoom.id] = []);
+      msgs.push({ id: uid(), from: 'me', type: 'file', media: ev.target.result, fileName: f.name, fileSize: fmtSize(f.size), ts: Date.now(), read: false });
+      save(); renderMessages(); renderList();
+    };
+    reader.readAsDataURL(f);
+  };
+  inp.click();
+}
+function viewImage(url) {
+  const w = window.open('');
+  w.document.write(`<body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh"><img src="${url}" style="max-width:100%;max-height:100%"></body>`);
+}
+
+/* ================= Voice Recording ================= */
+function startRecording() {
+  $('attach-menu').classList.remove('show');
+  if (!navigator.mediaDevices) return alert('ضبط صدا پشتیبانی نمی‌شود');
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+    APP.mediaRecorder = new MediaRecorder(stream);
+    APP.audioChunks = [];
+    APP.recStartTime = Date.now();
+    APP.mediaRecorder.ondataavailable = e => APP.audioChunks.push(e.data);
+    APP.mediaRecorder.onstop = () => {
+      const blob = new Blob(APP.audioChunks, { type: 'audio/webm' });
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const msgs = APP.messages[APP.currentRoom.id] || (APP.messages[APP.currentRoom.id] = []);
+        msgs.push({ id: uid(), from: 'me', type: 'voice', media: ev.target.result, duration: Math.round((Date.now()-APP.recStartTime)/1000), ts: Date.now(), read: false });
+        save(); renderMessages(); renderList();
+      };
+      reader.readAsDataURL(blob);
+      stream.getTracks().forEach(t => t.stop());
+    };
+    APP.mediaRecorder.start();
+    $('rec-bar').classList.add('show');
+    APP.recInterval = setInterval(() => {
+      const s = Math.round((Date.now() - APP.recStartTime) / 1000);
+      $('rec-time').textContent = Math.floor(s/60).toString().padStart(2,'0') + ':' + (s%60).toString().padStart(2,'0');
+    }, 200);
+  }).catch(() => alert('دسترسی به میکروفون داده نشد'));
+}
+function sendVoice() { stopRecording(true); }
+function cancelRecording() { stopRecording(false); }
+function stopRecording(send) {
+  clearInterval(APP.recInterval);
+  $('rec-bar').classList.remove('show');
+  if (APP.mediaRecorder && APP.mediaRecorder.state !== 'inactive') {
+    if (!send) APP.mediaRecorder.onstop = null;
+    APP.mediaRecorder.stop();
+  }
+}
+function playVoice(btn) {
+  const msg = btn.closest('.msg');
+  const idx = Array.from(document.querySelectorAll('.msg')).indexOf(msg);
+  const m = (APP.messages[APP.currentRoom.id] || [])[idx];
+  if (!m || !m.media) return;
+  const a = new Audio(m.media);
+  a.play();
+  btn.textContent = '⏸';
+  a.onended = () => btn.textContent = '▶';
+}
+</script>
+<script>
+/* ================= Contacts ================= */
+function openNewContact() {
+  $('contact-email').value = '';
+  $('contact-name').value = '';
+  $('modal-contact').classList.add('show');
+  setTimeout(() => $('contact-email').focus(), 100);
+}
+function addContact() {
+  const email = $('contact-email').value.trim().toLowerCase();
+  const name = $('contact-name').value.trim();
+  if (!email || !/.+@.+\..+/.test(email)) return alert('ایمیل معتبر وارد کنید');
+  if (APP.contacts.some(c => c.email === email)) return alert('این مخاطب قبلاً اضافه شده');
+  const c = {
+    id: uid(),
+    email,
+    name: name || email.split('@')[0],
+    avatar: null,
+    emoji: '👤',
+    createdAt: Date.now()
+  };
+  APP.contacts.push(c);
+  APP.chats[c.id] = { unread: 0 };
+  APP.messages[c.id] = [];
+  save();
+  closeModal('modal-contact');
+  switchTab('private');
+  renderList();
+  openRoom(c.id, 'private');
+}
+
+/* ================= Groups / Channels ================= */
+let groupType = 'group';
+function openNewGroup(type) {
+  groupType = type;
+  $('group-modal-title').textContent = type === 'group' ? t('newGroup') : t('newChannel');
+  $('group-name').value = '';
+  $('member-search').value = '';
+  APP.selectedMembers = [];
+  renderMembersPicker();
+  $('modal-group').classList.add('show');
+  setTimeout(() => $('group-name').focus(), 100);
+}
+function renderMembersPicker() {
+  const c = $('members-picker');
+  const q = ($('member-search').value || '').toLowerCase();
+  const list = APP.contacts.filter(x =>
+    !q || x.name.toLowerCase().includes(q) || x.email.toLowerCase().includes(q)
+  );
+  if (!list.length) {
+    c.innerHTML = `<div style="text-align:center;padding:14px;color:var(--mut);font-size:12px">مخاطبی یافت نشد</div>`;
+  } else {
+    c.innerHTML = list.map(x => {
+      const sel = APP.selectedMembers.includes(x.id);
+      const av = x.avatar ? `background-image:url(${x.avatar})` : '';
+      const avt = x.avatar ? '' : initials(x.name);
+      return `<label class="contact-chk ${sel ? 'selected' : ''}">
+        <input type="checkbox" ${sel ? 'checked' : ''} onchange="toggleMember('${x.id}')">
+        <div class="chk-avatar" style="${av}">${avt}</div>
+        <div class="chk-info"><div class="chk-name">${esc(x.name)}</div><div class="chk-email">${esc(x.email)}</div></div>
+      </label>`;
+    }).join('');
+  }
+  $('selected-count').textContent = APP.selectedMembers.length
+    ? APP.selectedMembers.length + ' عضو انتخاب شده'
+    : '';
+}
+function toggleMember(id) {
+  const i = APP.selectedMembers.indexOf(id);
+  if (i === -1) APP.selectedMembers.push(id);
+  else APP.selectedMembers.splice(i, 1);
+  renderMembersPicker();
+}
+function filterMembers() { renderMembersPicker(); }
+function createGroup() {
+  const name = $('group-name').value.trim();
+  if (!name) return alert('نام را وارد کنید');
+  if (!APP.selectedMembers.length) return alert('حداقل یک عضو انتخاب کنید');
+  const g = {
+    id: uid(),
+    name,
+    type: groupType,
+    members: [...APP.selectedMembers],
+    avatar: null,
+    emoji: groupType === 'group' ? '👥' : '📢',
+    createdAt: Date.now(),
+    owner: 'me'
+  };
+  if (groupType === 'group') APP.groups.push(g);
+  else APP.channels.push(g);
+  APP.chats[g.id] = { unread: 0 };
+  APP.messages[g.id] = [];
+  save();
+  closeModal('modal-group');
+  switchTab(groupType);
+  renderList();
+  openRoom(g.id, groupType);
+}
+
+/* ================= Library ================= */
+function renderLibrary() {
+  const c = $('lib-list');
+  if (!c) return;
+  if (!APP.library.length) {
+    c.innerHTML = `<div class="empty-state"><div class="icon">🎬</div><h3>${t('emptyLib')}</h3><p>با دکمه + محتوا اضافه کنید</p></div>`;
+    return;
+  }
+  c.innerHTML = APP.library.map((x, i) => `
+    <div class="list-item">
+      <div class="list-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a)">${x.type === 'video' ? '🎬' : x.type === 'audio' ? '🎵' : '📄'}</div>
+      <div class="list-info">
+        <div class="list-name">${esc(x.title)}</div>
+        <div class="list-sub">${x.type}</div>
+      </div>
+      <button class="icon-btn" style="width:34px;height:34px" onclick="removeLib(${i})">✕</button>
+    </div>
+  `).join('');
+}
+function openLibModal() {
+  $('lib-title').value = '';
+  $('lib-type').value = 'video';
+  $('modal-lib').classList.add('show');
+}
+function addLibItem() {
+  const title = $('lib-title').value.trim();
+  if (!title) return alert('عنوان را وارد کنید');
+  APP.library.push({ id: uid(), title, type: $('lib-type').value, ts: Date.now() });
+  save();
+  closeModal('modal-lib');
+  renderLibrary();
+}
+function removeLib(i) {
+  if (!confirm('حذف شود؟')) return;
+  APP.library.splice(i, 1);
+  save(); renderLibrary();
+}
+
+/* ================= Bots ================= */
+function renderBots() {
+  const c = $('bots-list');
+  if (!c) return;
+  if (!APP.bots.length) {
+    c.innerHTML = `<div class="empty-state"><div class="icon">🤖</div><h3>${t('emptyBots')}</h3><p>یک ربات بسازید و به مخاطب وصل کنید</p></div>`;
+    return;
+  }
+  c.innerHTML = APP.bots.map((b, i) => `
+    <div class="bot-card">
+      <div class="bot-head">
+        <div class="bot-avatar">🤖</div>
+        <div class="bot-name">${esc(b.name)}</div>
+      </div>
+      <div class="bot-desc">${esc(b.desc || '')}</div>
+      <div class="bot-actions">
+        <button class="bot-start" onclick="startBot('${b.id}')">شروع</button>
+        <button class="bot-del" onclick="delBot(${i})">حذف</button>
+      </div>
+    </div>
+  `).join('');
+}
+function openBotModal() {
+  $('bot-name').value = '';
+  $('bot-desc').value = '';
+  $('modal-bot').classList.add('show');
+}
+function addBot() {
+  const name = $('bot-name').value.trim();
+  if (!name) return alert('نام را وارد کنید');
+  const contact = {
+    id: uid(),
+    email: name.toLowerCase().replace(/\s+/g, '_') + '@bot',
+    name: '🤖 ' + name,
+    avatar: null,
+    emoji: '🤖',
+    isBot: true,
+    createdAt: Date.now()
+  };
+  APP.contacts.push(contact);
+  APP.chats[contact.id] = { unread: 0 };
+  APP.messages[contact.id] = [];
+  APP.bots.push({
+    id: uid(),
+    name,
+    desc: $('bot-desc').value.trim(),
+    reply: 'سلام! من ' + name + ' هستم. چطور کمکت کنم؟',
+    contactId: contact.id,
+    ts: Date.now()
+  });
+  save();
+  closeModal('modal-bot');
+  renderBots();
+  renderList();
+}
+function startBot(id) {
+  const b = APP.bots.find(x => x.id === id);
+  if (!b) return;
+  openRoom(b.contactId, 'private');
+}
+function delBot(i) {
+  if (!confirm('حذف شود؟')) return;
+  const b = APP.bots[i];
+  APP.contacts = APP.contacts.filter(c => c.id !== b.contactId);
+  delete APP.messages[b.contactId];
+  delete APP.chats[b.contactId];
+  APP.bots.splice(i, 1);
+  save(); renderBots(); renderList();
+}
+
+/* ================= Education ================= */
+function renderEdu() {
+  const c = $('edu-list');
+  if (!c) return;
+  if (!APP.eduClasses.length) {
+    c.innerHTML = `<div class="empty-state"><div class="icon">📚</div><h3>${t('emptyEdu')}</h3><p>با دکمه + کلاس بسازید</p></div>`;
+    return;
+  }
+  c.innerHTML = APP.eduClasses.map((k, i) => `
+    <div class="edu-class" onclick="openClassPanel('${k.id}')">
+      <div class="edu-head">
+        <div class="edu-avatar">📚</div>
+        <div class="edu-name">${esc(k.name)}</div>
+      </div>
+      <div class="edu-info">استاد: ${esc(k.teacher || '—')} • ${k.students?.length || 0} دانش‌آموز</div>
+    </div>
+  `).join('');
+}
+function openEduModal() {
+  $('edu-name').value = '';
+  $('edu-teacher').value = '';
+  $('modal-edu').classList.add('show');
+}
+function addEduClass() {
+  const name = $('edu-name').value.trim();
+  if (!name) return alert('نام کلاس را وارد کنید');
+  APP.eduClasses.push({
+    id: uid(),
+    name,
+    teacher: $('edu-teacher').value.trim(),
+    students: APP.contacts.slice(0, 5).map(c => c.id),
+    lessons: [],
+    homework: [],
+    ts: Date.now()
+  });
+  save();
+  closeModal('modal-edu');
+  renderEdu();
+}
+
+let currentClass = null;
+function openClassPanel(id) {
+  const k = APP.eduClasses.find(x => x.id === id);
+  if (!k) return;
+  currentClass = k;
+  $('class-panel-title').textContent = k.name;
+  $('class-panel-sub').textContent = 'استاد: ' + (k.teacher || '—');
+  $('class-name').textContent = k.name;
+  $('class-teacher').textContent = 'استاد: ' + (k.teacher || '—');
+  renderClassTab('students');
+  showPage('class-panel');
+}
+function switchClassTab(tab) {
+  document.querySelectorAll('#page-class-panel .tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderClassTab(tab);
+}
+function renderClassTab(tab) {
+  const c = $('class-panel-content');
+  if (!currentClass) return;
+  if (tab === 'students') {
+    const list = currentClass.students.map(id => APP.contacts.find(x => x.id === id)).filter(Boolean);
+    c.innerHTML = list.length ? list.map(s => `
+      <div class="list-item">
+        <div class="list-avatar">${initials(s.name)}</div>
+        <div class="list-info"><div class="list-name">${esc(s.name)}</div><div class="list-sub">${esc(s.email)}</div></div>
+      </div>
+    `).join('') : '<div class="empty-state"><p>دانش‌آموزی نیست</p></div>';
+  } else if (tab === 'lessons') {
+    c.innerHTML = `<div class="empty-state"><p>درسی ثبت نشده</p></div>`;
+  } else {
+    c.innerHTML = `<div class="empty-state"><p>تکلیفی ثبت نشده</p></div>`;
+  }
+}
+function startClassCall() {
+  alert('🎥 تماس کلاس شروع شد');
+}
+
+/* ================= Profile ================= */
+function openMyProfile() {
+  $('prof-name').value = APP.user.name;
+  $('prof-bio').value = APP.user.bio || '';
+  $('modal-profile').classList.add('show');
+}
+function saveProfile() {
+  APP.user.name = $('prof-name').value.trim() || APP.user.name;
+  APP.user.bio = $('prof-bio').value.trim();
+  localStorage.setItem('bm_user', JSON.stringify(APP.user));
+  closeModal('modal-profile');
+  enterApp();
+}
+
+/* ================= Modals ================= */
+function closeModal(id) {
+  const m = $(id);
+  if (m) m.classList.remove('show');
+}
+document.addEventListener('click', e => {
+  if (e.target.classList && e.target.classList.contains('modal-overlay')) {
+    e.target.classList.remove('show');
+  }
+});
+
+/* ================= Room Info ================= */
+function openRoomInfo() {
+  if (!APP.currentRoom) return;
+  const r = APP.currentRoom;
+  if (r.type === 'private') openMyProfileInfo(r.id);
+  else alert('اطلاعات گروه/کانال');
+}
+function openMyProfileInfo(id) {
+  const c = APP.contacts.find(x => x.id === id);
+  if (!c) return;
+  alert('👤 ' + c.name + '\n' + c.email);
+}
+
+/* ================= Calls ================= */
+function startCall() {
+  if (!APP.currentRoom) return;
+  $('call-title').textContent = APP.currentRoom.type === 'private' ? 'تماس صوتی' : 'تماس گروهی';
+  $('call-sub').textContent = 'در حال اتصال...';
+  $('call-participants').innerHTML = `
+    <div class="participant">
+      <div class="participant-avatar">${initials(APP.user.name)}</div>
+      <div class="participant-name">${esc(APP.user.name)}</div>
+    </div>
+  `;
+  $('call-modal').classList.add('show');
+}
+function toggleMic() {
+  const b = $('call-mic');
+  b.classList.toggle('muted');
+  b.textContent = b.classList.contains('muted') ? '🔇' : '🎤';
+}
+function endCall() {
+  $('call-modal').classList.remove('show');
+}
+</script>
+<script>
+/* ================= Settings Modal ================= */
+function openSettings() {
+  let m = $('modal-settings');
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'modal-settings';
+    m.className = 'modal-overlay';
+    m.innerHTML = `
+      <div class="modal">
+        <h3>⚙ ${t('settings')}</h3>
+        <p>تنظیمات برنامه</p>
+
+        <div class="settings-section">
+          <h3>${t('myProfile')}</h3>
+          <div class="settings-item" onclick="closeModal('modal-settings');openMyProfile()">
+            <div class="settings-icon">👤</div>
+            <div class="settings-info"><div class="settings-title">${t('myProfile')}</div><div class="settings-desc">${esc(APP.user?.email || '')}</div></div>
+            <div class="settings-arrow">›</div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>زبان / Language</h3>
+          <div class="settings-item">
+            <div class="settings-icon">🌐</div>
+            <div class="settings-info"><div class="settings-title">زبان</div><div class="settings-desc">${APP.lang === 'fa' ? 'فارسی' : 'English'}</div></div>
+            <button class="lang-btn" onclick="toggleLang();openSettings()">${APP.lang === 'fa' ? 'EN' : 'FA'}</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>حساب</h3>
+          <div class="settings-item" onclick="closeModal('modal-settings');logout()">
+            <div class="settings-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)">🚪</div>
+            <div class="settings-info"><div class="settings-title">${t('logout')}</div><div class="settings-desc">خروج از حساب کاربری</div></div>
+            <div class="settings-arrow">›</div>
+          </div>
+        </div>
+
+        <div class="modal-btns">
+          <button class="btn-cancel" onclick="closeModal('modal-settings')">${t('cancel')}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(m);
+  }
+  m.classList.add('show');
+}
+
+/* ================= Sessions ================= */
+function renderSessions() {
+  const now = Date.now();
+  const sessions = [
+    { device: 'این دستگاه', time: 'الان', current: true },
+    { device: 'Chrome / Windows', time: '۲ ساعت پیش', current: false },
+    { device: 'Safari / iPhone', time: 'دیروز', current: false }
+  ];
+  return sessions.map(s => `
+    <div class="session-card">
+      <div class="session-header">
+        <div class="session-icon">${s.device.includes('iPhone') ? '📱' : s.device.includes('Windows') ? '💻' : '🌐'}</div>
+        <div class="session-info">
+          <div class="session-device">${s.device}</div>
+          <div class="session-time">${s.time}</div>
+        </div>
+        ${s.current ? `<span class="session-current">فعلی</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ================= Search ================= */
+function globalSearch(q) {
+  if (!q) return { contacts: [], groups: [], channels: [], library: [], bots: [] };
+  q = q.toLowerCase();
+  return {
+    contacts: APP.contacts.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q)),
+    groups: APP.groups.filter(g => g.name.toLowerCase().includes(q)),
+    channels: APP.channels.filter(c => c.name.toLowerCase().includes(q)),
+    library: APP.library.filter(l => l.title.toLowerCase().includes(q)),
+    bots: APP.bots.filter(b => b.name.toLowerCase().includes(q) || (b.desc || '').toLowerCase().includes(q))
+  };
+}
+
+function openGlobalSearch() {
+  let m = $('modal-search');
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'modal-search';
+    m.className = 'modal-overlay';
+    m.innerHTML = `
+      <div class="modal">
+        <h3>🔍 جستجو</h3>
+        <input class="search-inp" id="global-search-inp" placeholder="جستجو در همه جا..." oninput="doGlobalSearch()">
+        <div id="global-search-results" style="max-height:50vh;overflow-y:auto"></div>
+        <div class="modal-btns">
+          <button class="btn-cancel" onclick="closeModal('modal-search')">${t('cancel')}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(m);
+  }
+  m.classList.add('show');
+  setTimeout(() => $('global-search-inp').focus(), 100);
+}
+
+function doGlobalSearch() {
+  const q = $('global-search-inp').value.trim();
+  const r = globalSearch(q);
+  const c = $('global-search-results');
+  if (!q) { c.innerHTML = ''; return; }
+  const total = r.contacts.length + r.groups.length + r.channels.length + r.library.length + r.bots.length;
+  if (!total) { c.innerHTML = '<div style="text-align:center;padding:20px;color:var(--mut)">نتیجه‌ای یافت نشد</div>'; return; }
+  let html = '';
+  if (r.contacts.length) html += `<h4 style="font-size:12px;color:var(--p);margin:10px 0 6px">👤 مخاطبین</h4>` +
+    r.contacts.map(x => `<div class="list-item" onclick="closeModal('modal-search');openRoom('${x.id}','private')">
+      <div class="list-avatar">${initials(x.name)}</div>
+      <div class="list-info"><div class="list-name">${esc(x.name)}</div><div class="list-sub">${esc(x.email)}</div></div>
+    </div>`).join('');
+  if (r.groups.length) html += `<h4 style="font-size:12px;color:var(--p);margin:10px 0 6px">👥 گروه‌ها</h4>` +
+    r.groups.map(x => `<div class="list-item" onclick="closeModal('modal-search');openRoom('${x.id}','group')">
+      <div class="list-avatar" style="background:linear-gradient(135deg,#00d4ff,#4f7fff)">👥</div>
+      <div class="list-info"><div class="list-name">${esc(x.name)}</div></div>
+    </div>`).join('');
+  if (r.channels.length) html += `<h4 style="font-size:12px;color:var(--p);margin:10px 0 6px">📢 کانال‌ها</h4>` +
+    r.channels.map(x => `<div class="list-item" onclick="closeModal('modal-search');openRoom('${x.id}','channel')">
+      <div class="list-avatar" style="background:linear-gradient(135deg,#7b3ff2,#a855f7)">📢</div>
+      <div class="list-info"><div class="list-name">${esc(x.name)}</div></div>
+    </div>`).join('');
+  if (r.library.length) html += `<h4 style="font-size:12px;color:var(--p);margin:10px 0 6px">🎬 کتابخانه</h4>` +
+    r.library.map(x => `<div class="list-item">
+      <div class="list-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a)">🎬</div>
+      <div class="list-info"><div class="list-name">${esc(x.title)}</div><div class="list-sub">${x.type}</div></div>
+    </div>`).join('');
+  if (r.bots.length) html += `<h4 style="font-size:12px;color:var(--p);margin:10px 0 6px">🤖 ربات‌ها</h4>` +
+    r.bots.map(x => `<div class="list-item" onclick="closeModal('modal-search');startBot('${x.id}')">
+      <div class="list-avatar" style="background:linear-gradient(135deg,#f59e0b,#f97316)">🤖</div>
+      <div class="list-info"><div class="list-name">${esc(x.name)}</div><div class="list-sub">${esc(x.desc || '')}</div></div>
+    </div>`).join('');
+  c.innerHTML = html;
+}
+
+/* ================= Bottom Nav ================= */
+function renderBottomNav() {
+  let nav = $('bottom-nav');
+  if (!nav) {
+    nav = document.createElement('div');
+    nav.id = 'bottom-nav';
+    nav.className = 'bottom-nav';
+    nav.innerHTML = `
+      <button class="nav-item active" onclick="showPage('home');setActiveNav(this)">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>خانه</span>
+      </button>
+      <button class="nav-item" onclick="showPage('chats');setActiveNav(this)">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        <span>گفتگو</span>
+      </button>
+      <button class="nav-item center" onclick="openGlobalSearch()">
+        <div class="center-circle">🔍</div>
+      </button>
+      <button class="nav-item" onclick="showPage('library');setActiveNav(this)">
+        <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        <span>کتابخانه</span>
+      </button>
+      <button class="nav-item" onclick="openSettings();setActiveNav(this)">
+        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        <span>تنظیمات</span>
+      </button>
+    `;
+    document.body.appendChild(nav);
+  }
+}
+function setActiveNav(btn) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ================= Bug Fixes & Enhancements ================= */
+
+// Prevent page scroll when chat room is open
+const _openRoom = openRoom;
+openRoom = function(chatId, type) {
+  document.body.style.overflow = 'hidden';
+  _openRoom(chatId, type);
+};
+const _closeChatRoom = closeChatRoom;
+closeChatRoom = function() {
+  document.body.style.overflow = '';
+  _closeChatRoom();
+};
+
+// Auto mark messages as read when opening room
+const _renderMessages = renderMessages;
+renderMessages = function() {
+  _renderMessages();
+  if (!APP.currentRoom) return;
+  const msgs = APP.messages[APP.currentRoom.id] || [];
+  let changed = false;
+  msgs.forEach(m => { if (m.from === 'them' && !m.read) { m.read = true; changed = true; } });
+  if (changed) save();
+};
+
+// Escape key to close modals / chat room
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.show').forEach(m => m.classList.remove('show'));
+    if ($('chat-room').classList.contains('active')) closeChatRoom();
+    if ($('story-viewer').classList.contains('show')) closeStoryViewer();
+    if ($('call-modal').classList.contains('show')) endCall();
+  }
+});
+
+// Prevent zoom on double tap (mobile)
+let lastTouch = 0;
+document.addEventListener('touchend', e => {
+  const now = Date.now();
+  if (now - lastTouch <= 300) e.preventDefault();
+  lastTouch = now;
+}, { passive: false });
+
+// Scroll to bottom on new message
+const _sendMsg = sendMsg;
+sendMsg = function() {
+  _sendMsg();
+  const area = $('messages-area');
+  if (area) setTimeout(() => area.scrollTop = area.scrollHeight, 50);
+};
+
+// Safe storage fallback
+try {
+  localStorage.setItem('__test__', '1');
+  localStorage.removeItem('__test__');
+} catch (e) {
+  console.warn('localStorage unavailable, using memory');
+  const mem = {};
+  window.localStorage = {
+    getItem: k => mem[k] || null,
+    setItem: (k, v) => mem[k] = String(v),
+    removeItem: k => delete mem[k]
+  };
+}
+
+/* ================= Final Init ================= */
+window.addEventListener('load', () => {
+  renderBottomNav();
+  applyI18n();
+  if (APP.user) enterApp();
+  updateWallet();
+  console.log('%c✈ بله مله آماده است', 'color:#00d4ff;font-size:16px;font-weight:bold');
+});
+</script>
+<!-- ============================================================
+     صفحه تماس (Call Screen) — برای LiveKit
+     ============================================================ -->
+<div class="call-modal" id="livekit-call">
+  <div class="call-header">
+    <div class="call-title" id="lk-title">تماس</div>
+    <div class="call-sub" id="lk-sub">در حال اتصال...</div>
+  </div>
+  <div id="lk-video-grid" class="call-participants"></div>
+  <div class="call-controls">
+    <button class="call-btn mic" id="lk-mic" onclick="lkToggleMic()">🎤</button>
+    <button class="call-btn" id="lk-cam" onclick="lkToggleCam()">📷</button>
+    <button class="call-btn end" onclick="lkEndCall()">📞</button>
+  </div>
+</div>
+
+<script>
+/* ================= LiveKit Integration ================= */
+let lkRoom = null;
+
+async function lkJoinRoom(roomName, token) {
+  if (typeof LivekitClient === 'undefined') {
+    alert('LiveKit بارگذاری نشد');
+    return;
+  }
+  try {
+    lkRoom = new LivekitClient.Room({
+      adaptiveStream: true,
+      dynacast: true
+    });
+
+    lkRoom
+      .on('participantConnected', p => lkRenderParticipant(p))
+      .on('participantDisconnected', p => lkRemoveParticipant(p))
+      .on('trackSubscribed', (track, pub, p) => lkAttachTrack(track, p))
+      .on('disconnected', () => lkEndCall());
+
+    await lkRoom.connect('wss://your-livekit-server.livekit.cloud', token);
+    $('livekit-call').classList.add('show');
+    $('lk-sub').textContent = 'متصل شد';
+
+    // Local tracks
+    await lkRoom.localParticipant.enableCameraAndMicrophone();
+    lkRoom.localParticipant.videoTrackPublications.forEach(pub => {
+      if (pub.track) lkAttachTrack(pub.track, lkRoom.localParticipant);
+    });
+  } catch (e) {
+    console.error(e);
+    alert('اتصال به LiveKit ناموفق: ' + e.message);
+  }
+}
+
+function lkRenderParticipant(p) {
+  const grid = $('lk-video-grid');
+  if (document.getElementById('lk-' + p.identity)) return;
+  const el = document.createElement('div');
+  el.className = 'participant';
+  el.id = 'lk-' + p.identity;
+  el.innerHTML = `
+    <div class="participant-avatar">${initials(p.identity)}</div>
+    <div class="participant-name">${esc(p.identity)}</div>
+  `;
+  grid.appendChild(el);
+}
+
+function lkRemoveParticipant(p) {
+  const el = document.getElementById('lk-' + p.identity);
+  if (el) el.remove();
+}
+
+function lkAttachTrack(track, p) {
+  const el = document.getElementById('lk-' + p.identity);
+  if (!el) return;
+  const media = track.attach();
+  media.style.width = '100%';
+  media.style.borderRadius = '12px';
+  el.appendChild(media);
+}
+
+async function lkToggleMic() {
+  if (!lkRoom) return;
+  const enabled = lkRoom.localParticipant.isMicrophoneEnabled;
+  await lkRoom.localParticipant.setMicrophoneEnabled(!enabled);
+  $('lk-mic').classList.toggle('muted', enabled);
+  $('lk-mic').textContent = enabled ? '🔇' : '🎤';
+}
+
+async function lkToggleCam() {
+  if (!lkRoom) return;
+  const enabled = lkRoom.localParticipant.isCameraEnabled;
+  await lkRoom.localParticipant.setCameraEnabled(!enabled);
+  $('lk-cam').style.opacity = enabled ? '0.5' : '1';
+}
+
+async function lkEndCall() {
+  if (lkRoom) { await lkRoom.disconnect(); lkRoom = null; }
+  $('livekit-call').classList.remove('show');
+}
+</script>
+
+<!-- ============================================================
+     WebSocket — چت زنده (اختیاری)
+     ============================================================ -->
+<script>
+/* ================= Real-time Chat (Optional) ================= */
+function connectWS(serverUrl, roomId) {
+  try {
+    APP.ws = new WebSocket(`${serverUrl}/ws/${roomId}`);
+    APP.ws.onopen = () => console.log('WS connected');
+    APP.ws.onmessage = e => {
+      const data = JSON.parse(e.data);
+      if (data.type === 'message' && data.roomId === APP.currentRoom?.id) {
+        const msgs = APP.messages[data.roomId] || (APP.messages[data.roomId] = []);
+        msgs.push(data.message);
+        save();
+        renderMessages();
+        renderList();
+      }
+    };
+    APP.ws.onclose = () => setTimeout(() => connectWS(serverUrl, roomId), 3000);
+  } catch (e) {
+    console.warn('WS error:', e);
+  }
+}
+
+function sendWS(roomId, message) {
+  if (APP.ws && APP.ws.readyState === WebSocket.OPEN) {
+    APP.ws.send(JSON.stringify({ type: 'message', roomId, message }));
+  }
+}
+</script>
+
+<!-- ============================================================
+     PWA — Service Worker Registration (اختیاری)
+     ============================================================ -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // برای فعال‌سازی، یک فایل sw.js در ریشه بسازید
+    // navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
