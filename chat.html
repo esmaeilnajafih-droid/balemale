@@ -124,8 +124,6 @@ body::after{
 .empty-state .icon{font-size:70px;margin-bottom:16px;opacity:.5}
 .empty-state h3{font-size:15px;font-weight:700;color:#2a3b2a;margin-bottom:8px}
 .empty-state p{font-size:12.5px;line-height:1.7;color:var(--mut)}
-
-/* ===== اصلاحات برای گوشی ===== */
 .chat-room{display:none;flex-direction:column;position:fixed;top:0;left:0;right:0;bottom:0;height:100dvh;z-index:200;background:#d4e8d4;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'><g fill='none' stroke='%234a9d5d' stroke-width='1.5' opacity='0.13'><rect x='18' y='28' width='24' height='30' rx='3'/><path d='M24 34 L36 34 M24 42 L36 42'/><circle cx='88' cy='40' r='10'/><path d='M82 40 L94 40 M88 34 L88 46'/><path d='M24 88 L42 106 L24 106 Z'/><rect x='88' y='88' width='26' height='20' rx='2'/><circle cx='101' cy='98' r='3'/></g></svg>");background-size:140px 140px;padding:0}
 .chat-room.active{display:flex}
 .chat-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#ffffff;box-shadow:0 1px 4px rgba(0,0,0,.08);flex-shrink:0;position:relative;z-index:5}
@@ -427,160 +425,39 @@ body::after{
 .privacy-icon{font-size:28px;margin-bottom:6px;display:block}
 .privacy-title{font-size:13px;font-weight:700;margin-bottom:3px}
 .privacy-desc{font-size:10.5px;color:var(--mut);line-height:1.4}
-.emoji-picker{
-  position:fixed;
-  bottom:70px;
-  right:14px;
-  left:14px;
-  max-width:420px;
-  margin:0 auto;
-  background:#fff;
-  border-radius:18px;
-  box-shadow:0 10px 40px rgba(0,0,0,.2);
-  z-index:600;
-  display:none;
-  flex-direction:column;
-  overflow:hidden;
-  max-height:60vh;
-  animation:emojiIn .25s cubic-bezier(.2,.9,.3,1.3);
-}
+.emoji-picker{position:fixed;bottom:70px;right:14px;left:14px;max-width:420px;margin:0 auto;background:#fff;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.2);z-index:600;display:none;flex-direction:column;overflow:hidden;max-height:60vh;animation:emojiIn .25s cubic-bezier(.2,.9,.3,1.3)}
 [dir="ltr"] .emoji-picker{right:auto;left:14px}
 .emoji-picker.show{display:flex}
-@keyframes emojiIn{
-  from{opacity:0;transform:translateY(20px) scale(.95)}
-  to{opacity:1;transform:translateY(0) scale(1)}
-}
-.emoji-tabs{
-  display:flex;gap:4px;padding:8px 10px;
-  background:#f7fbf7;border-bottom:1px solid #e0e8e0;
-  overflow-x:auto;scrollbar-width:none;flex-shrink:0;
-}
+@keyframes emojiIn{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.emoji-tabs{display:flex;gap:4px;padding:8px 10px;background:#f7fbf7;border-bottom:1px solid #e0e8e0;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
 .emoji-tabs::-webkit-scrollbar{display:none}
-.emoji-tab{
-  width:38px;height:38px;border-radius:10px;
-  background:transparent;border:none;font-size:20px;cursor:pointer;
-  flex-shrink:0;transition:all .2s;
-  display:flex;align-items:center;justify-content:center;
-}
+.emoji-tab{width:38px;height:38px;border-radius:10px;background:transparent;border:none;font-size:20px;cursor:pointer;flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center}
 .emoji-tab:hover{background:#e7f5e7}
 .emoji-tab.active{background:#5bae6e;transform:scale(1.05)}
 .emoji-search-wrap{padding:8px 12px 4px;flex-shrink:0}
-.emoji-search{
-  width:100%;padding:9px 14px;background:#f0f5f0;
-  border:none;border-radius:20px;font-family:inherit;
-  font-size:13px;outline:none;color:#1a2b1a;
-}
+.emoji-search{width:100%;padding:9px 14px;background:#f0f5f0;border:none;border-radius:20px;font-family:inherit;font-size:13px;outline:none;color:#1a2b1a}
 .emoji-search:focus{background:#e7f0e7}
 .emoji-search::placeholder{color:#9aaa9a}
-.emoji-grid{
-  display:grid;grid-template-columns:repeat(8,1fr);
-  gap:2px;padding:10px;overflow-y:auto;flex:1;scrollbar-width:thin;
-}
+.emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;padding:10px;overflow-y:auto;flex:1;scrollbar-width:thin}
 .emoji-grid::-webkit-scrollbar{width:4px}
 .emoji-grid::-webkit-scrollbar-thumb{background:rgba(91,174,110,.3);border-radius:2px}
-.emoji-item{
-  aspect-ratio:1;border:none;background:transparent;
-  font-size:24px;cursor:pointer;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .15s;
-  font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;
-}
+.emoji-item{aspect-ratio:1;border:none;background:transparent;font-size:24px;cursor:pointer;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif}
 .emoji-item:hover{background:#e7f5e7;transform:scale(1.2)}
 .emoji-item:active{transform:scale(.95)}
-.emoji-empty{
-  grid-column:1/-1;text-align:center;padding:30px 20px;
-  color:#8a988a;font-size:13px;
-}
-.img-lightbox{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.95);
-  z-index:9999;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  animation:lbIn .25s ease;
-}
+.emoji-empty{grid-column:1/-1;text-align:center;padding:30px 20px;color:#8a988a;font-size:13px}
+.img-lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:lbIn .25s ease}
 .img-lightbox.show{display:flex}
 @keyframes lbIn{from{opacity:0}to{opacity:1}}
-.img-lightbox img{
-  max-width:100%;
-  max-height:90vh;
-  border-radius:12px;
-  box-shadow:0 20px 60px rgba(0,0,0,.8);
-  animation:imgIn .3s cubic-bezier(.2,.9,.3,1.2);
-  user-select:none;
-  -webkit-user-drag:none;
-}
+.img-lightbox img{max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.8);animation:imgIn .3s cubic-bezier(.2,.9,.3,1.2);user-select:none;-webkit-user-drag:none}
 @keyframes imgIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-.lightbox-close{
-  position:absolute;
-  top:20px;
-  left:20px;
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  background:rgba(255,255,255,.15);
-  border:2px solid rgba(255,255,255,.3);
-  color:#fff;
-  font-size:20px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:inherit;
-  transition:all .25s;
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-}
+.lightbox-close{position:absolute;top:20px;left:20px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:all .25s;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 [dir="ltr"] .lightbox-close{left:auto;right:20px}
 .lightbox-close:hover{background:rgba(239,68,68,.8);border-color:rgba(239,68,68,.8);transform:scale(1.1)}
-.lightbox-download{
-  position:absolute;
-  top:20px;
-  right:20px;
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  background:rgba(255,255,255,.15);
-  border:2px solid rgba(255,255,255,.3);
-  color:#fff;
-  font-size:20px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:inherit;
-  transition:all .25s;
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  text-decoration:none;
-}
+.lightbox-download{position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:all .25s;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-decoration:none}
 [dir="ltr"] .lightbox-download{right:auto;left:20px}
 .lightbox-download:hover{background:rgba(91,174,110,.9);border-color:rgba(91,174,110,.9);transform:scale(1.1)}
-#channel-lock-msg{
-  padding:14px 20px;
-  background:#ffffff;
-  border-top:1px solid var(--border);
-  text-align:center;
-  font-size:12.5px;
-  color:var(--mut);
-  font-weight:600;
-  flex-shrink:0;
-}
-@media(max-width:480px){
-  .emoji-grid{grid-template-columns:repeat(7,1fr)}
-  .emoji-item{font-size:22px}
-  .img-lightbox{padding:10px}
-  .lightbox-close,.lightbox-download{width:38px;height:38px;font-size:17px;top:12px}
-  .lightbox-close{left:12px}
-  .lightbox-download{right:12px}
-  [dir="ltr"] .lightbox-close{left:auto;right:12px}
-  [dir="ltr"] .lightbox-download{right:auto;left:12px}
-}
+#channel-lock-msg{padding:14px 20px;background:#ffffff;border-top:1px solid var(--border);text-align:center;font-size:12.5px;color:var(--mut);font-weight:600;flex-shrink:0}
+@media(max-width:480px){.emoji-grid{grid-template-columns:repeat(7,1fr)}.emoji-item{font-size:22px}.img-lightbox{padding:10px}.lightbox-close,.lightbox-download{width:38px;height:38px;font-size:17px;top:12px}.lightbox-close{left:12px}.lightbox-download{right:12px}[dir="ltr"] .lightbox-close{left:auto;right:12px}[dir="ltr"] .lightbox-download{right:auto;left:12px}}
 body:has(.chat-room.active) .bottom-nav { display: none !important; }
 </style>
 </head>
@@ -803,7 +680,17 @@ body:has(.chat-room.active) .bottom-nav { display: none !important; }
 <div class="story-cap" id="story-cap" style="display:none"></div>
 </div>
 
-<div class="modal-overlay" id="contact-modal"><div class="modal"><h3 data-i18n="newContactTitle">👤 مخاطب جدید</h3><p data-i18n="newContactDesc">ایمیل مخاطب را وارد کن</p><input type="email" id="contact-email" placeholder="friend@example.com"><div class="modal-btns"><button class="btn-cancel" onclick="closeModal('contact-modal')" data-i18n="cancel">انصراف</button><button class="btn-primary" id="contact-add" data-i18n="add">افزودن</button></div></div></div>
+<div class="modal-overlay" id="contact-modal">
+  <div class="modal">
+    <h3 data-i18n="newContactTitle">👤 مخاطب جدید</h3>
+    <p data-i18n="newContactDesc">شماره تلفن مخاطب را وارد کن</p>
+    <input type="tel" id="contact-phone" placeholder="09xxxxxxxxx" maxlength="11">
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('contact-modal')" data-i18n="cancel">انصراف</button>
+      <button class="btn-primary" id="contact-add" data-i18n="add">افزودن</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay" id="group-modal"><div class="modal"><h3 id="group-title" data-i18n="newGroupTitle">گروه جدید</h3><p data-i18n="newGroupDesc">اطلاعات را وارد کن</p>
 <label>🔒 نوع دسترسی</label>
@@ -1195,10 +1082,12 @@ import{createClient}from'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm
 const SB='https://sgjrwmnfvrpjtshlabva.supabase.co';
 const AK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnanJ3bW5mdnJwanRzaGxhYnZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwNTYwNzcsImV4cCI6MjEwNDYzMjA3N30._BOp-ONPTEbaM2mnGdJbdvjN-7qqA87zvannrOv02Eo';
 const sb=createClient(SB,AK);
-const{data:{session}}=await sb.auth.getSession();
-if(!session?.user?.email){location.href='index.html'}
-const myEmail=session.user.email;
-document.getElementById('my-email-lbl').textContent=myEmail;
+
+// 🔥 تغییرات لاگین با شماره تلفن
+const savedPhone = localStorage.getItem('my_phone');
+if (!savedPhone) { location.href = 'index.html'; }
+const myEmail = savedPhone + '@nexom.local';
+document.getElementById('my-email-lbl').textContent = savedPhone;
 
 // ============================================================
 // Service Worker
@@ -1412,7 +1301,7 @@ const ago=d=>{const s=Math.floor((Date.now()-d.getTime())/1000),m=Math.floor(s/6
 const shortTime=d=>{const now=new Date();const date=new Date(d);const diff=Math.floor((now-date.getTime())/1000);const isToday=now.toDateString()===date.toDateString();const yesterday=new Date(now);yesterday.setDate(yesterday.getDate()-1);const isYesterday=yesterday.toDateString()===date.toDateString();if(diff<60)return lang==='fa'?'الان':'now';if(isToday){const hh=date.getHours(),mm=date.getMinutes();return (hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm}if(isYesterday)return lang==='fa'?'دیروز':'yesterday';if(diff<7*86400){const days=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];if(lang==='fa')return days[date.getDay()];return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][date.getDay()]}return (date.getMonth()+1)+'/'+date.getDate()};
 const previewMsg=m=>{if(!m)return '';if(m.deleted_for_all)return '🚫 '+(lang==='fa'?'پیام حذف شد':'Message deleted');if(m.message_type==='voice')return '🎤 '+(lang==='fa'?'پیام صوتی':'Voice message');if(m.message_type==='image')return '🖼️ '+(lang==='fa'?'عکس':'Photo');if(m.message_type==='file')return '📄 '+(m.file_name||'فایل');return m.content||''};
 
-const I18N={fa:{appName:'نکسوم',appTagline:'سوپر اپلیکیشن',welcome:'سلام!',welcomeSub:'به نکسوم خوش آمدید',groups:'گروه‌ها',channels:'کانال‌ها',contacts:'مخاطبین',chats:'گفتگوها',library:'کتابخانه',bots:'ربات‌ها',finance:'خدمات مالی',financeShort:'مالی',education:'آموزش',home:'خانه',more:'بیشتر',privateTab:'خصوصی',secTitle:'امنیت بالا',secSub:'با رمزنگاری پیشرفته',spdTitle:'سرعت بالا',spdSub:'ارسال و دریافت سریع',cldTitle:'فضای ابری',cldSub:'دسترسی از همه جا',freTitle:'رایگان',freSub:'بدون هزینه، همیشه',librarySub:'ویدیوها و محتوا',botsSub:'پاسخ خودکار',financeSub:'شارژ، بسته، پرداخت',classes:'کلاس‌ها',classPanel:'پنل مدیریت',wallet:'کیف پول',balance:'موجودی',chargeSection:'📱 شارژ و بسته اینترنت',mci:'همراه اول',irancell:'ایرانسل',rightel:'رایتل',otherOperators:'سایر اپراتورها',chargeDesc:'شارژ / بسته اینترنت',servicePortal:'سامانه خدمات',otherServices:'🧾 خدمات دیگر',payElectricity:'پرداخت برق',payGas:'پرداخت گاز',payWater:'پرداخت آب',payPhone:'پرداخت تلفن',newContact:'مخاطب',newGroup:'گروه',newChannel:'کانال',joinWithCode:'ورود با کد',createClass:'ساخت کلاس',newContactTitle:'👤 مخاطب جدید',newContactDesc:'ایمیل مخاطب را وارد کن',newGroupTitle:'گروه جدید',newGroupDesc:'اطلاعات را وارد کن',nameLbl:'نام',descLbl:'توضیحات',selectMembers:'انتخاب اعضا',searchPlaceholder:'جستجو...',newStoryTitle:'📸 استوری جدید',newStoryDesc:'عکس یا ویدیو انتخاب کن',nothingSelected:'چیزی انتخاب نشده',pickFile:'📷 انتخاب فایل',captionLbl:'کپشن',publish:'انتشار',storiesListTitle:'📸 استوری‌ها',pickUser:'یک کاربر انتخاب کن',close:'بستن',addStory:'افزودن استوری',editMsgTitle:'✏️ ویرایش پیام',editMsgDesc:'متن جدید را وارد کن',libAddTitle:'🎬 افزودن به کتابخانه',titleLbl:'عنوان',botNewTitle:'🤖 ربات جدید',autoReplyLbl:'پاسخ خودکار',newClassTitle:'📚 کلاس جدید',classNameLbl:'نام کلاس',joinTitle:'🔑 ورود به کلاس',joinDesc:'کد ۶ رقمی که معلم داده رو وارد کن',enter:'ورود',classCreated:'✅ کلاس ساخته شد!',giveCodeDesc:'این کد رو به دانش‌آموزان بده:',copyCode:'📋 کپی کد',addVideoTitle:'🎬 افزودن ویدیو',uploadFromDevice:'📤 آپلود از دستگاه',linkTab:'🔗 لینک',videoTitleLbl:'عنوان ویدیو',videoTitlePh:'مثلاً: جلسه ۱ - مقدمه',descOptional:'توضیحات (اختیاری)',descPh:'توضیح کوتاه...',pickVideo:'📹 انتخاب ویدیو از دستگاه',maxSize:'حداکثر حجم: ۵۰ مگابایت',videoUrlLbl:'لینک ویدیو (URL)',linkHint:'میتونی از یوتیوب، آپارات یا هر لینک mp4 استفاده کنی',msgPlaceholder:'پیام...',sendImage:'ارسال عکس',sendFile:'ارسال فایل',sendVoice:'ضبط ویس',recording:'در حال ضبط...',send:'ارسال',cancel:'انصراف',save:'ذخیره',delete:'حذف',add:'افزودن',create:'ساخت',ok:'باشه',copy:'کپی',videos:'🎬 ویدیوها',members:'👥 اعضا',addVideo:'➕ افزودن ویدیو',classCode:'کد کلاس',loading:'در حال بارگذاری...',noClasses:'هنوز کلاسی نیست',noContacts:'هنوز مخاطبی نداری',error:'خطا',teacher:'معلم',student:'دانش‌آموز',emptyChat:'هنوز پیامی نیست',emptyVideo:'هنوز ویدیویی نیست',emptyMembers:'هنوز دانش‌آموزی نیست',logoutConfirm:'خارج می‌شوی؟',justNow:'الان',minAgo:'دقیقه پیش',hrAgo:'ساعت پیش',dayAgo:'روز پیش',you:'شما',replyLabel:'پاسخ',editLabel:'✏️ ویرایش',voiceMsg:'🎤 ویس',imageMsg:'🖼️ عکس',fileMsg:'📄 فایل',edited:'ویرایش شده',invalidEmail:'ایمیل معتبر نیست',cantChatSelf:'نمی‌تونی با خودت چت کنی!',onlyTeacher:'فقط معلم می‌تونه ویدیو اضافه کنه',deleteVideo:'این ویدیو حذف شود؟',deleteStudent:'این دانش‌آموز از کلاس حذف شود؟',copySuccess:'کد کپی شد',profile:'پروفایل',editProfileTitle:'✏️ ویرایش پروفایل',usernameLbl:'نام کاربری',usernameHint:'فقط حروف انگلیسی، اعداد و _ (بدون @)',bioLbl:'درباره من',phoneLbl:'📱 شماره تماس',phoneLbl2:'شماره تماس (اختیاری)',emailLbl:'✉️ ایمیل',startChat:'شروع گفتگو',noBio:'درباره من چیزی ننوشتی',settings:'تنظیمات',accountSection:'👤 حساب کاربری',profileDesc:'نام، عکس، بیوگرافی',languageSection:'🌐 زبان',language:'زبان',languageDesc:'فارسی یا انگلیسی',securitySection:'🔒 امنیت',twoFA:'رمز دو مرحله‌ای',twoFADesc:'محافظت بیشتر از حساب',twoFATitle:'🔐 رمز دو مرحله‌ای',twoFADesc2:'با فعال‌سازی، هنگام ورود یک کد ۶ رقمی به ایمیلت فرستاده می‌شود.',twoFAEnable:'فعال‌سازی',twoFACodeLbl:'کد ۶ رقمی',verify:'تأیید',activeSessions:'نشست‌های فعال',activeSessionsDesc:'دستگاه‌های متصل',sessionsTitle:'📱 نشست‌های فعال',sessionsDesc:'دستگاه‌هایی که با حساب تو لاگین کردن:',logoutAll:'خروج از همه',changePassword:'تغییر رمز عبور',changePasswordDesc:'رمز جدید تنظیم کن',changePasswordTitle:'🔑 تغییر رمز عبور',newPassword:'رمز جدید',confirmPassword:'تکرار رمز جدید',aboutSection:'ℹ️ درباره',appVersion:'نسخه برنامه',logoutBtn:'خروج از حساب',logoutDesc:'خارج شدن از این دستگاه',callStart:'شروع تماس',callGroup:'تماس گروهی',callPrivate:'تماس خصوصی',callConnecting:'در حال اتصال...',callConnected:'متصل شد',callError:'خطا در تماس',deleteForAll:'حذف برای همه',deleteForMe:'حذف فقط برای من',deletedMsg:'این پیام حذف شد',deleteConfirmAll:'OK = حذف برای همه، Cancel = حذف فقط برای من',deleteConfirmMe:'این پیام برای تو حذف شود؟',typing:'در حال نوشتن...',recordingVoice:'در حال ضبط ویس...',uploadingFile:'در حال ارسال فایل...',online:'آنلاین',lastSeen:'آخرین بازدید',onlineCount:'آنلاین',youPrefix:'شما: ',onlyOwner:'فقط سازنده می‌تواند ویرایش کند',owner:'مالک',edit:'ویرایش',viewMembers:'مشاهده اعضا',editGroup:'ویرایش گروه',editChannel:'ویرایش کانال',changePhoto:'تغییر عکس',aboutLbl:'درباره / بیوگرافی',removeMember:'این عضو حذف شود؟',noMembers:'عضوی نیست',nameRequired:'نام الزامی است',inviteLink:'لینک دعوت',inviteTitle:'🔗 لینک دعوت',inviteDesc:'با این لینک هر کسی می‌تونه به گروه بپیونده',inviteCreating:'در حال ساخت...',inviteNoExpire:'بدون انقضا',invite1Hour:'۱ ساعت',invite24Hours:'۲۴ ساعت',invite7Days:'۷ روز',invite30Days:'۳۰ روز',inviteUnlimited:'نامحدود',inviteUsers:'نفر',invitePeopleJoined:'نفر عضو شدن',inviteSaved:'✅ ذخیره شد',inviteCopySuccess:'✅ لینک کپی شد',inviteNotValid:'لینک دعوت معتبر نیست',inviteExpired:'لینک دعوت منقضی شده',inviteFull:'ظرفیت این لینک پر شده',inviteWelcome:'خوش آمدی!',inviteAlreadyMember:'قبلاً عضو بودی',inviteJoined:'به گروه پیوستی',enterGroup:'ورود به گروه',channelLocked:'🔒 فقط ادمین‌های کانال می‌توانند پیام ارسال کنند'},en:{appName:'Nexom',appTagline:'Super App',welcome:'Hello!',welcomeSub:'Welcome to Nexom',groups:'Groups',channels:'Channels',contacts:'Contacts',chats:'Chats',library:'Library',bots:'Bots',finance:'Finance',financeShort:'Finance',education:'Education',home:'Home',more:'More',privateTab:'Private',secTitle:'High Security',secSub:'Advanced encryption',spdTitle:'High Speed',spdSub:'Fast send & receive',cldTitle:'Cloud Space',cldSub:'Access anywhere',freTitle:'Free',freSub:'No cost, always',librarySub:'Videos & content',botsSub:'Auto reply',financeSub:'Top-up, packages, payments',classes:'Classes',classPanel:'Admin Panel',wallet:'Wallet',balance:'Balance',chargeSection:'📱 Top-up & Internet',mci:'MCI',irancell:'Irancell',rightel:'Rightel',otherOperators:'Other operators',chargeDesc:'Top-up / Internet',servicePortal:'Service portal',otherServices:'🧾 Other Services',payElectricity:'Pay Electricity',payGas:'Pay Gas',payWater:'Pay Water',payPhone:'Pay Phone',newContact:'Contact',newGroup:'Group',newChannel:'Channel',joinWithCode:'Join with Code',createClass:'Create Class',newContactTitle:'👤 New Contact',newContactDesc:'Enter the contact email',newGroupTitle:'New Group',newGroupDesc:'Enter the information',nameLbl:'Name',descLbl:'Description',selectMembers:'Select members',searchPlaceholder:'Search...',newStoryTitle:'📸 New Story',newStoryDesc:'Pick an image or video',nothingSelected:'Nothing selected',pickFile:'📷 Pick a file',captionLbl:'Caption',publish:'Publish',storiesListTitle:'📸 Stories',pickUser:'Pick a user',close:'Close',addStory:'Add Story',editMsgTitle:'✏️ Edit Message',editMsgDesc:'Enter new text',libAddTitle:'🎬 Add to Library',titleLbl:'Title',botNewTitle:'🤖 New Bot',autoReplyLbl:'Auto reply',newClassTitle:'📚 New Class',classNameLbl:'Class Name',joinTitle:'🔑 Join Class',joinDesc:'Enter the 6-digit code from your teacher',enter:'Enter',classCreated:'✅ Class Created!',giveCodeDesc:'Give this code to students:',copyCode:'📋 Copy Code',addVideoTitle:'🎬 Add Video',uploadFromDevice:'📤 Upload from device',linkTab:'🔗 Link',videoTitleLbl:'Video title',videoTitlePh:'E.g. Session 1 - Intro',descOptional:'Description (optional)',descPh:'Short description...',pickVideo:'📹 Pick video from device',maxSize:'Max size: 50 MB',videoUrlLbl:'Video URL',linkHint:'You can use YouTube, Aparat or any mp4 link',msgPlaceholder:'Message...',sendImage:'Send image',sendFile:'Send file',sendVoice:'Record voice',recording:'Recording...',send:'Send',cancel:'Cancel',save:'Save',delete:'Delete',add:'Add',create:'Create',ok:'OK',copy:'Copy',videos:'🎬 Videos',members:'👥 Members',addVideo:'➕ Add Video',classCode:'Class Code',loading:'Loading...',noClasses:'No classes yet',noContacts:'No contacts yet',error:'Error',teacher:'Teacher',student:'Student',emptyChat:'No messages yet',emptyVideo:'No videos yet',emptyMembers:'No students yet',logoutConfirm:'Log out?',justNow:'Just now',minAgo:'min ago',hrAgo:'hr ago',dayAgo:'day ago',you:'You',replyLabel:'Reply',editLabel:'✏️ Edit',voiceMsg:'🎤 Voice',imageMsg:'🖼️ Image',fileMsg:'📄 File',edited:'edited',invalidEmail:'Invalid email',cantChatSelf:"You can't chat with yourself!",onlyTeacher:'Only the teacher can add videos',deleteVideo:'Delete this video?',deleteStudent:'Remove this student from class?',copySuccess:'Code copied',profile:'Profile',editProfileTitle:'✏️ Edit Profile',usernameLbl:'Username',usernameHint:'Only a-z, 0-9, _ (no @)',bioLbl:'About me',phoneLbl:'📱 Phone',phoneLbl2:'Phone (optional)',emailLbl:'✉️ Email',startChat:'Start Chat',noBio:'No bio yet',settings:'Settings',accountSection:'👤 Account',profileDesc:'Name, photo, bio',languageSection:'🌐 Language',language:'Language',languageDesc:'Persian or English',securitySection:'🔒 Security',twoFA:'Two-Factor Auth',twoFADesc:'Extra account protection',twoFATitle:'🔐 Two-Factor Auth',twoFADesc2:'When enabled, a 6-digit code is sent to your email on login.',twoFAEnable:'Enable',twoFACodeLbl:'6-digit code',verify:'Verify',activeSessions:'Active Sessions',activeSessionsDesc:'Connected devices',sessionsTitle:'📱 Active Sessions',sessionsDesc:'Devices logged into your account:',logoutAll:'Log out all',changePassword:'Change Password',changePasswordDesc:'Set a new password',changePasswordTitle:'🔑 Change Password',newPassword:'New password',confirmPassword:'Confirm new password',aboutSection:'ℹ️ About',appVersion:'App Version',logoutBtn:'Log out',logoutDesc:'Sign out from this device',callStart:'Start Call',callGroup:'Group Call',callPrivate:'Private Call',callConnecting:'Connecting...',callConnected:'Connected',callError:'Call error',deleteForAll:'Delete for everyone',deleteForMe:'Delete for me only',deletedMsg:'This message was deleted',deleteConfirmAll:'OK = Delete for everyone, Cancel = Delete for me only',deleteConfirmMe:'Delete this message for you?',typing:'typing...',recordingVoice:'Recording voice...',uploadingFile:'Uploading file...',online:'Online',lastSeen:'Last seen',onlineCount:'online',youPrefix:'You: ',onlyOwner:'Only owner can edit',owner:'Owner',edit:'Edit',viewMembers:'View members',editGroup:'Edit group',editChannel:'Edit channel',changePhoto:'Change photo',aboutLbl:'About / Bio',removeMember:'Remove this member?',noMembers:'No members',nameRequired:'Name required',inviteLink:'Invite Link',inviteTitle:'🔗 Invite Link',inviteDesc:'Anyone with this link can join the group',inviteCreating:'Creating...',inviteNoExpire:'No expiry',invite1Hour:'1 hour',invite24Hours:'24 hours',invite7Days:'7 days',invite30Days:'30 days',inviteUnlimited:'Unlimited',inviteUsers:'users',invitePeopleJoined:'people joined',inviteSaved:'✅ Saved',inviteCopySuccess:'✅ Link copied',inviteNotValid:'Invalid invite link',inviteExpired:'Invite link expired',inviteFull:'Invite link is full',inviteWelcome:'Welcome!',inviteAlreadyMember:'Already member',inviteJoined:'You joined the group',enterGroup:'Enter Group',channelLocked:'🔒 Only channel admins can send messages'}};
+const I18N={fa:{appName:'نکسوم',appTagline:'سوپر اپلیکیشن',welcome:'سلام!',welcomeSub:'به نکسوم خوش آمدید',groups:'گروه‌ها',channels:'کانال‌ها',contacts:'مخاطبین',chats:'گفتگوها',library:'کتابخانه',bots:'ربات‌ها',finance:'خدمات مالی',financeShort:'مالی',education:'آموزش',home:'خانه',more:'بیشتر',privateTab:'خصوصی',secTitle:'امنیت بالا',secSub:'با رمزنگاری پیشرفته',spdTitle:'سرعت بالا',spdSub:'ارسال و دریافت سریع',cldTitle:'فضای ابری',cldSub:'دسترسی از همه جا',freTitle:'رایگان',freSub:'بدون هزینه، همیشه',librarySub:'ویدیوها و محتوا',botsSub:'پاسخ خودکار',financeSub:'شارژ، بسته، پرداخت',classes:'کلاس‌ها',classPanel:'پنل مدیریت',wallet:'کیف پول',balance:'موجودی',chargeSection:'📱 شارژ و بسته اینترنت',mci:'همراه اول',irancell:'ایرانسل',rightel:'رایتل',otherOperators:'سایر اپراتورها',chargeDesc:'شارژ / بسته اینترنت',servicePortal:'سامانه خدمات',otherServices:'🧾 خدمات دیگر',payElectricity:'پرداخت برق',payGas:'پرداخت گاز',payWater:'پرداخت آب',payPhone:'پرداخت تلفن',newContact:'مخاطب',newGroup:'گروه',newChannel:'کانال',joinWithCode:'ورود با کد',createClass:'ساخت کلاس',newContactTitle:'👤 مخاطب جدید',newContactDesc:'شماره تلفن مخاطب را وارد کن',newGroupTitle:'گروه جدید',newGroupDesc:'اطلاعات را وارد کن',nameLbl:'نام',descLbl:'توضیحات',selectMembers:'انتخاب اعضا',searchPlaceholder:'جستجو...',newStoryTitle:'📸 استوری جدید',newStoryDesc:'عکس یا ویدیو انتخاب کن',nothingSelected:'چیزی انتخاب نشده',pickFile:'📷 انتخاب فایل',captionLbl:'کپشن',publish:'انتشار',storiesListTitle:'📸 استوری‌ها',pickUser:'یک کاربر انتخاب کن',close:'بستن',addStory:'افزودن استوری',editMsgTitle:'✏️ ویرایش پیام',editMsgDesc:'متن جدید را وارد کن',libAddTitle:'🎬 افزودن به کتابخانه',titleLbl:'عنوان',botNewTitle:'🤖 ربات جدید',autoReplyLbl:'پاسخ خودکار',newClassTitle:'📚 کلاس جدید',classNameLbl:'نام کلاس',joinTitle:'🔑 ورود به کلاس',joinDesc:'کد ۶ رقمی که معلم داده رو وارد کن',enter:'ورود',classCreated:'✅ کلاس ساخته شد!',giveCodeDesc:'این کد رو به دانش‌آموزان بده:',copyCode:'📋 کپی کد',addVideoTitle:'🎬 افزودن ویدیو',uploadFromDevice:'📤 آپلود از دستگاه',linkTab:'🔗 لینک',videoTitleLbl:'عنوان ویدیو',videoTitlePh:'مثلاً: جلسه ۱ - مقدمه',descOptional:'توضیحات (اختیاری)',descPh:'توضیح کوتاه...',pickVideo:'📹 انتخاب ویدیو از دستگاه',maxSize:'حداکثر حجم: ۵۰ مگابایت',videoUrlLbl:'لینک ویدیو (URL)',linkHint:'میتونی از یوتیوب، آپارات یا هر لینک mp4 استفاده کنی',msgPlaceholder:'پیام...',sendImage:'ارسال عکس',sendFile:'ارسال فایل',sendVoice:'ضبط ویس',recording:'در حال ضبط...',send:'ارسال',cancel:'انصراف',save:'ذخیره',delete:'حذف',add:'افزودن',create:'ساخت',ok:'باشه',copy:'کپی',videos:'🎬 ویدیوها',members:'👥 اعضا',addVideo:'➕ افزودن ویدیو',classCode:'کد کلاس',loading:'در حال بارگذاری...',noClasses:'هنوز کلاسی نیست',noContacts:'هنوز مخاطبی نداری',error:'خطا',teacher:'معلم',student:'دانش‌آموز',emptyChat:'هنوز پیامی نیست',emptyVideo:'هنوز ویدیویی نیست',emptyMembers:'هنوز دانش‌آموزی نیست',logoutConfirm:'خارج می‌شوی؟',justNow:'الان',minAgo:'دقیقه پیش',hrAgo:'ساعت پیش',dayAgo:'روز پیش',you:'شما',replyLabel:'پاسخ',editLabel:'✏️ ویرایش',voiceMsg:'🎤 ویس',imageMsg:'🖼️ عکس',fileMsg:'📄 فایل',edited:'ویرایش شده',invalidEmail:'ایمیل معتبر نیست',cantChatSelf:'نمی‌تونی با خودت چت کنی!',onlyTeacher:'فقط معلم می‌تونه ویدیو اضافه کنه',deleteVideo:'این ویدیو حذف شود؟',deleteStudent:'این دانش‌آموز از کلاس حذف شود؟',copySuccess:'کد کپی شد',profile:'پروفایل',editProfileTitle:'✏️ ویرایش پروفایل',usernameLbl:'نام کاربری',usernameHint:'فقط حروف انگلیسی، اعداد و _ (بدون @)',bioLbl:'درباره من',phoneLbl:'📱 شماره تماس',phoneLbl2:'شماره تماس (اختیاری)',emailLbl:'✉️ ایمیل',startChat:'شروع گفتگو',noBio:'درباره من چیزی ننوشتی',settings:'تنظیمات',accountSection:'👤 حساب کاربری',profileDesc:'نام، عکس، بیوگرافی',languageSection:'🌐 زبان',language:'زبان',languageDesc:'فارسی یا انگلیسی',securitySection:'🔒 امنیت',twoFA:'رمز دو مرحله‌ای',twoFADesc:'محافظت بیشتر از حساب',twoFATitle:'🔐 رمز دو مرحله‌ای',twoFADesc2:'با فعال‌سازی، هنگام ورود یک کد ۶ رقمی به ایمیلت فرستاده می‌شود.',twoFAEnable:'فعال‌سازی',twoFACodeLbl:'کد ۶ رقمی',verify:'تأیید',activeSessions:'نشست‌های فعال',activeSessionsDesc:'دستگاه‌های متصل',sessionsTitle:'📱 نشست‌های فعال',sessionsDesc:'دستگاه‌هایی که با حساب تو لاگین کردن:',logoutAll:'خروج از همه',changePassword:'تغییر رمز عبور',changePasswordDesc:'رمز جدید تنظیم کن',changePasswordTitle:'🔑 تغییر رمز عبور',newPassword:'رمز جدید',confirmPassword:'تکرار رمز جدید',aboutSection:'ℹ️ درباره',appVersion:'نسخه برنامه',logoutBtn:'خروج از حساب',logoutDesc:'خارج شدن از این دستگاه',callStart:'شروع تماس',callGroup:'تماس گروهی',callPrivate:'تماس خصوصی',callConnecting:'در حال اتصال...',callConnected:'متصل شد',callError:'خطا در تماس',deleteForAll:'حذف برای همه',deleteForMe:'حذف فقط برای من',deletedMsg:'این پیام حذف شد',deleteConfirmAll:'OK = حذف برای همه، Cancel = حذف فقط برای من',deleteConfirmMe:'این پیام برای تو حذف شود؟',typing:'در حال نوشتن...',recordingVoice:'در حال ضبط ویس...',uploadingFile:'در حال ارسال فایل...',online:'آنلاین',lastSeen:'آخرین بازدید',onlineCount:'آنلاین',youPrefix:'شما: ',onlyOwner:'فقط سازنده می‌تواند ویرایش کند',owner:'مالک',edit:'ویرایش',viewMembers:'مشاهده اعضا',editGroup:'ویرایش گروه',editChannel:'ویرایش کانال',changePhoto:'تغییر عکس',aboutLbl:'درباره / بیوگرافی',removeMember:'این عضو حذف شود؟',noMembers:'عضوی نیست',nameRequired:'نام الزامی است',inviteLink:'لینک دعوت',inviteTitle:'🔗 لینک دعوت',inviteDesc:'با این لینک هر کسی می‌تونه به گروه بپیونده',inviteCreating:'در حال ساخت...',inviteNoExpire:'بدون انقضا',invite1Hour:'۱ ساعت',invite24Hours:'۲۴ ساعت',invite7Days:'۷ روز',invite30Days:'۳۰ روز',inviteUnlimited:'نامحدود',inviteUsers:'نفر',invitePeopleJoined:'نفر عضو شدن',inviteSaved:'✅ ذخیره شد',inviteCopySuccess:'✅ لینک کپی شد',inviteNotValid:'لینک دعوت معتبر نیست',inviteExpired:'لینک دعوت منقضی شده',inviteFull:'ظرفیت این لینک پر شده',inviteWelcome:'خوش آمدی!',inviteAlreadyMember:'قبلاً عضو بودی',inviteJoined:'به گروه پیوستی',enterGroup:'ورود به گروه',channelLocked:'🔒 فقط ادمین‌های کانال می‌توانند پیام ارسال کنند'},en:{appName:'Nexom',appTagline:'Super App',welcome:'Hello!',welcomeSub:'Welcome to Nexom',groups:'Groups',channels:'Channels',contacts:'Contacts',chats:'Chats',library:'Library',bots:'Bots',finance:'Finance',financeShort:'Finance',education:'Education',home:'Home',more:'More',privateTab:'Private',secTitle:'High Security',secSub:'Advanced encryption',spdTitle:'High Speed',spdSub:'Fast send & receive',cldTitle:'Cloud Space',cldSub:'Access anywhere',freTitle:'Free',freSub:'No cost, always',librarySub:'Videos & content',botsSub:'Auto reply',financeSub:'Top-up, packages, payments',classes:'Classes',classPanel:'Admin Panel',wallet:'Wallet',balance:'Balance',chargeSection:'📱 Top-up & Internet',mci:'MCI',irancell:'Irancell',rightel:'Rightel',otherOperators:'Other operators',chargeDesc:'Top-up / Internet',servicePortal:'Service portal',otherServices:'🧾 Other Services',payElectricity:'Pay Electricity',payGas:'Pay Gas',payWater:'Pay Water',payPhone:'Pay Phone',newContact:'Contact',newGroup:'Group',newChannel:'Channel',joinWithCode:'Join with Code',createClass:'Create Class',newContactTitle:'👤 New Contact',newContactDesc:'Enter contact phone number',newGroupTitle:'New Group',newGroupDesc:'Enter the information',nameLbl:'Name',descLbl:'Description',selectMembers:'Select members',searchPlaceholder:'Search...',newStoryTitle:'📸 New Story',newStoryDesc:'Pick an image or video',nothingSelected:'Nothing selected',pickFile:'📷 Pick a file',captionLbl:'Caption',publish:'Publish',storiesListTitle:'📸 Stories',pickUser:'Pick a user',close:'Close',addStory:'Add Story',editMsgTitle:'✏️ Edit Message',editMsgDesc:'Enter new text',libAddTitle:'🎬 Add to Library',titleLbl:'Title',botNewTitle:'🤖 New Bot',autoReplyLbl:'Auto reply',newClassTitle:'📚 New Class',classNameLbl:'Class Name',joinTitle:'🔑 Join Class',joinDesc:'Enter the 6-digit code from your teacher',enter:'Enter',classCreated:'✅ Class Created!',giveCodeDesc:'Give this code to students:',copyCode:'📋 Copy Code',addVideoTitle:'🎬 Add Video',uploadFromDevice:'📤 Upload from device',linkTab:'🔗 Link',videoTitleLbl:'Video title',videoTitlePh:'E.g. Session 1 - Intro',descOptional:'Description (optional)',descPh:'Short description...',pickVideo:'📹 Pick video from device',maxSize:'Max size: 50 MB',videoUrlLbl:'Video URL',linkHint:'You can use YouTube, Aparat or any mp4 link',msgPlaceholder:'Message...',sendImage:'Send image',sendFile:'Send file',sendVoice:'Record voice',recording:'Recording...',send:'Send',cancel:'Cancel',save:'Save',delete:'Delete',add:'Add',create:'Create',ok:'OK',copy:'Copy',videos:'🎬 Videos',members:'👥 Members',addVideo:'➕ Add Video',classCode:'Class Code',loading:'Loading...',noClasses:'No classes yet',noContacts:'No contacts yet',error:'Error',teacher:'Teacher',student:'Student',emptyChat:'No messages yet',emptyVideo:'No videos yet',emptyMembers:'No students yet',logoutConfirm:'Log out?',justNow:'Just now',minAgo:'min ago',hrAgo:'hr ago',dayAgo:'day ago',you:'You',replyLabel:'Reply',editLabel:'✏️ Edit',voiceMsg:'🎤 Voice',imageMsg:'🖼️ Image',fileMsg:'📄 File',edited:'edited',invalidEmail:'Invalid email',cantChatSelf:"You can't chat with yourself!",onlyTeacher:'Only the teacher can add videos',deleteVideo:'Delete this video?',deleteStudent:'Remove this student from class?',copySuccess:'Code copied',profile:'Profile',editProfileTitle:'✏️ Edit Profile',usernameLbl:'Username',usernameHint:'Only a-z, 0-9, _ (no @)',bioLbl:'About me',phoneLbl:'📱 Phone',phoneLbl2:'Phone (optional)',emailLbl:'✉️ Email',startChat:'Start Chat',noBio:'No bio yet',settings:'Settings',accountSection:'👤 Account',profileDesc:'Name, photo, bio',languageSection:'🌐 Language',language:'Language',languageDesc:'Persian or English',securitySection:'🔒 Security',twoFA:'Two-Factor Auth',twoFADesc:'Extra account protection',twoFATitle:'🔐 Two-Factor Auth',twoFADesc2:'When enabled, a 6-digit code is sent to your email on login.',twoFAEnable:'Enable',twoFACodeLbl:'6-digit code',verify:'Verify',activeSessions:'Active Sessions',activeSessionsDesc:'Connected devices',sessionsTitle:'📱 Active Sessions',sessionsDesc:'Devices logged into your account:',logoutAll:'Log out all',changePassword:'Change Password',changePasswordDesc:'Set a new password',changePasswordTitle:'🔑 Change Password',newPassword:'New password',confirmPassword:'Confirm new password',aboutSection:'ℹ️ About',appVersion:'App Version',logoutBtn:'Log out',logoutDesc:'Sign out from this device',callStart:'Start Call',callGroup:'Group Call',callPrivate:'Private Call',callConnecting:'Connecting...',callConnected:'Connected',callError:'Call error',deleteForAll:'Delete for everyone',deleteForMe:'Delete for me only',deletedMsg:'This message was deleted',deleteConfirmAll:'OK = Delete for everyone, Cancel = Delete for me only',deleteConfirmMe:'Delete this message for you?',typing:'typing...',recordingVoice:'Recording voice...',uploadingFile:'Uploading file...',online:'Online',lastSeen:'Last seen',onlineCount:'online',youPrefix:'You: ',onlyOwner:'Only owner can edit',owner:'Owner',edit:'Edit',viewMembers:'View members',editGroup:'Edit group',editChannel:'Edit channel',changePhoto:'Change photo',aboutLbl:'About / Bio',removeMember:'Remove this member?',noMembers:'No members',nameRequired:'Name required',inviteLink:'Invite Link',inviteTitle:'🔗 Invite Link',inviteDesc:'Anyone with this link can join the group',inviteCreating:'Creating...',inviteNoExpire:'No expiry',invite1Hour:'1 hour',invite24Hours:'24 hours',invite7Days:'7 days',invite30Days:'30 days',inviteUnlimited:'Unlimited',inviteUsers:'users',invitePeopleJoined:'people joined',inviteSaved:'✅ Saved',inviteCopySuccess:'✅ Link copied',inviteNotValid:'Invalid invite link',inviteExpired:'Invite link expired',inviteFull:'Invite link is full',inviteWelcome:'Welcome!',inviteAlreadyMember:'Already member',inviteJoined:'You joined the group',enterGroup:'Enter Group',channelLocked:'🔒 Only channel admins can send messages'}};
 
 let lang=localStorage.getItem('lang')||'fa';
 function t(k){return(I18N[lang]&&I18N[lang][k])||(I18N.fa[k])||k}
@@ -1449,19 +1338,19 @@ function canISendToChat(){
 async function getProfile(email){if(!email)return null;const{data}=await sb.from('profiles').select('*').eq('email',email).maybeSingle();if(data){namesCache[email]=data.name||email.split('@')[0];avatarsCache[email]=data.avatar_url||null}return data}
 async function getName(email){if(!email)return '?';if(namesCache[email])return namesCache[email];const{data}=await sb.from('profiles').select('name').eq('email',email).maybeSingle();const name=data?.name||email.split('@')[0];namesCache[email]=name;return name}
 async function loadAllNames(emails){const unique=[...new Set(emails.filter(e=>e&&!namesCache[e]))];if(!unique.length)return;const{data}=await sb.from('profiles').select('email,name,avatar_url').in('email',unique);(data||[]).forEach(p=>{namesCache[p.email]=p.name||p.email.split('@')[0];avatarsCache[p.email]=p.avatar_url||null})}
-async function loadMyProfile(){let{data}=await sb.from('profiles').select('*').eq('email',myEmail).maybeSingle();if(!data){const defaultName=myEmail.split('@')[0];await sb.from('profiles').insert({email:myEmail,name:defaultName,username:defaultName});const{data:newData}=await sb.from('profiles').select('*').eq('email',myEmail).maybeSingle();data=newData}myProfile=data;if(data?.name)namesCache[myEmail]=data.name;if(data?.avatar_url)avatarsCache[myEmail]=data.avatar_url;return data}
+async function loadMyProfile(){let{data}=await sb.from('profiles').select('*').eq('email',myEmail).maybeSingle();if(!data){const defaultName=savedPhone||myEmail.split('@')[0];await sb.from('profiles').insert({email:myEmail,name:defaultName,username:defaultName});const{data:newData}=await sb.from('profiles').select('*').eq('email',myEmail).maybeSingle();data=newData}myProfile=data;if(data?.name)namesCache[myEmail]=data.name;if(data?.avatar_url)avatarsCache[myEmail]=data.avatar_url;return data}
 
-window.openMyProfile=async()=>{const p=await loadMyProfile();document.getElementById('profile-email-lbl').textContent=myEmail;document.getElementById('profile-email-txt').textContent=myEmail;const av=document.getElementById('profile-avatar');if(p?.avatar_url){av.textContent='';av.style.backgroundImage=`url('${p.avatar_url}')`}else{av.textContent=ini(p?.name||myEmail);av.style.backgroundImage=''}document.getElementById('profile-name').textContent=p?.name||myEmail.split('@')[0];document.getElementById('profile-username').textContent=p?.username?'@'+p.username:'@'+(myEmail.split('@')[0]);document.getElementById('profile-bio').textContent=p?.bio||t('noBio');document.getElementById('profile-phone').textContent=p?.phone||'—';showPage('profile')};
+window.openMyProfile=async()=>{const p=await loadMyProfile();document.getElementById('profile-email-lbl').textContent=myEmail;document.getElementById('profile-email-txt').textContent=myEmail;const av=document.getElementById('profile-avatar');if(p?.avatar_url){av.textContent='';av.style.backgroundImage=`url('${p.avatar_url}')`}else{av.textContent=ini(p?.name||myEmail);av.style.backgroundImage=''}document.getElementById('profile-name').textContent=p?.name||myEmail.split('@')[0];document.getElementById('profile-username').textContent=p?.username?'@'+p.username:'@'+(myEmail.split('@')[0]);document.getElementById('profile-bio').textContent=p?.bio||t('noBio');document.getElementById('profile-phone').textContent=p?.phone||savedPhone||'—';showPage('profile')};
 window.closeProfile=()=>{showPage('home')};
 window.openProfile=async(email)=>{const targetEmail=email||myEmail;const isMe=targetEmail===myEmail;const p=await getProfile(targetEmail);if(!p){alert(t('error'));return}document.getElementById('vp-avatar').textContent=p.avatar_url?'':ini(p.name||p.email);document.getElementById('vp-avatar').style.backgroundImage=p.avatar_url?`url('${p.avatar_url}')`:'';document.getElementById('vp-avatar').style.backgroundSize='cover';document.getElementById('vp-avatar').style.backgroundPosition='center';document.getElementById('vp-avatar').onclick=p.avatar_url?()=>openLightbox(p.avatar_url):null;document.getElementById('vp-avatar').style.cursor=p.avatar_url?'pointer':'default';document.getElementById('vp-name').textContent=p.name||p.email.split('@')[0];document.getElementById('vp-username').textContent=p.username?'@'+p.username:'';document.getElementById('vp-bio').textContent=p.bio||t('noBio');const chatBtn=document.getElementById('vp-chat-btn');if(isMe){chatBtn.textContent=lang==='fa'?'✏️ ویرایش پروفایل':'✏️ Edit Profile';chatBtn.onclick=()=>{closeModal('view-profile-modal');openEditProfile()}}else{chatBtn.textContent=lang==='fa'?'💬 شروع گفتگو':'💬 Start Chat';chatBtn.onclick=()=>{closeModal('view-profile-modal');openRoom('private',targetEmail)}}document.getElementById('view-profile-modal').classList.add('show')};
-window.openEditProfile=async()=>{const p=await loadMyProfile();document.getElementById('ep-name').value=p?.name||'';document.getElementById('ep-username').value=p?.username||'';document.getElementById('ep-bio').value=p?.bio||'';document.getElementById('ep-phone').value=p?.phone||'';document.getElementById('edit-profile-modal').classList.add('show')};
+window.openEditProfile=async()=>{const p=await loadMyProfile();document.getElementById('ep-name').value=p?.name||'';document.getElementById('ep-username').value=p?.username||'';document.getElementById('ep-bio').value=p?.bio||'';document.getElementById('ep-phone').value=p?.phone||savedPhone||'';document.getElementById('edit-profile-modal').classList.add('show')};
 document.getElementById('ep-save').onclick=async()=>{const name=document.getElementById('ep-name').value.trim();const username=document.getElementById('ep-username').value.trim().toLowerCase();const bio=document.getElementById('ep-bio').value.trim();const phone=document.getElementById('ep-phone').value.trim();if(!name){alert(t('nameLbl'));return}if(username&&!/^[a-z0-9_]{3,20}$/.test(username)){alert(t('usernameHint'));return}const btn=document.getElementById('ep-save');btn.disabled=true;btn.textContent='...';try{if(username){const{data:ex}=await sb.from('profiles').select('email').eq('username',username).neq('email',myEmail).maybeSingle();if(ex){alert(lang==='fa'?'این نام کاربری قبلاً گرفته شده':'Username already taken');btn.disabled=false;btn.textContent=t('save');return}}const{error}=await sb.from('profiles').update({name,username:username||null,bio,phone,updated_at:new Date().toISOString()}).eq('email',myEmail);if(error){alert(t('error')+': '+error.message);btn.disabled=false;btn.textContent=t('save');return}namesCache[myEmail]=name;myProfile=null;closeModal('edit-profile-modal');await openMyProfile()}catch(e){alert(t('error')+': '+e.message)}btn.disabled=false;btn.textContent=t('save')};
 document.getElementById('avatar-file').onchange=async(e)=>{const f=e.target.files[0];if(!f)return;e.target.value='';if(!f.type.startsWith('image/')){alert(lang==='fa'?'فقط عکس':'Images only');return}if(f.size>5*1024*1024){alert(lang==='fa'?'حجم عکس زیاد':'Image too large');return}const ext=f.name.split('.').pop()||'jpg';const fn=`avatar-${myEmail.replace(/[^a-z0-9]/gi,'_')}-${Date.now()}.${ext}`;const{error:ue}=await sb.storage.from('avatars').upload(fn,f,{contentType:f.type,upsert:true});if(ue){alert(t('error')+': '+ue.message);return}const{data:ud}=sb.storage.from('avatars').getPublicUrl(fn);const{error:pe}=await sb.from('profiles').update({avatar_url:ud.publicUrl,updated_at:new Date().toISOString()}).eq('email',myEmail);if(pe){alert(t('error')+': '+pe.message);return}avatarsCache[myEmail]=ud.publicUrl;await openMyProfile()};
 
 async function registerSession(){const ua=navigator.userAgent;let device='Unknown device';if(/Android/i.test(ua))device='Android';else if(/iPhone|iPad|iPod/i.test(ua))device='iPhone/iPad';else if(/Windows/i.test(ua))device='Windows';else if(/Mac/i.test(ua))device='Mac';else if(/Linux/i.test(ua))device='Linux';if(/Chrome/i.test(ua))device+=' • Chrome';else if(/Firefox/i.test(ua))device+=' • Firefox';else if(/Safari/i.test(ua))device+=' • Safari';const sessionId=localStorage.getItem('session_id');if(sessionId){await sb.from('sessions').update({last_active:new Date().toISOString()}).eq('id',sessionId)}else{const{data}=await sb.from('sessions').insert({user_email:myEmail,device_info:device,user_agent:ua}).select().single();if(data)localStorage.setItem('session_id',data.id)}}
 
 window.showSessions=async()=>{const list=document.getElementById('sessions-list');list.innerHTML='<div style="text-align:center;padding:20px;color:var(--mut)">...</div>';const{data}=await sb.from('sessions').select('*').eq('user_email',myEmail).order('last_active',{ascending:false});if(!data?.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--mut)">'+(lang==='fa'?'نشستی نیست':'No sessions')+'</div>';return}const currentSessionId=localStorage.getItem('session_id');list.innerHTML='';data.forEach(s=>{const isCurrent=s.id===currentSessionId;const diff=Math.floor((Date.now()-new Date(s.last_active).getTime())/1000);const timeAgo=diff<60?(lang==='fa'?'الان':'Just now'):diff<3600?Math.floor(diff/60)+(lang==='fa'?' دقیقه پیش':' min ago'):Math.floor(diff/3600)+(lang==='fa'?' ساعت پیش':' hr ago');const it=document.createElement('div');it.className='session-card';it.innerHTML=`<div class="session-header"><div class="session-icon">📱</div><div class="session-info"><div class="session-device">${esc(s.device_info||'?')}</div><div class="session-time">${timeAgo}</div></div>${isCurrent?'<span class="session-current">'+(lang==='fa'?'فعلی':'Current')+'</span>':''}</div>`;if(!isCurrent){const btn=document.createElement('button');btn.style.cssText='width:100%;padding:8px;border-radius:10px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;background:rgba(239,68,68,.15);color:#ef4444;border:none';btn.textContent=lang==='fa'?'خروج از این دستگاه':'Log out this device';btn.onclick=async()=>{if(!confirm(lang==='fa'?'از این دستگاه خارج شوی؟':'Log out from this device?'))return;await sb.from('sessions').delete().eq('id',s.id);showSessions()};it.appendChild(btn)}list.appendChild(it)});document.getElementById('sessions-modal').classList.add('show')};
-window.logoutAll=async()=>{if(!confirm(lang==='fa'?'از همه دستگاه‌ها خارج شوی؟':'Log out from all devices?'))return;await sb.from('sessions').delete().eq('user_email',myEmail);localStorage.removeItem('session_id');await sb.auth.signOut();localStorage.removeItem('my_email');location.href='index.html'};
+window.logoutAll=async()=>{if(!confirm(lang==='fa'?'از همه دستگاه‌ها خارج شوی؟':'Log out from all devices?'))return;await sb.from('sessions').delete().eq('user_email',myEmail);localStorage.removeItem('session_id');localStorage.removeItem('my_phone');location.href='index.html'};
 
 let twofaCode=null;
 window.openTwoFA=async()=>{const p=await loadMyProfile();const enabled=p?.twofa_enabled===true;if(enabled){if(!confirm(lang==='fa'?'رمز دو مرحله‌ای غیرفعال شود؟':'Disable 2FA?'))return;await sb.from('profiles').update({twofa_enabled:false,twofa_code:null,twofa_expires:null}).eq('email',myEmail);alert(lang==='fa'?'✅ غیرفعال شد':'✅ Disabled');updateTwoFAStatus();return}document.getElementById('twofa-step1').style.display='block';document.getElementById('twofa-step2').style.display='none';document.getElementById('twofa-modal').classList.add('show')};
@@ -1469,12 +1358,12 @@ document.getElementById('twofa-enable-btn').onclick=async()=>{twofaCode=String(M
 document.getElementById('twofa-verify-btn').onclick=async()=>{const code=document.getElementById('twofa-code-inp').value.trim();if(!/^\d{6}$/.test(code)){alert(lang==='fa'?'کد ۶ رقمی':'6-digit code');return}const{data}=await sb.from('profiles').select('twofa_code,twofa_expires').eq('email',myEmail).maybeSingle();if(!data?.twofa_code||data.twofa_code!==code){alert(lang==='fa'?'❌ کد اشتباه':'❌ Wrong code');return}if(new Date(data.twofa_expires)<new Date()){alert(lang==='fa'?'❌ کد منقضی شده':'❌ Code expired');return}await sb.from('profiles').update({twofa_enabled:true,twofa_code:null,twofa_expires:null}).eq('email',myEmail);closeModal('twofa-modal');alert(lang==='fa'?'✅ فعال شد':'✅ Enabled');updateTwoFAStatus()};
 async function updateTwoFAStatus(){const p=await loadMyProfile();const el=document.getElementById('twofa-status');if(el)el.textContent=p?.twofa_enabled?(lang==='fa'?'✅ فعال':'✅ Enabled'):(lang==='fa'?'غیرفعال - برای فعال‌سازی بزن':'Disabled - tap to enable')}
 window.changePassword=()=>{document.getElementById('new-password').value='';document.getElementById('confirm-password').value='';document.getElementById('password-modal').classList.add('show')};
-document.getElementById('password-save').onclick=async()=>{const np=document.getElementById('new-password').value;const cp=document.getElementById('confirm-password').value;if(np.length<6){alert(lang==='fa'?'رمز باید حداقل ۶ کاراکتر باشد':'Password min 6 chars');return}if(np!==cp){alert(lang==='fa'?'رمزها یکی نیستند':'Passwords do not match');return}const btn=document.getElementById('password-save');btn.disabled=true;btn.textContent='...';const{error}=await sb.auth.updateUser({password:np});btn.disabled=false;btn.textContent=t('save');if(error){alert(t('error')+': '+error.message);return}closeModal('password-modal');alert(lang==='fa'?'✅ رمز تغییر کرد':'✅ Password changed')};
+document.getElementById('password-save').onclick=async()=>{const np=document.getElementById('new-password').value;const cp=document.getElementById('confirm-password').value;if(np.length<6){alert(lang==='fa'?'رمز باید حداقل ۶ کاراکتر باشد':'Password min 6 chars');return}if(np!==cp){alert(lang==='fa'?'رمزها یکی نیستند':'Passwords do not match');return}const btn=document.getElementById('password-save');btn.disabled=true;btn.textContent='...';const{error}=await sb.from('my_users').update({password:np}).eq('phone',savedPhone);btn.disabled=false;btn.textContent=t('save');if(error){alert(t('error')+': '+error.message);return}closeModal('password-modal');alert(lang==='fa'?'✅ رمز تغییر کرد':'✅ Password changed')};
 
 window.showPage=p=>{document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const nm={home:'nav-home',chats:'nav-chats',library:'nav-library',settings:'nav-more'};if(nm[p])document.getElementById(nm[p])?.classList.add('active');if(p==='chats')renderList();if(p==='library')loadLib();if(p==='bots')loadBots();if(p==='education')loadEdu();if(p==='payments')loadWallet();if(p==='settings'){const sel=document.getElementById('lang-select');if(sel)sel.value=lang;updateTwoFAStatus()}};
 window.goTab=x=>{showPage('chats');switchTab(x)};
 window.switchTab=x=>{curTab=x;document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.dataset.tab===x));renderList()};
-window.logout=async()=>{if(!confirm(t('logoutConfirm')))return;const sessionId=localStorage.getItem('session_id');if(sessionId)await sb.from('sessions').delete().eq('id',sessionId);try{await setOffline()}catch(e){}await sb.auth.signOut();localStorage.removeItem('my_email');localStorage.removeItem('session_id');location.href='index.html'};
+window.logout=async()=>{if(!confirm(t('logoutConfirm')))return;const sessionId=localStorage.getItem('session_id');if(sessionId)await sb.from('sessions').delete().eq('id',sessionId);try{await setOffline()}catch(e){}localStorage.removeItem('my_phone');localStorage.removeItem('session_id');location.href='index.html'};
 window.showNotif=()=>alert(lang==='fa'?'اعلان‌ها به زودی...':'Notifications coming soon...');
 window.closeModal=id=>document.getElementById(id).classList.remove('show');
 
@@ -1749,7 +1638,15 @@ function cancelReply(){replyTo=null;document.getElementById('reply-bar')?.classL
 document.getElementById('reply-close').onclick=cancelReply;
 document.getElementById('edit-save').onclick=async()=>{const v=document.getElementById('edit-inp').value.trim();if(!v){alert(lang==='fa'?'خالی':'Empty');return}const{error}=await sb.from('messages').update({content:v,edited_at:new Date().toISOString()}).eq('id',editId);if(error)alert(t('error')+': '+error.message);else{closeModal('edit-modal');editId=null}};
 window.openNewContact=()=>document.getElementById('contact-modal').classList.add('show');
-document.getElementById('contact-add').onclick=async()=>{const em=document.getElementById('contact-email').value.trim().toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){alert(t('invalidEmail'));return}if(em===myEmail){alert(t('cantChatSelf'));return}closeModal('contact-modal');await renderList();openRoom('private',em)};
+document.getElementById('contact-add').onclick=async()=>{
+  const ph = document.getElementById('contact-phone').value.trim();
+  if(!/^09\d{9}$/.test(ph)){alert('شماره باید ۱۱ رقم و با ۰۹ شروع شود');return}
+  const em = ph + '@nexom.local';
+  if(em === myEmail){alert(t('cantChatSelf'));return}
+  closeModal('contact-modal');
+  await renderList();
+  openRoom('private', em);
+};
 window.openNewGroup=ty=>{grpType=ty;selCts=[];groupPrivacy='public';document.querySelectorAll('.privacy-option').forEach(el=>{el.classList.toggle('selected',el.dataset.privacy==='public')});document.getElementById('group-title').textContent=ty==='group'?'👥 '+t('newGroupTitle'):'📢 '+t('newGroupTitle');document.getElementById('group-name').value='';document.getElementById('group-desc').value='';document.getElementById('search-contacts').value='';document.getElementById('group-modal').classList.add('show');loadCtsPicker()};
 async function loadCtsPicker(){const p=document.getElementById('contacts-picker');p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">...</div>';const{data}=await sb.from('messages').select('sender_email,receiver_email').is('chat_id',null).or(`sender_email.eq.${myEmail},receiver_email.eq.${myEmail}`);if(!data){p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">'+t('noContacts')+'</div>';return}const s=new Set();data.forEach(m=>{if(m.sender_email!==myEmail)s.add(m.sender_email);if(m.receiver_email!==myEmail)s.add(m.receiver_email)});allCts=[...s];if(!allCts.length){p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">'+t('noContacts')+'</div>';return}await loadAllNames(allCts);renderCtsPicker(allCts)}
 function renderCtsPicker(cts){const p=document.getElementById('contacts-picker'),sc=document.getElementById('selected-count');if(!cts.length){p.innerHTML='<div style="text-align:center;color:var(--mut);padding:16px;font-size:12px">—</div>';sc.textContent='';return}p.innerHTML='';cts.forEach(e=>{const sel=selCts.includes(e);const it=document.createElement('div');it.className='contact-chk'+(sel?' selected':'');const dispName=namesCache[e]||e.split('@')[0];it.innerHTML=`<input type="checkbox" ${sel?'checked':''}><div class="chk-avatar">${ini(dispName)}</div><div class="chk-info"><div class="chk-name">${esc(dispName)}</div><div class="chk-email">${esc(e)}</div></div>`;it.onclick=ev=>{ev.preventDefault();const i=selCts.indexOf(e);if(i>-1)selCts.splice(i,1);else selCts.push(e);renderCtsPicker(allCts)};p.appendChild(it)});sc.textContent=selCts.length>0?(lang==='fa'?'انتخاب شده: '+selCts.length:'Selected: '+selCts.length):''}
