@@ -56,6 +56,11 @@ body.auth-page::after{content:'';position:absolute;inset:0;background:radial-gra
     <input type="password" id="password-input" placeholder="رمز عبور">
   </div>
 
+  <div class="auth-input-wrap" id="username-wrap" style="display:none;">
+    <span class="auth-input-icon">@</span>
+    <input type="text" id="username-input" placeholder="آیدی (مثلاً: sobhan)" style="direction:ltr; text-align:left;">
+  </div>
+
   <button class="submit-btn" id="submit-btn">ورود</button>
   <p id="message-area"></p>
 
@@ -75,19 +80,18 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let currentMode = 'login';
 const phoneInput = document.getElementById('phone-input');
 const passwordInput = document.getElementById('password-input');
+const usernameInput = document.getElementById('username-input');
 const submitBtn = document.getElementById('submit-btn');
 const messageArea = document.getElementById('message-area');
 
-// 🔥 اگر کاربر قبلا لاگین کرده، مستقیم بره به چت
 const savedUser = localStorage.getItem('my_phone');
-if (savedUser) {
-    window.location.href = 'chat.html';
-}
+if (savedUser) { window.location.href = 'chat.html'; }
 
 document.getElementById('tab-login').addEventListener('click', () => {
   currentMode = 'login';
   document.getElementById('tab-login').classList.add('active');
   document.getElementById('tab-signup').classList.remove('active');
+  document.getElementById('username-wrap').style.display = 'none';
   submitBtn.textContent = 'ورود';
   messageArea.textContent = '';
 });
@@ -96,6 +100,7 @@ document.getElementById('tab-signup').addEventListener('click', () => {
   currentMode = 'signup';
   document.getElementById('tab-signup').classList.add('active');
   document.getElementById('tab-login').classList.remove('active');
+  document.getElementById('username-wrap').style.display = 'block';
   submitBtn.textContent = 'ثبت‌نام';
   messageArea.textContent = '';
 });
@@ -115,16 +120,30 @@ submitBtn.addEventListener('click', async () => {
 
   try {
     if (currentMode === 'signup') {
-      const { data: existing } = await supabase.from('my_users').select('*').eq('phone', phone).maybeSingle();
-      
+      const username = usernameInput.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+      if (!username || username.length < 3) {
+        messageArea.textContent = '⚠️ آیدی باید حداقل ۳ حرف باشد (فقط حروف انگلیسی، اعداد و _)';
+        messageArea.className = 'error';
+        submitBtn.disabled = false;
+        return;
+      }
+      const { data: existing } = await supabase.from('my_users').select('id').eq('username', username).maybeSingle();
       if (existing) {
+        messageArea.textContent = '❌ این آیدی قبلاً گرفته شده!';
+        messageArea.className = 'error';
+        submitBtn.disabled = false;
+        return;
+      }
+
+      const { data: existingPhone } = await supabase.from('my_users').select('id').eq('phone', phone).maybeSingle();
+      if (existingPhone) {
         messageArea.textContent = '❌ این شماره قبلاً ثبت‌نام کرده است';
         messageArea.className = 'error';
         submitBtn.disabled = false;
         return;
       }
 
-      const { error } = await supabase.from('my_users').insert({ phone: phone, password: password });
+      const { error } = await supabase.from('my_users').insert({ phone: phone, password: password, username: username });
 
       if (error) {
         messageArea.textContent = '❌ خطا: ' + error.message;
