@@ -126,7 +126,7 @@ body::after{
 .empty-state p{font-size:12.5px;line-height:1.7;color:var(--mut)}
 .chat-room{display:none;flex-direction:column;position:fixed;top:0;left:0;right:0;bottom:0;height:100dvh;z-index:200;background:#d4e8d4;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'><g fill='none' stroke='%234a9d5d' stroke-width='1.5' opacity='0.13'><rect x='18' y='28' width='24' height='30' rx='3'/><path d='M24 34 L36 34 M24 42 L36 42'/><circle cx='88' cy='40' r='10'/><path d='M82 40 L94 40 M88 34 L88 46'/><path d='M24 88 L42 106 L24 106 Z'/><rect x='88' y='88' width='26' height='20' rx='2'/><circle cx='101' cy='98' r='3'/></g></svg>");background-size:140px 140px;padding:0}
 .chat-room.active{display:flex}
-.chat-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#ffffff;box-shadow:0 1px 4px rgba(0,0,0,.08);flex-shrink:0;position:relative;z-index:5}
+.chat-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#ffffff;box-shadow:0 1px 4px rgba(0,0,0,.08);flex-shrink:0;position:relative;z-index:5;flex-wrap:wrap}
 .back-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:none;color:#4a4a4a;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit}
 .back-btn:hover{background:#f0f5f0}
 .room-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#5bae6e,#4a9d5d);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#fff;flex-shrink:0;background-size:cover;background-position:center;cursor:pointer}
@@ -457,6 +457,16 @@ body::after{
 [dir="ltr"] .lightbox-download{right:auto;left:20px}
 .lightbox-download:hover{background:rgba(91,174,110,.9);border-color:rgba(91,174,110,.9);transform:scale(1.1)}
 #channel-lock-msg{padding:14px 20px;background:#ffffff;border-top:1px solid var(--border);text-align:center;font-size:12.5px;color:var(--mut);font-weight:600;flex-shrink:0}
+#pinned-bar{display:none; background:#fff; padding:6px 10px; border-bottom:1px solid var(--border); font-size:12px; cursor:pointer; align-items:center; gap:6px; flex-shrink:0; width:100%; order:10;}
+#pinned-bar.show{display:flex;}
+#pinned-text{color:#555; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-block; max-width:70%; vertical-align:middle;}
+.reactions-wrap{display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;}
+.reaction-badge{background:#f0f5f0; border:1px solid #e0e8e0; border-radius:12px; padding:2px 8px; font-size:12px; display:flex; align-items:center; gap:4px; cursor:pointer;}
+.reaction-badge.mine{background:#e7f5e7; border-color:var(--p);}
+.reaction-badge span{color:#555; font-weight:700;}
+.msg.pinned{background:rgba(245,158,11,.1)!important; border-right:3px solid #f59e0b!important;}
+.chat-search-item{padding:10px; border-radius:8px; background:#f0f5f0; margin-bottom:6px; font-size:12px; cursor:pointer;}
+.chat-search-item:hover{background:#e7f5e7;}
 @media(max-width:480px){.emoji-grid{grid-template-columns:repeat(7,1fr)}.emoji-item{font-size:22px}.img-lightbox{padding:10px}.lightbox-close,.lightbox-download{width:38px;height:38px;font-size:17px;top:12px}.lightbox-close{left:12px}.lightbox-download{right:12px}[dir="ltr"] .lightbox-close{left:auto;right:12px}[dir="ltr"] .lightbox-download{right:auto;left:12px}}
 body:has(.chat-room.active) .bottom-nav { display: none !important; }
 </style>
@@ -613,8 +623,13 @@ body:has(.chat-room.active) .bottom-nav { display: none !important; }
 <div class="room-sub" id="room-sub"></div>
 <div id="chat-status" style="min-height:14px;margin-top:2px"></div>
 </div>
+<button class="back-btn" onclick="openChatSearch()" title="جستجو در چت">🔍</button>
 <button class="back-btn call-start-btn" id="call-start-btn" style="display:none" onclick="startCallFromChat()">📞</button>
 <button class="back-btn" id="room-menu-btn" style="display:none" onclick="toggleRoomMenu()">⋮</button>
+</div>
+<div id="pinned-bar" style="display:none; background:#fff; padding:6px 10px; border-bottom:1px solid var(--border); font-size:12px; cursor:pointer;" onclick="scrollToPinned()">
+  <span style="color:var(--p); font-weight:700;">📌 سنجاق شده:</span>
+  <span id="pinned-text" style="color:#555; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-block; max-width:70%; vertical-align:middle;"></span>
 </div>
 <div class="messages-area" id="messages-area"></div>
 <div class="reply-bar" id="reply-bar">
@@ -683,8 +698,13 @@ body:has(.chat-room.active) .bottom-nav { display: none !important; }
 <div class="modal-overlay" id="contact-modal">
   <div class="modal">
     <h3 data-i18n="newContactTitle">👤 مخاطب جدید</h3>
-    <p data-i18n="newContactDesc">شماره تلفن مخاطب را وارد کن</p>
+    <p data-i18n="newContactDesc">شماره تلفن یا آیدی مخاطب را وارد کن</p>
+    <div class="tabs" style="margin-bottom:14px;">
+      <button class="tab active" id="ct-method-phone" style="font-size:12px; padding:8px 0;">📱 شماره</button>
+      <button class="tab" id="ct-method-id" style="font-size:12px; padding:8px 0;">@ آیدی</button>
+    </div>
     <input type="tel" id="contact-phone" placeholder="09xxxxxxxxx" maxlength="11">
+    <input type="text" id="contact-username" placeholder="@username" style="display:none; direction:ltr; text-align:left;">
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('contact-modal')" data-i18n="cancel">انصراف</button>
       <button class="btn-primary" id="contact-add" data-i18n="add">افزودن</button>
@@ -754,6 +774,23 @@ body:has(.chat-room.active) .bottom-nav { display: none !important; }
 
 <div class="msg-menu" id="msg-menu"></div>
 <div class="msg-menu" id="room-menu"></div>
+
+<div class="msg-menu" id="reaction-menu" style="flex-direction:row; gap:6px; padding:8px 12px; border-radius:24px; min-width:auto; align-items:center; justify-content:center;">
+  <span onclick="sendReaction('❤️')" style="font-size:22px; cursor:pointer;">❤️</span>
+  <span onclick="sendReaction('👍')" style="font-size:22px; cursor:pointer;">👍</span>
+  <span onclick="sendReaction('😂')" style="font-size:22px; cursor:pointer;">😂</span>
+  <span onclick="sendReaction('😮')" style="font-size:22px; cursor:pointer;">😮</span>
+  <span onclick="sendReaction('😢')" style="font-size:22px; cursor:pointer;">😢</span>
+</div>
+
+<div class="modal-overlay" id="chat-search-modal">
+  <div class="modal">
+    <h3>🔍 جستجو در این گفتگو</h3>
+    <input type="text" id="chat-search-input" placeholder="متن پیام..." oninput="doChatSearch()">
+    <div id="chat-search-results" style="max-height:40vh; overflow-y:auto;"></div>
+    <div class="modal-btns"><button class="btn-primary" onclick="closeModal('chat-search-modal')">بستن</button></div>
+  </div>
+</div>
 
 <div class="modal-overlay" id="edit-group-modal">
   <div class="modal">
@@ -1083,7 +1120,6 @@ const SB='https://sgjrwmnfvrpjtshlabva.supabase.co';
 const AK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnanJ3bW5mdnJwanRzaGxhYnZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwNTYwNzcsImV4cCI6MjEwNDYzMjA3N30._BOp-ONPTEbaM2mnGdJbdvjN-7qqA87zvannrOv02Eo';
 const sb=createClient(SB,AK);
 
-// 🔥 تغییرات لاگین با شماره تلفن
 const savedPhone = localStorage.getItem('my_phone');
 if (!savedPhone) { location.href = 'index.html'; }
 const myEmail = savedPhone + '@nexom.local';
@@ -1180,52 +1216,27 @@ function updateNotifStatus() {
 window.showNotification = async (title, body, icon, tag) => {
   if (!('Notification' in window) || Notification.permission !== 'granted') return;
   const notifOptions = {
-    body: body,
-    icon: icon || './icon.svg',
-    badge: './icon.svg',
-    dir: 'rtl',
-    lang: 'fa',
-    tag: tag || 'nexom-' + Date.now(),
-    renotify: true,
-    vibrate: [200, 100, 200],
-    requireInteraction: false
+    body: body, icon: icon || './icon.svg', badge: './icon.svg',
+    dir: 'rtl', lang: 'fa', tag: tag || 'nexom-' + Date.now(),
+    renotify: true, vibrate: [200, 100, 200], requireInteraction: false
   };
   try {
     if (swRegistration && swRegistration.showNotification) {
       await swRegistration.showNotification(title, notifOptions);
     } else if (swRegistration && swRegistration.active) {
-      swRegistration.active.postMessage({
-        type: 'SHOW_NOTIFICATION',
-        title: title,
-        body: body,
-        icon: icon || './icon.svg',
-        tag: tag || 'nexom-' + Date.now()
-      });
+      swRegistration.active.postMessage({ type: 'SHOW_NOTIFICATION', title, body, icon: icon || './icon.svg', tag: tag || 'nexom-' + Date.now() });
     } else {
       const n = new Notification(title, notifOptions);
       n.onclick = () => { window.focus(); n.close(); };
     }
   } catch (e) {
-    console.warn('⚠️ خطا در نمایش اعلان:', e);
-    try {
-      const n = new Notification(title, notifOptions);
-      n.onclick = () => { window.focus(); n.close(); };
-    } catch (e2) {}
+    try { const n = new Notification(title, notifOptions); n.onclick = () => { window.focus(); n.close(); }; } catch (e2) {}
   }
 };
 
 window.testNotification = async () => {
-  if (Notification.permission !== 'granted') {
-    await askNotificationPermission();
-  }
-  if (Notification.permission === 'granted') {
-    showNotification(
-      '🔔 اعلان تستی',
-      'این یه اعلان نمونه‌ست. اگه اینو دیدی، همه چیز درسته! ✅',
-      './icon.svg',
-      'test-notif'
-    );
-  }
+  if (Notification.permission !== 'granted') await askNotificationPermission();
+  if (Notification.permission === 'granted') showNotification('🔔 اعلان تستی', 'این یه اعلان نمونه‌ست. اگه اینو دیدی، همه چیز درسته! ✅', './icon.svg', 'test-notif');
 };
 
 function notifyNewMessage(msg) {
@@ -1243,25 +1254,13 @@ function notifyNewMessage(msg) {
   else if (msg.message_type === 'image') preview = '🖼️ عکس';
   else if (msg.message_type === 'file') preview = '📄 ' + (msg.file_name || 'فایل');
   else preview = msg.content || 'پیام جدید';
-  showNotification(
-    `💬 پیام جدید از ${senderName}`,
-    preview,
-    senderAvatar,
-    'msg-' + (msg.chat_id || msg.sender_email)
-  );
+  showNotification(`💬 پیام جدید از ${senderName}`, preview, senderAvatar, 'msg-' + (msg.chat_id || msg.sender_email));
 }
 
 function notifyIncomingCall(callerName, callerEmail) {
   const avatar = avatarsCache[callerEmail] || './icon.svg';
-  showNotification(
-    `📞 تماس ورودی از ${callerName}`,
-    'برای پاسخ، روی برنامه کلیک کن',
-    avatar,
-    'call-' + callerEmail
-  );
-  if (navigator.vibrate) {
-    navigator.vibrate([500, 200, 500, 200, 500]);
-  }
+  showNotification(`📞 تماس ورودی از ${callerName}`, 'برای پاسخ، روی برنامه کلیک کن', avatar, 'call-' + callerEmail);
+  if (navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]);
 }
 
 function notifyGroupMessage(msg, chatName) {
@@ -1275,12 +1274,7 @@ function notifyGroupMessage(msg, chatName) {
   else if (msg.message_type === 'image') preview = '🖼️ عکس';
   else if (msg.message_type === 'file') preview = '📄 ' + (msg.file_name || 'فایل');
   else preview = msg.content || 'پیام جدید';
-  showNotification(
-    `👥 ${chatName}`,
-    `${senderName}: ${preview}`,
-    './icon.svg',
-    'group-' + msg.chat_id
-  );
+  showNotification(`👥 ${chatName}`, `${senderName}: ${preview}`, './icon.svg', 'group-' + msg.chat_id);
 }
 
 updateNotifStatus();
@@ -1301,7 +1295,7 @@ const ago=d=>{const s=Math.floor((Date.now()-d.getTime())/1000),m=Math.floor(s/6
 const shortTime=d=>{const now=new Date();const date=new Date(d);const diff=Math.floor((now-date.getTime())/1000);const isToday=now.toDateString()===date.toDateString();const yesterday=new Date(now);yesterday.setDate(yesterday.getDate()-1);const isYesterday=yesterday.toDateString()===date.toDateString();if(diff<60)return lang==='fa'?'الان':'now';if(isToday){const hh=date.getHours(),mm=date.getMinutes();return (hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm}if(isYesterday)return lang==='fa'?'دیروز':'yesterday';if(diff<7*86400){const days=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];if(lang==='fa')return days[date.getDay()];return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][date.getDay()]}return (date.getMonth()+1)+'/'+date.getDate()};
 const previewMsg=m=>{if(!m)return '';if(m.deleted_for_all)return '🚫 '+(lang==='fa'?'پیام حذف شد':'Message deleted');if(m.message_type==='voice')return '🎤 '+(lang==='fa'?'پیام صوتی':'Voice message');if(m.message_type==='image')return '🖼️ '+(lang==='fa'?'عکس':'Photo');if(m.message_type==='file')return '📄 '+(m.file_name||'فایل');return m.content||''};
 
-const I18N={fa:{appName:'نکسوم',appTagline:'سوپر اپلیکیشن',welcome:'سلام!',welcomeSub:'به نکسوم خوش آمدید',groups:'گروه‌ها',channels:'کانال‌ها',contacts:'مخاطبین',chats:'گفتگوها',library:'کتابخانه',bots:'ربات‌ها',finance:'خدمات مالی',financeShort:'مالی',education:'آموزش',home:'خانه',more:'بیشتر',privateTab:'خصوصی',secTitle:'امنیت بالا',secSub:'با رمزنگاری پیشرفته',spdTitle:'سرعت بالا',spdSub:'ارسال و دریافت سریع',cldTitle:'فضای ابری',cldSub:'دسترسی از همه جا',freTitle:'رایگان',freSub:'بدون هزینه، همیشه',librarySub:'ویدیوها و محتوا',botsSub:'پاسخ خودکار',financeSub:'شارژ، بسته، پرداخت',classes:'کلاس‌ها',classPanel:'پنل مدیریت',wallet:'کیف پول',balance:'موجودی',chargeSection:'📱 شارژ و بسته اینترنت',mci:'همراه اول',irancell:'ایرانسل',rightel:'رایتل',otherOperators:'سایر اپراتورها',chargeDesc:'شارژ / بسته اینترنت',servicePortal:'سامانه خدمات',otherServices:'🧾 خدمات دیگر',payElectricity:'پرداخت برق',payGas:'پرداخت گاز',payWater:'پرداخت آب',payPhone:'پرداخت تلفن',newContact:'مخاطب',newGroup:'گروه',newChannel:'کانال',joinWithCode:'ورود با کد',createClass:'ساخت کلاس',newContactTitle:'👤 مخاطب جدید',newContactDesc:'شماره تلفن مخاطب را وارد کن',newGroupTitle:'گروه جدید',newGroupDesc:'اطلاعات را وارد کن',nameLbl:'نام',descLbl:'توضیحات',selectMembers:'انتخاب اعضا',searchPlaceholder:'جستجو...',newStoryTitle:'📸 استوری جدید',newStoryDesc:'عکس یا ویدیو انتخاب کن',nothingSelected:'چیزی انتخاب نشده',pickFile:'📷 انتخاب فایل',captionLbl:'کپشن',publish:'انتشار',storiesListTitle:'📸 استوری‌ها',pickUser:'یک کاربر انتخاب کن',close:'بستن',addStory:'افزودن استوری',editMsgTitle:'✏️ ویرایش پیام',editMsgDesc:'متن جدید را وارد کن',libAddTitle:'🎬 افزودن به کتابخانه',titleLbl:'عنوان',botNewTitle:'🤖 ربات جدید',autoReplyLbl:'پاسخ خودکار',newClassTitle:'📚 کلاس جدید',classNameLbl:'نام کلاس',joinTitle:'🔑 ورود به کلاس',joinDesc:'کد ۶ رقمی که معلم داده رو وارد کن',enter:'ورود',classCreated:'✅ کلاس ساخته شد!',giveCodeDesc:'این کد رو به دانش‌آموزان بده:',copyCode:'📋 کپی کد',addVideoTitle:'🎬 افزودن ویدیو',uploadFromDevice:'📤 آپلود از دستگاه',linkTab:'🔗 لینک',videoTitleLbl:'عنوان ویدیو',videoTitlePh:'مثلاً: جلسه ۱ - مقدمه',descOptional:'توضیحات (اختیاری)',descPh:'توضیح کوتاه...',pickVideo:'📹 انتخاب ویدیو از دستگاه',maxSize:'حداکثر حجم: ۵۰ مگابایت',videoUrlLbl:'لینک ویدیو (URL)',linkHint:'میتونی از یوتیوب، آپارات یا هر لینک mp4 استفاده کنی',msgPlaceholder:'پیام...',sendImage:'ارسال عکس',sendFile:'ارسال فایل',sendVoice:'ضبط ویس',recording:'در حال ضبط...',send:'ارسال',cancel:'انصراف',save:'ذخیره',delete:'حذف',add:'افزودن',create:'ساخت',ok:'باشه',copy:'کپی',videos:'🎬 ویدیوها',members:'👥 اعضا',addVideo:'➕ افزودن ویدیو',classCode:'کد کلاس',loading:'در حال بارگذاری...',noClasses:'هنوز کلاسی نیست',noContacts:'هنوز مخاطبی نداری',error:'خطا',teacher:'معلم',student:'دانش‌آموز',emptyChat:'هنوز پیامی نیست',emptyVideo:'هنوز ویدیویی نیست',emptyMembers:'هنوز دانش‌آموزی نیست',logoutConfirm:'خارج می‌شوی؟',justNow:'الان',minAgo:'دقیقه پیش',hrAgo:'ساعت پیش',dayAgo:'روز پیش',you:'شما',replyLabel:'پاسخ',editLabel:'✏️ ویرایش',voiceMsg:'🎤 ویس',imageMsg:'🖼️ عکس',fileMsg:'📄 فایل',edited:'ویرایش شده',invalidEmail:'ایمیل معتبر نیست',cantChatSelf:'نمی‌تونی با خودت چت کنی!',onlyTeacher:'فقط معلم می‌تونه ویدیو اضافه کنه',deleteVideo:'این ویدیو حذف شود؟',deleteStudent:'این دانش‌آموز از کلاس حذف شود؟',copySuccess:'کد کپی شد',profile:'پروفایل',editProfileTitle:'✏️ ویرایش پروفایل',usernameLbl:'نام کاربری',usernameHint:'فقط حروف انگلیسی، اعداد و _ (بدون @)',bioLbl:'درباره من',phoneLbl:'📱 شماره تماس',phoneLbl2:'شماره تماس (اختیاری)',emailLbl:'✉️ ایمیل',startChat:'شروع گفتگو',noBio:'درباره من چیزی ننوشتی',settings:'تنظیمات',accountSection:'👤 حساب کاربری',profileDesc:'نام، عکس، بیوگرافی',languageSection:'🌐 زبان',language:'زبان',languageDesc:'فارسی یا انگلیسی',securitySection:'🔒 امنیت',twoFA:'رمز دو مرحله‌ای',twoFADesc:'محافظت بیشتر از حساب',twoFATitle:'🔐 رمز دو مرحله‌ای',twoFADesc2:'با فعال‌سازی، هنگام ورود یک کد ۶ رقمی به ایمیلت فرستاده می‌شود.',twoFAEnable:'فعال‌سازی',twoFACodeLbl:'کد ۶ رقمی',verify:'تأیید',activeSessions:'نشست‌های فعال',activeSessionsDesc:'دستگاه‌های متصل',sessionsTitle:'📱 نشست‌های فعال',sessionsDesc:'دستگاه‌هایی که با حساب تو لاگین کردن:',logoutAll:'خروج از همه',changePassword:'تغییر رمز عبور',changePasswordDesc:'رمز جدید تنظیم کن',changePasswordTitle:'🔑 تغییر رمز عبور',newPassword:'رمز جدید',confirmPassword:'تکرار رمز جدید',aboutSection:'ℹ️ درباره',appVersion:'نسخه برنامه',logoutBtn:'خروج از حساب',logoutDesc:'خارج شدن از این دستگاه',callStart:'شروع تماس',callGroup:'تماس گروهی',callPrivate:'تماس خصوصی',callConnecting:'در حال اتصال...',callConnected:'متصل شد',callError:'خطا در تماس',deleteForAll:'حذف برای همه',deleteForMe:'حذف فقط برای من',deletedMsg:'این پیام حذف شد',deleteConfirmAll:'OK = حذف برای همه، Cancel = حذف فقط برای من',deleteConfirmMe:'این پیام برای تو حذف شود؟',typing:'در حال نوشتن...',recordingVoice:'در حال ضبط ویس...',uploadingFile:'در حال ارسال فایل...',online:'آنلاین',lastSeen:'آخرین بازدید',onlineCount:'آنلاین',youPrefix:'شما: ',onlyOwner:'فقط سازنده می‌تواند ویرایش کند',owner:'مالک',edit:'ویرایش',viewMembers:'مشاهده اعضا',editGroup:'ویرایش گروه',editChannel:'ویرایش کانال',changePhoto:'تغییر عکس',aboutLbl:'درباره / بیوگرافی',removeMember:'این عضو حذف شود؟',noMembers:'عضوی نیست',nameRequired:'نام الزامی است',inviteLink:'لینک دعوت',inviteTitle:'🔗 لینک دعوت',inviteDesc:'با این لینک هر کسی می‌تونه به گروه بپیونده',inviteCreating:'در حال ساخت...',inviteNoExpire:'بدون انقضا',invite1Hour:'۱ ساعت',invite24Hours:'۲۴ ساعت',invite7Days:'۷ روز',invite30Days:'۳۰ روز',inviteUnlimited:'نامحدود',inviteUsers:'نفر',invitePeopleJoined:'نفر عضو شدن',inviteSaved:'✅ ذخیره شد',inviteCopySuccess:'✅ لینک کپی شد',inviteNotValid:'لینک دعوت معتبر نیست',inviteExpired:'لینک دعوت منقضی شده',inviteFull:'ظرفیت این لینک پر شده',inviteWelcome:'خوش آمدی!',inviteAlreadyMember:'قبلاً عضو بودی',inviteJoined:'به گروه پیوستی',enterGroup:'ورود به گروه',channelLocked:'🔒 فقط ادمین‌های کانال می‌توانند پیام ارسال کنند'},en:{appName:'Nexom',appTagline:'Super App',welcome:'Hello!',welcomeSub:'Welcome to Nexom',groups:'Groups',channels:'Channels',contacts:'Contacts',chats:'Chats',library:'Library',bots:'Bots',finance:'Finance',financeShort:'Finance',education:'Education',home:'Home',more:'More',privateTab:'Private',secTitle:'High Security',secSub:'Advanced encryption',spdTitle:'High Speed',spdSub:'Fast send & receive',cldTitle:'Cloud Space',cldSub:'Access anywhere',freTitle:'Free',freSub:'No cost, always',librarySub:'Videos & content',botsSub:'Auto reply',financeSub:'Top-up, packages, payments',classes:'Classes',classPanel:'Admin Panel',wallet:'Wallet',balance:'Balance',chargeSection:'📱 Top-up & Internet',mci:'MCI',irancell:'Irancell',rightel:'Rightel',otherOperators:'Other operators',chargeDesc:'Top-up / Internet',servicePortal:'Service portal',otherServices:'🧾 Other Services',payElectricity:'Pay Electricity',payGas:'Pay Gas',payWater:'Pay Water',payPhone:'Pay Phone',newContact:'Contact',newGroup:'Group',newChannel:'Channel',joinWithCode:'Join with Code',createClass:'Create Class',newContactTitle:'👤 New Contact',newContactDesc:'Enter contact phone number',newGroupTitle:'New Group',newGroupDesc:'Enter the information',nameLbl:'Name',descLbl:'Description',selectMembers:'Select members',searchPlaceholder:'Search...',newStoryTitle:'📸 New Story',newStoryDesc:'Pick an image or video',nothingSelected:'Nothing selected',pickFile:'📷 Pick a file',captionLbl:'Caption',publish:'Publish',storiesListTitle:'📸 Stories',pickUser:'Pick a user',close:'Close',addStory:'Add Story',editMsgTitle:'✏️ Edit Message',editMsgDesc:'Enter new text',libAddTitle:'🎬 Add to Library',titleLbl:'Title',botNewTitle:'🤖 New Bot',autoReplyLbl:'Auto reply',newClassTitle:'📚 New Class',classNameLbl:'Class Name',joinTitle:'🔑 Join Class',joinDesc:'Enter the 6-digit code from your teacher',enter:'Enter',classCreated:'✅ Class Created!',giveCodeDesc:'Give this code to students:',copyCode:'📋 Copy Code',addVideoTitle:'🎬 Add Video',uploadFromDevice:'📤 Upload from device',linkTab:'🔗 Link',videoTitleLbl:'Video title',videoTitlePh:'E.g. Session 1 - Intro',descOptional:'Description (optional)',descPh:'Short description...',pickVideo:'📹 Pick video from device',maxSize:'Max size: 50 MB',videoUrlLbl:'Video URL',linkHint:'You can use YouTube, Aparat or any mp4 link',msgPlaceholder:'Message...',sendImage:'Send image',sendFile:'Send file',sendVoice:'Record voice',recording:'Recording...',send:'Send',cancel:'Cancel',save:'Save',delete:'Delete',add:'Add',create:'Create',ok:'OK',copy:'Copy',videos:'🎬 Videos',members:'👥 Members',addVideo:'➕ Add Video',classCode:'Class Code',loading:'Loading...',noClasses:'No classes yet',noContacts:'No contacts yet',error:'Error',teacher:'Teacher',student:'Student',emptyChat:'No messages yet',emptyVideo:'No videos yet',emptyMembers:'No students yet',logoutConfirm:'Log out?',justNow:'Just now',minAgo:'min ago',hrAgo:'hr ago',dayAgo:'day ago',you:'You',replyLabel:'Reply',editLabel:'✏️ Edit',voiceMsg:'🎤 Voice',imageMsg:'🖼️ Image',fileMsg:'📄 File',edited:'edited',invalidEmail:'Invalid email',cantChatSelf:"You can't chat with yourself!",onlyTeacher:'Only the teacher can add videos',deleteVideo:'Delete this video?',deleteStudent:'Remove this student from class?',copySuccess:'Code copied',profile:'Profile',editProfileTitle:'✏️ Edit Profile',usernameLbl:'Username',usernameHint:'Only a-z, 0-9, _ (no @)',bioLbl:'About me',phoneLbl:'📱 Phone',phoneLbl2:'Phone (optional)',emailLbl:'✉️ Email',startChat:'Start Chat',noBio:'No bio yet',settings:'Settings',accountSection:'👤 Account',profileDesc:'Name, photo, bio',languageSection:'🌐 Language',language:'Language',languageDesc:'Persian or English',securitySection:'🔒 Security',twoFA:'Two-Factor Auth',twoFADesc:'Extra account protection',twoFATitle:'🔐 Two-Factor Auth',twoFADesc2:'When enabled, a 6-digit code is sent to your email on login.',twoFAEnable:'Enable',twoFACodeLbl:'6-digit code',verify:'Verify',activeSessions:'Active Sessions',activeSessionsDesc:'Connected devices',sessionsTitle:'📱 Active Sessions',sessionsDesc:'Devices logged into your account:',logoutAll:'Log out all',changePassword:'Change Password',changePasswordDesc:'Set a new password',changePasswordTitle:'🔑 Change Password',newPassword:'New password',confirmPassword:'Confirm new password',aboutSection:'ℹ️ About',appVersion:'App Version',logoutBtn:'Log out',logoutDesc:'Sign out from this device',callStart:'Start Call',callGroup:'Group Call',callPrivate:'Private Call',callConnecting:'Connecting...',callConnected:'Connected',callError:'Call error',deleteForAll:'Delete for everyone',deleteForMe:'Delete for me only',deletedMsg:'This message was deleted',deleteConfirmAll:'OK = Delete for everyone, Cancel = Delete for me only',deleteConfirmMe:'Delete this message for you?',typing:'typing...',recordingVoice:'Recording voice...',uploadingFile:'Uploading file...',online:'Online',lastSeen:'Last seen',onlineCount:'online',youPrefix:'You: ',onlyOwner:'Only owner can edit',owner:'Owner',edit:'Edit',viewMembers:'View members',editGroup:'Edit group',editChannel:'Edit channel',changePhoto:'Change photo',aboutLbl:'About / Bio',removeMember:'Remove this member?',noMembers:'No members',nameRequired:'Name required',inviteLink:'Invite Link',inviteTitle:'🔗 Invite Link',inviteDesc:'Anyone with this link can join the group',inviteCreating:'Creating...',inviteNoExpire:'No expiry',invite1Hour:'1 hour',invite24Hours:'24 hours',invite7Days:'7 days',invite30Days:'30 days',inviteUnlimited:'Unlimited',inviteUsers:'users',invitePeopleJoined:'people joined',inviteSaved:'✅ Saved',inviteCopySuccess:'✅ Link copied',inviteNotValid:'Invalid invite link',inviteExpired:'Invite link expired',inviteFull:'Invite link is full',inviteWelcome:'Welcome!',inviteAlreadyMember:'Already member',inviteJoined:'You joined the group',enterGroup:'Enter Group',channelLocked:'🔒 Only channel admins can send messages'}};
+const I18N={fa:{appName:'نکسوم',appTagline:'سوپر اپلیکیشن',welcome:'سلام!',welcomeSub:'به نکسوم خوش آمدید',groups:'گروه‌ها',channels:'کانال‌ها',contacts:'مخاطبین',chats:'گفتگوها',library:'کتابخانه',bots:'ربات‌ها',finance:'خدمات مالی',financeShort:'مالی',education:'آموزش',home:'خانه',more:'بیشتر',privateTab:'خصوصی',secTitle:'امنیت بالا',secSub:'با رمزنگاری پیشرفته',spdTitle:'سرعت بالا',spdSub:'ارسال و دریافت سریع',cldTitle:'فضای ابری',cldSub:'دسترسی از همه جا',freTitle:'رایگان',freSub:'بدون هزینه، همیشه',librarySub:'ویدیوها و محتوا',botsSub:'پاسخ خودکار',financeSub:'شارژ، بسته، پرداخت',classes:'کلاس‌ها',classPanel:'پنل مدیریت',wallet:'کیف پول',balance:'موجودی',chargeSection:'📱 شارژ و بسته اینترنت',mci:'همراه اول',irancell:'ایرانسل',rightel:'رایتل',otherOperators:'سایر اپراتورها',chargeDesc:'شارژ / بسته اینترنت',servicePortal:'سامانه خدمات',otherServices:'🧾 خدمات دیگر',payElectricity:'پرداخت برق',payGas:'پرداخت گاز',payWater:'پرداخت آب',payPhone:'پرداخت تلفن',newContact:'مخاطب',newGroup:'گروه',newChannel:'کانال',joinWithCode:'ورود با کد',createClass:'ساخت کلاس',newContactTitle:'👤 مخاطب جدید',newContactDesc:'شماره تلفن یا آیدی مخاطب را وارد کن',newGroupTitle:'گروه جدید',newGroupDesc:'اطلاعات را وارد کن',nameLbl:'نام',descLbl:'توضیحات',selectMembers:'انتخاب اعضا',searchPlaceholder:'جستجو...',newStoryTitle:'📸 استوری جدید',newStoryDesc:'عکس یا ویدیو انتخاب کن',nothingSelected:'چیزی انتخاب نشده',pickFile:'📷 انتخاب فایل',captionLbl:'کپشن',publish:'انتشار',storiesListTitle:'📸 استوری‌ها',pickUser:'یک کاربر انتخاب کن',close:'بستن',addStory:'افزودن استوری',editMsgTitle:'✏️ ویرایش پیام',editMsgDesc:'متن جدید را وارد کن',libAddTitle:'🎬 افزودن به کتابخانه',titleLbl:'عنوان',botNewTitle:'🤖 ربات جدید',autoReplyLbl:'پاسخ خودکار',newClassTitle:'📚 کلاس جدید',classNameLbl:'نام کلاس',joinTitle:'🔑 ورود به کلاس',joinDesc:'کد ۶ رقمی که معلم داده رو وارد کن',enter:'ورود',classCreated:'✅ کلاس ساخته شد!',giveCodeDesc:'این کد رو به دانش‌آموزان بده:',copyCode:'📋 کپی کد',addVideoTitle:'🎬 افزودن ویدیو',uploadFromDevice:'📤 آپلود از دستگاه',linkTab:'🔗 لینک',videoTitleLbl:'عنوان ویدیو',videoTitlePh:'مثلاً: جلسه ۱ - مقدمه',descOptional:'توضیحات (اختیاری)',descPh:'توضیح کوتاه...',pickVideo:'📹 انتخاب ویدیو از دستگاه',maxSize:'حداکثر حجم: ۵۰ مگابایت',videoUrlLbl:'لینک ویدیو (URL)',linkHint:'میتونی از یوتیوب، آپارات یا هر لینک mp4 استفاده کنی',msgPlaceholder:'پیام...',sendImage:'ارسال عکس',sendFile:'ارسال فایل',sendVoice:'ضبط ویس',recording:'در حال ضبط...',send:'ارسال',cancel:'انصراف',save:'ذخیره',delete:'حذف',add:'افزودن',create:'ساخت',ok:'باشه',copy:'کپی',videos:'🎬 ویدیوها',members:'👥 اعضا',addVideo:'➕ افزودن ویدیو',classCode:'کد کلاس',loading:'در حال بارگذاری...',noClasses:'هنوز کلاسی نیست',noContacts:'هنوز مخاطبی نداری',error:'خطا',teacher:'معلم',student:'دانش‌آموز',emptyChat:'هنوز پیامی نیست',emptyVideo:'هنوز ویدیویی نیست',emptyMembers:'هنوز دانش‌آموزی نیست',logoutConfirm:'خارج می‌شوی؟',justNow:'الان',minAgo:'دقیقه پیش',hrAgo:'ساعت پیش',dayAgo:'روز پیش',you:'شما',replyLabel:'پاسخ',editLabel:'✏️ ویرایش',voiceMsg:'🎤 ویس',imageMsg:'🖼️ عکس',fileMsg:'📄 فایل',edited:'ویرایش شده',invalidEmail:'ایمیل معتبر نیست',cantChatSelf:'نمی‌تونی با خودت چت کنی!',onlyTeacher:'فقط معلم می‌تونه ویدیو اضافه کنه',deleteVideo:'این ویدیو حذف شود؟',deleteStudent:'این دانش‌آموز از کلاس حذف شود؟',copySuccess:'کد کپی شد',profile:'پروفایل',editProfileTitle:'✏️ ویرایش پروفایل',usernameLbl:'نام کاربری',usernameHint:'فقط حروف انگلیسی، اعداد و _ (بدون @)',bioLbl:'درباره من',phoneLbl:'📱 شماره تماس',phoneLbl2:'شماره تماس (اختیاری)',emailLbl:'✉️ ایمیل',startChat:'شروع گفتگو',noBio:'درباره من چیزی ننوشتی',settings:'تنظیمات',accountSection:'👤 حساب کاربری',profileDesc:'نام، عکس، بیوگرافی',languageSection:'🌐 زبان',language:'زبان',languageDesc:'فارسی یا انگلیسی',securitySection:'🔒 امنیت',twoFA:'رمز دو مرحله‌ای',twoFADesc:'محافظت بیشتر از حساب',twoFATitle:'🔐 رمز دو مرحله‌ای',twoFADesc2:'با فعال‌سازی، هنگام ورود یک کد ۶ رقمی به ایمیلت فرستاده می‌شود.',twoFAEnable:'فعال‌سازی',twoFACodeLbl:'کد ۶ رقمی',verify:'تأیید',activeSessions:'نشست‌های فعال',activeSessionsDesc:'دستگاه‌های متصل',sessionsTitle:'📱 نشست‌های فعال',sessionsDesc:'دستگاه‌هایی که با حساب تو لاگین کردن:',logoutAll:'خروج از همه',changePassword:'تغییر رمز عبور',changePasswordDesc:'رمز جدید تنظیم کن',changePasswordTitle:'🔑 تغییر رمز عبور',newPassword:'رمز جدید',confirmPassword:'تکرار رمز جدید',aboutSection:'ℹ️ درباره',appVersion:'نسخه برنامه',logoutBtn:'خروج از حساب',logoutDesc:'خارج شدن از این دستگاه',callStart:'شروع تماس',callGroup:'تماس گروهی',callPrivate:'تماس خصوصی',callConnecting:'در حال اتصال...',callConnected:'متصل شد',callError:'خطا در تماس',deleteForAll:'حذف برای همه',deleteForMe:'حذف فقط برای من',deletedMsg:'این پیام حذف شد',deleteConfirmAll:'OK = حذف برای همه، Cancel = حذف فقط برای من',deleteConfirmMe:'این پیام برای تو حذف شود؟',typing:'در حال نوشتن...',recordingVoice:'در حال ضبط ویس...',uploadingFile:'در حال ارسال فایل...',online:'آنلاین',lastSeen:'آخرین بازدید',onlineCount:'آنلاین',youPrefix:'شما: ',onlyOwner:'فقط سازنده می‌تواند ویرایش کند',owner:'مالک',edit:'ویرایش',viewMembers:'مشاهده اعضا',editGroup:'ویرایش گروه',editChannel:'ویرایش کانال',changePhoto:'تغییر عکس',aboutLbl:'درباره / بیوگرافی',removeMember:'این عضو حذف شود؟',noMembers:'عضوی نیست',nameRequired:'نام الزامی است',inviteLink:'لینک دعوت',inviteTitle:'🔗 لینک دعوت',inviteDesc:'با این لینک هر کسی می‌تونه به گروه بپیونده',inviteCreating:'در حال ساخت...',inviteNoExpire:'بدون انقضا',invite1Hour:'۱ ساعت',invite24Hours:'۲۴ ساعت',invite7Days:'۷ روز',invite30Days:'۳۰ روز',inviteUnlimited:'نامحدود',inviteUsers:'نفر',invitePeopleJoined:'نفر عضو شدن',inviteSaved:'✅ ذخیره شد',inviteCopySuccess:'✅ لینک کپی شد',inviteNotValid:'لینک دعوت معتبر نیست',inviteExpired:'لینک دعوت منقضی شده',inviteFull:'ظرفیت این لینک پر شده',inviteWelcome:'خوش آمدی!',inviteAlreadyMember:'قبلاً عضو بودی',inviteJoined:'به گروه پیوستی',enterGroup:'ورود به گروه',channelLocked:'🔒 فقط ادمین‌های کانال می‌توانند پیام ارسال کنند'},en:{appName:'Nexom',appTagline:'Super App',welcome:'Hello!',welcomeSub:'Welcome to Nexom',groups:'Groups',channels:'Channels',contacts:'Contacts',chats:'Chats',library:'Library',bots:'Bots',finance:'Finance',financeShort:'Finance',education:'Education',home:'Home',more:'More',privateTab:'Private',secTitle:'High Security',secSub:'Advanced encryption',spdTitle:'High Speed',spdSub:'Fast send & receive',cldTitle:'Cloud Space',cldSub:'Access anywhere',freTitle:'Free',freSub:'No cost, always',librarySub:'Videos & content',botsSub:'Auto reply',financeSub:'Top-up, packages, payments',classes:'Classes',classPanel:'Admin Panel',wallet:'Wallet',balance:'Balance',chargeSection:'📱 Top-up & Internet',mci:'MCI',irancell:'Irancell',rightel:'Rightel',otherOperators:'Other operators',chargeDesc:'Top-up / Internet',servicePortal:'Service portal',otherServices:'🧾 Other Services',payElectricity:'Pay Electricity',payGas:'Pay Gas',payWater:'Pay Water',payPhone:'Pay Phone',newContact:'Contact',newGroup:'Group',newChannel:'Channel',joinWithCode:'Join with Code',createClass:'Create Class',newContactTitle:'👤 New Contact',newContactDesc:'Enter contact phone number or ID',newGroupTitle:'New Group',newGroupDesc:'Enter the information',nameLbl:'Name',descLbl:'Description',selectMembers:'Select members',searchPlaceholder:'Search...',newStoryTitle:'📸 New Story',newStoryDesc:'Pick an image or video',nothingSelected:'Nothing selected',pickFile:'📷 Pick a file',captionLbl:'Caption',publish:'Publish',storiesListTitle:'📸 Stories',pickUser:'Pick a user',close:'Close',addStory:'Add Story',editMsgTitle:'✏️ Edit Message',editMsgDesc:'Enter new text',libAddTitle:'🎬 Add to Library',titleLbl:'Title',botNewTitle:'🤖 New Bot',autoReplyLbl:'Auto reply',newClassTitle:'📚 New Class',classNameLbl:'Class Name',joinTitle:'🔑 Join Class',joinDesc:'Enter the 6-digit code from your teacher',enter:'Enter',classCreated:'✅ Class Created!',giveCodeDesc:'Give this code to students:',copyCode:'📋 Copy Code',addVideoTitle:'🎬 Add Video',uploadFromDevice:'📤 Upload from device',linkTab:'🔗 Link',videoTitleLbl:'Video title',videoTitlePh:'E.g. Session 1 - Intro',descOptional:'Description (optional)',descPh:'Short description...',pickVideo:'📹 Pick video from device',maxSize:'Max size: 50 MB',videoUrlLbl:'Video URL',linkHint:'You can use YouTube, Aparat or any mp4 link',msgPlaceholder:'Message...',sendImage:'Send image',sendFile:'Send file',sendVoice:'Record voice',recording:'Recording...',send:'Send',cancel:'Cancel',save:'Save',delete:'Delete',add:'Add',create:'Create',ok:'OK',copy:'Copy',videos:'🎬 Videos',members:'👥 Members',addVideo:'➕ Add Video',classCode:'Class Code',loading:'Loading...',noClasses:'No classes yet',noContacts:'No contacts yet',error:'Error',teacher:'Teacher',student:'Student',emptyChat:'No messages yet',emptyVideo:'No videos yet',emptyMembers:'No students yet',logoutConfirm:'Log out?',justNow:'Just now',minAgo:'min ago',hrAgo:'hr ago',dayAgo:'day ago',you:'You',replyLabel:'Reply',editLabel:'✏️ Edit',voiceMsg:'🎤 Voice',imageMsg:'🖼️ Image',fileMsg:'📄 File',edited:'edited',invalidEmail:'Invalid email',cantChatSelf:"You can't chat with yourself!",onlyTeacher:'Only the teacher can add videos',deleteVideo:'Delete this video?',deleteStudent:'Remove this student from class?',copySuccess:'Code copied',profile:'Profile',editProfileTitle:'✏️ Edit Profile',usernameLbl:'Username',usernameHint:'Only a-z, 0-9, _ (no @)',bioLbl:'About me',phoneLbl:'📱 Phone',phoneLbl2:'Phone (optional)',emailLbl:'✉️ Email',startChat:'Start Chat',noBio:'No bio yet',settings:'Settings',accountSection:'👤 Account',profileDesc:'Name, photo, bio',languageSection:'🌐 Language',language:'Language',languageDesc:'Persian or English',securitySection:'🔒 Security',twoFA:'Two-Factor Auth',twoFADesc:'Extra account protection',twoFATitle:'🔐 Two-Factor Auth',twoFADesc2:'When enabled, a 6-digit code is sent to your email on login.',twoFAEnable:'Enable',twoFACodeLbl:'6-digit code',verify:'Verify',activeSessions:'Active Sessions',activeSessionsDesc:'Connected devices',sessionsTitle:'📱 Active Sessions',sessionsDesc:'Devices logged into your account:',logoutAll:'Log out all',changePassword:'Change Password',changePasswordDesc:'Set a new password',changePasswordTitle:'🔑 Change Password',newPassword:'New password',confirmPassword:'Confirm new password',aboutSection:'ℹ️ About',appVersion:'App Version',logoutBtn:'Log out',logoutDesc:'Sign out from this device',callStart:'Start Call',callGroup:'Group Call',callPrivate:'Private Call',callConnecting:'Connecting...',callConnected:'Connected',callError:'Call error',deleteForAll:'Delete for everyone',deleteForMe:'Delete for me only',deletedMsg:'This message was deleted',deleteConfirmAll:'OK = Delete for everyone, Cancel = Delete for me only',deleteConfirmMe:'Delete this message for you?',typing:'typing...',recordingVoice:'Recording voice...',uploadingFile:'Uploading file...',online:'Online',lastSeen:'Last seen',onlineCount:'online',youPrefix:'You: ',onlyOwner:'Only owner can edit',owner:'Owner',edit:'Edit',viewMembers:'View members',editGroup:'Edit group',editChannel:'Edit channel',changePhoto:'Change photo',aboutLbl:'About / Bio',removeMember:'Remove this member?',noMembers:'No members',nameRequired:'Name required',inviteLink:'Invite Link',inviteTitle:'🔗 Invite Link',inviteDesc:'Anyone with this link can join the group',inviteCreating:'Creating...',inviteNoExpire:'No expiry',invite1Hour:'1 hour',invite24Hours:'24 hours',invite7Days:'7 days',invite30Days:'30 days',inviteUnlimited:'Unlimited',inviteUsers:'users',invitePeopleJoined:'people joined',inviteSaved:'✅ Saved',inviteCopySuccess:'✅ Link copied',inviteNotValid:'Invalid invite link',inviteExpired:'Invite link expired',inviteFull:'Invite link is full',inviteWelcome:'Welcome!',inviteAlreadyMember:'Already member',inviteJoined:'You joined the group',enterGroup:'Enter Group',channelLocked:'🔒 Only channel admins can send messages'}};
 
 let lang=localStorage.getItem('lang')||'fa';
 function t(k){return(I18N[lang]&&I18N[lang][k])||(I18N.fa[k])||k}
@@ -1327,20 +1321,31 @@ function canISendToChat(){
   if(!curChat) return false;
   if(curChat.type==='channel'){
     const ownerEmail = curChat.data?.owner_email;
-    if(ownerEmail !== myEmail){
-      alert(t('channelLocked'));
-      return false;
-    }
+    if(ownerEmail !== myEmail){ alert(t('channelLocked')); return false; }
   }
   return true;
 }
 
 async function getProfile(email){if(!email)return null;const{data}=await sb.from('profiles').select('*').eq('email',email).maybeSingle();if(data){namesCache[email]=data.name||email.split('@')[0];avatarsCache[email]=data.avatar_url||null}return data}
-async function getName(email){if(!email)return '?';if(namesCache[email])return namesCache[email];const{data}=await sb.from('profiles').select('name').eq('email',email).maybeSingle();const name=data?.name||email.split('@')[0];namesCache[email]=name;return name}
+async function getName(email){if(!email)return '?';if(namesCache[email])return namesCache[email];const{data}=await sb.from('profiles').select('name').eq('email',email).maybeSingle();let name=data?.name;if(!name){if(email==='admin@nexom.local')name='👑 مدیریت';else name=email.split('@')[0]}namesCache[email]=name;return name}
 async function loadAllNames(emails){const unique=[...new Set(emails.filter(e=>e&&!namesCache[e]))];if(!unique.length)return;const{data}=await sb.from('profiles').select('email,name,avatar_url').in('email',unique);(data||[]).forEach(p=>{namesCache[p.email]=p.name||p.email.split('@')[0];avatarsCache[p.email]=p.avatar_url||null})}
 async function loadMyProfile(){let{data}=await sb.from('profiles').select('*').eq('email',myEmail).maybeSingle();if(!data){const defaultName=savedPhone||myEmail.split('@')[0];await sb.from('profiles').insert({email:myEmail,name:defaultName,username:defaultName});const{data:newData}=await sb.from('profiles').select('*').eq('email',myEmail).maybeSingle();data=newData}myProfile=data;if(data?.name)namesCache[myEmail]=data.name;if(data?.avatar_url)avatarsCache[myEmail]=data.avatar_url;return data}
 
-window.openMyProfile=async()=>{const p=await loadMyProfile();document.getElementById('profile-email-lbl').textContent=myEmail;document.getElementById('profile-email-txt').textContent=myEmail;const av=document.getElementById('profile-avatar');if(p?.avatar_url){av.textContent='';av.style.backgroundImage=`url('${p.avatar_url}')`}else{av.textContent=ini(p?.name||myEmail);av.style.backgroundImage=''}document.getElementById('profile-name').textContent=p?.name||myEmail.split('@')[0];document.getElementById('profile-username').textContent=p?.username?'@'+p.username:'@'+(myEmail.split('@')[0]);document.getElementById('profile-bio').textContent=p?.bio||t('noBio');document.getElementById('profile-phone').textContent=p?.phone||savedPhone||'—';showPage('profile')};
+window.openMyProfile=async()=>{
+  const p=await loadMyProfile();
+  const { data: userRow } = await sb.from('my_users').select('username').eq('phone', savedPhone).maybeSingle();
+  const myUsername = userRow?.username || '';
+  document.getElementById('profile-email-lbl').textContent=myEmail;
+  document.getElementById('profile-email-txt').textContent=myEmail;
+  const av=document.getElementById('profile-avatar');
+  if(p?.avatar_url){av.textContent='';av.style.backgroundImage=`url('${p.avatar_url}')`}else{av.textContent=ini(p?.name||myEmail);av.style.backgroundImage=''}
+  document.getElementById('profile-name').textContent=p?.name||myEmail.split('@')[0];
+  document.getElementById('profile-username').textContent = myUsername ? '@' + myUsername : '@' + (savedPhone || myEmail.split('@')[0]);
+  document.getElementById('profile-bio').textContent=p?.bio||t('noBio');
+  document.getElementById('profile-phone').textContent=p?.phone||savedPhone||'—';
+  showPage('profile');
+};
+
 window.closeProfile=()=>{showPage('home')};
 window.openProfile=async(email)=>{const targetEmail=email||myEmail;const isMe=targetEmail===myEmail;const p=await getProfile(targetEmail);if(!p){alert(t('error'));return}document.getElementById('vp-avatar').textContent=p.avatar_url?'':ini(p.name||p.email);document.getElementById('vp-avatar').style.backgroundImage=p.avatar_url?`url('${p.avatar_url}')`:'';document.getElementById('vp-avatar').style.backgroundSize='cover';document.getElementById('vp-avatar').style.backgroundPosition='center';document.getElementById('vp-avatar').onclick=p.avatar_url?()=>openLightbox(p.avatar_url):null;document.getElementById('vp-avatar').style.cursor=p.avatar_url?'pointer':'default';document.getElementById('vp-name').textContent=p.name||p.email.split('@')[0];document.getElementById('vp-username').textContent=p.username?'@'+p.username:'';document.getElementById('vp-bio').textContent=p.bio||t('noBio');const chatBtn=document.getElementById('vp-chat-btn');if(isMe){chatBtn.textContent=lang==='fa'?'✏️ ویرایش پروفایل':'✏️ Edit Profile';chatBtn.onclick=()=>{closeModal('view-profile-modal');openEditProfile()}}else{chatBtn.textContent=lang==='fa'?'💬 شروع گفتگو':'💬 Start Chat';chatBtn.onclick=()=>{closeModal('view-profile-modal');openRoom('private',targetEmail)}}document.getElementById('view-profile-modal').classList.add('show')};
 window.openEditProfile=async()=>{const p=await loadMyProfile();document.getElementById('ep-name').value=p?.name||'';document.getElementById('ep-username').value=p?.username||'';document.getElementById('ep-bio').value=p?.bio||'';document.getElementById('ep-phone').value=p?.phone||savedPhone||'';document.getElementById('edit-profile-modal').classList.add('show')};
@@ -1412,9 +1417,7 @@ function renderEmojiGrid(cat) {
   const grid = document.getElementById('emoji-grid');
   if (!grid) return;
   const emojis = EMOJI_DATA[cat] || [];
-  grid.innerHTML = emojis.map(e =>
-    `<button class="emoji-item" onclick="insertEmoji('${e}')">${e}</button>`
-  ).join('');
+  grid.innerHTML = emojis.map(e => `<button class="emoji-item" onclick="insertEmoji('${e}')">${e}</button>`).join('');
 }
 
 window.insertEmoji = (emoji) => {
@@ -1567,6 +1570,11 @@ window.openRoom=async(type,data)=>{
     const lockMsg = document.getElementById('channel-lock-msg');
     if(lockMsg) lockMsg.style.display='none';
   }
+  if (curChat.type !== 'private' && curChat.data?.pinned_message_id) {
+    showPinnedBar(curChat.data.pinned_message_text, curChat.data.pinned_message_id);
+  } else {
+    showPinnedBar(null, null);
+  }
   room.classList.add('active');
   await loadMsgs();
   setupRT();
@@ -1587,7 +1595,7 @@ window.closeRoom=()=>{
 };
 async function loadMsgs(){if(!curChat)return;let q;if(curChat.type==='private'){q=sb.from('messages').select('*').is('chat_id',null).or(`and(sender_email.eq.${myEmail},receiver_email.eq.${curChat.email}),and(sender_email.eq.${curChat.email},receiver_email.eq.${myEmail})`).order('created_at',{ascending:true})}else{q=sb.from('messages').select('*').eq('chat_id',curChat.id).order('created_at',{ascending:true})}const{data}=await q;const{data:myDeleted}=await sb.from('deleted_messages').select('message_id').eq('user_email',myEmail);const deletedIds=new Set((myDeleted||[]).map(d=>d.message_id));msgArea.innerHTML='';const visible=(data||[]).filter(m=>!deletedIds.has(m.id));if(!visible.length){const emptyDiv=document.createElement('div');emptyDiv.className='messages-empty';emptyDiv.innerHTML='<svg viewBox="0 0 200 200" fill="none"><circle cx="100" cy="100" r="90" stroke="rgba(91,174,110,.25)" stroke-width="2" fill="none"/><circle cx="100" cy="100" r="70" stroke="rgba(91,174,110,.15)" stroke-width="1.5" fill="none" stroke-dasharray="4 4"/><rect x="60" y="75" width="80" height="60" rx="12" fill="rgba(91,174,110,.15)" stroke="rgba(91,174,110,.5)" stroke-width="2"/><path d="M70 90h60M70 100h45M70 110h30" stroke="rgba(91,174,110,.6)" stroke-width="3" stroke-linecap="round"/><circle cx="150" cy="60" r="8" fill="#5bae6e" opacity=".6"/><circle cx="55" cy="140" r="6" fill="#7b3ff2" opacity=".5"/><circle cx="145" cy="150" r="5" fill="#ec4899" opacity=".5"/></svg><p>'+(lang==='fa'?'برای شروع یکی از گفتگوها را انتخاب کنید':'Pick a conversation to start')+'</p>';msgArea.appendChild(emptyDiv)}else{visible.forEach(m=>{addMsg(m)})}await markMessagesRead();await updateGroupChecks()}
 function addMsg(m){
-  if(m.deleted_for_all){const d=document.createElement('div');d.className='msg deleted '+(m.sender_email===myEmail?'mine':'other');d.dataset.id=m.id;d.dataset.type='deleted';let h='';if(curChat.type!=='private'&&m.sender_email!==myEmail){const dispName=namesCache[m.sender_email]||m.sender_email.split('@')[0];h+=`<div class="msg-sender">${esc(dispName)}</div>`}h+=`<div class="msg-deleted-txt">🚫 ${t('deletedMsg')}</div>`;h+=`<div class="msg-actions" data-id="${m.id}">⋯</div>`;d.innerHTML=h;msgArea.appendChild(d);msgArea.scrollTop=msgArea.scrollHeight;return}
+  if(m.deleted_for_all){const d=document.createElement('div');d.className='msg deleted '+(m.sender_email===myEmail?'mine':'other');d.dataset.id=m.id;d.dataset.type='deleted';let h='';if(curChat.type!=='private'&&m.sender_email!==myEmail){const dispName=namesCache[m.sender_email]||m.sender_email.split('@')[0];h+=`<div class="msg-sender">${esc(dispName)}</div>`}h+=`<div class="msg-deleted-txt">🚫 ${t('deletedMsg')}</div>`;h+=`<div class="msg-actions" data-id="${m.id}">⋯</div>`;d.innerHTML=h;msgArea.appendChild(d);msgArea.scrollTop=msgArea.scrollHeight;setTimeout(()=>loadReactions(m.id),50);return}
   const d=document.createElement('div');d.className='msg '+(m.sender_email===myEmail?'mine':'other');d.dataset.id=m.id;d.dataset.type=m.message_type;let h='';if(curChat.type!=='private'&&m.sender_email!==myEmail){const dispName=namesCache[m.sender_email]||m.sender_email.split('@')[0];h+=`<div class="msg-sender" onclick="openProfile('${esc(m.sender_email)}')" style="cursor:pointer">${esc(dispName)}</div>`}
   if(m.reply_to_id){const rt=m.reply_to_type||'text';let rtx=m.reply_to_content;if(!rtx||!rtx.trim()){if(rt==='voice')rtx=t('voiceMsg');else if(rt==='image')rtx=t('imageMsg');else if(rt==='file')rtx=t('fileMsg');else rtx='...'}h+=`<div class="reply-preview" data-rid="${esc(m.reply_to_id)}"><div class="reply-name">${esc((m.reply_to_sender||'').split('@')[0])}</div><div class="reply-text">${esc(rtx)}</div></div>`}
   if(m.message_type==='voice'&&m.audio_url){const du=m.audio_duration||0;h+=`<div class="voice-wrap"><button class="voice-play" data-url="${esc(m.audio_url)}">▶</button><div class="voice-wave">${Array.from({length:18},()=>`<span style="height:${Math.random()*18+6}px"></span>`).join('')}</div><div class="voice-dur">${fmtT(du)}</div></div>`}
@@ -1596,8 +1604,132 @@ function addMsg(m){
   else{h+=`<div>${esc(m.content||'')}</div>`}
   if(m.edited_at)h+=`<div class="msg-edited">${t('edited')}</div>`;
   if(m.sender_email===myEmail){if(curChat.type==='private'){const isRead=m.read_at?true:false;h+=`<div class="msg-meta">${isRead?'<span class="msg-check read">✓✓</span>':'<span class="msg-check sent">✓</span>'}</div>`}else{h+=`<div class="msg-meta" data-check="${m.id}"><span class="msg-check sent">✓</span></div>`}}
-  h+=`<div class="msg-actions" data-id="${m.id}">⋯</div>`;d.innerHTML=h;msgArea.appendChild(d);msgArea.scrollTop=msgArea.scrollHeight
+  h+=`<div class="msg-actions" data-id="${m.id}">⋯</div>`;d.innerHTML=h;msgArea.appendChild(d);msgArea.scrollTop=msgArea.scrollHeight;
+  setTimeout(()=>loadReactions(m.id),50);
 }
+
+// ====== ری‌اکشن به پیام ======
+let targetReactionMsgId = null;
+
+window.sendReaction = async (emoji) => {
+  if (!targetReactionMsgId) return;
+  const mid = targetReactionMsgId;
+  document.getElementById('reaction-menu').classList.remove('show');
+  try {
+    const { data: existing } = await sb.from('message_reactions').select('*').eq('message_id', mid).eq('user_email', myEmail).maybeSingle();
+    if (existing) {
+      if (existing.emoji === emoji) {
+        await sb.from('message_reactions').delete().eq('id', existing.id);
+      } else {
+        await sb.from('message_reactions').update({ emoji }).eq('id', existing.id);
+      }
+    } else {
+      await sb.from('message_reactions').insert({ message_id: mid, user_email: myEmail, emoji });
+    }
+    loadReactions(mid);
+  } catch (e) { console.log(e); }
+};
+
+async function loadReactions(msgId) {
+  const msgEl = msgArea.querySelector(`[data-id="${msgId}"]`);
+  if (!msgEl) return;
+  const { data } = await sb.from('message_reactions').select('emoji,user_email').eq('message_id', msgId);
+  let wrapper = msgEl.querySelector('.reactions-wrap');
+  if (!data || !data.length) { if (wrapper) wrapper.remove(); return; }
+  if (!wrapper) { wrapper = document.createElement('div'); wrapper.className = 'reactions-wrap'; msgEl.appendChild(wrapper); }
+  
+  const grouped = {};
+  data.forEach(r => {
+    if (!grouped[r.emoji]) grouped[r.emoji] = [];
+    grouped[r.emoji].push(r.user_email);
+  });
+  
+  wrapper.innerHTML = '';
+  for (const [emoji, users] of Object.entries(grouped)) {
+    const isMine = users.includes(myEmail);
+    const b = document.createElement('div');
+    b.className = 'reaction-badge' + (isMine ? ' mine' : '');
+    b.innerHTML = `${emoji} <span>${users.length}</span>`;
+    b.onclick = (e) => { e.stopPropagation(); targetReactionMsgId = msgId; sendReaction(emoji); };
+    wrapper.appendChild(b);
+  }
+}
+
+let pressTimer = null;
+msgArea.addEventListener('pointerdown', (e) => {
+  const msgEl = e.target.closest('.msg');
+  if (!msgEl) return;
+  if (e.target.closest('.msg-actions') || e.target.closest('.reaction-badge')) return;
+  pressTimer = setTimeout(() => {
+    targetReactionMsgId = msgEl.dataset.id;
+    const menu = document.getElementById('reaction-menu');
+    menu.classList.add('show');
+    const rect = msgEl.getBoundingClientRect();
+    menu.style.top = (rect.top - 50) + 'px';
+    menu.style.left = Math.min(rect.left, innerWidth - 260) + 'px';
+  }, 500);
+});
+msgArea.addEventListener('pointerup', () => clearTimeout(pressTimer));
+msgArea.addEventListener('pointermove', () => clearTimeout(pressTimer));
+msgArea.addEventListener('pointercancel', () => clearTimeout(pressTimer));
+msgArea.addEventListener('dblclick', (e) => {
+  const msgEl = e.target.closest('.msg');
+  if (!msgEl) return;
+  targetReactionMsgId = msgEl.dataset.id;
+  sendReaction('❤️');
+});
+
+function showPinnedBar(txt, mid) {
+  const bar = document.getElementById('pinned-bar');
+  const txtEl = document.getElementById('pinned-text');
+  if (!bar) return;
+  if (!mid) { bar.style.display='none'; return; }
+  bar.style.display='block';
+  txtEl.textContent = txt;
+}
+window.scrollToPinned = () => {
+  const mid = curChat?.data?.pinned_message_id;
+  if (!mid) return;
+  const el = msgArea.querySelector(`[data-id="${mid}"]`);
+  if (el) { el.scrollIntoView({behavior:'smooth', block:'center'}); el.classList.add('pinned'); setTimeout(()=>el.classList.remove('pinned'), 2000); }
+};
+
+window.openChatSearch = () => {
+  document.getElementById('chat-search-input').value = '';
+  document.getElementById('chat-search-results').innerHTML = '';
+  document.getElementById('chat-search-modal').classList.add('show');
+};
+
+window.doChatSearch = async () => {
+  const q = document.getElementById('chat-search-input').value.trim();
+  const results = document.getElementById('chat-search-results');
+  if (!q || q.length < 2) { results.innerHTML = '<p style="color:#999;font-size:12px">حداقل ۲ حرف بنویس...</p>'; return; }
+  results.innerHTML = '<p style="color:#999;font-size:12px">در حال جستجو...</p>';
+  
+  let query = sb.from('messages').select('*').ilike('content', `%${q}%`).order('created_at', {ascending:false}).limit(30);
+  if (curChat.type === 'private') {
+    query = query.is('chat_id', null).or(`and(sender_email.eq.${myEmail},receiver_email.eq.${curChat.email}),and(sender_email.eq.${curChat.email},receiver_email.eq.${myEmail})`);
+  } else {
+    query = query.eq('chat_id', curChat.id);
+  }
+  const { data } = await query;
+  if (!data || !data.length) { results.innerHTML = '<p style="color:#999;font-size:12px">چیزی پیدا نشد!</p>'; return; }
+  
+  results.innerHTML = '';
+  data.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'chat-search-item';
+    const sender = m.sender_email === myEmail ? 'شما' : (namesCache[m.sender_email]||m.sender_email.split('@')[0]);
+    div.innerHTML = `<b>${sender}:</b> ${esc(m.content||'')}<br><small style="color:#999">${shortTime(new Date(m.created_at))}</small>`;
+    div.onclick = () => {
+      closeModal('chat-search-modal');
+      const el = msgArea.querySelector(`[data-id="${m.id}"]`);
+      if (el) { el.scrollIntoView({behavior:'smooth', block:'center'}); el.classList.add('pinned'); setTimeout(()=>el.classList.remove('pinned'), 2000); }
+    };
+    results.appendChild(div);
+  });
+};
+
 function setupRT(){if(rtCh)sb.removeChannel(rtCh);rtCh=sb.channel('r-'+Date.now()).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},async p=>{const m=p.new;let ok=false;if(curChat.type==='private'){ok=(m.sender_email===myEmail&&m.receiver_email===curChat.email)||(m.sender_email===curChat.email&&m.receiver_email===myEmail);if(ok&&!m.chat_id){addMsg(m);if(m.sender_email===curChat.email){await markMessagesRead()}}}else{if(m.chat_id===curChat.id){addMsg(m);await markMessagesRead();updateGroupChecks()}}if(m.sender_email!==myEmail)notifyNewMessage(m)}).on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages'},p=>{const m=p.new;let ok=false;if(curChat.type==='private'){ok=(m.sender_email===myEmail&&m.receiver_email===curChat.email)||(m.sender_email===curChat.email&&m.receiver_email===myEmail)}else{ok=m.chat_id===curChat.id}if(ok){const o=msgArea.querySelector(`[data-id="${m.id}"]`);if(o)o.remove();addMsg(m);updateGroupChecks()}}).on('postgres_changes',{event:'INSERT',schema:'public',table:'message_reads'},()=>{updateGroupChecks()}).on('postgres_changes',{event:'INSERT',schema:'public',table:'deleted_messages'},async p=>{const dd=p.new;if(dd.user_email===myEmail){const el=msgArea.querySelector(`[data-id="${dd.message_id}"]`);if(el)el.remove()}}).subscribe()}
 async function markMessagesRead(){if(!curChat)return;try{if(curChat.type==='private'){await sb.from('messages').update({read_at:new Date().toISOString()}).is('chat_id',null).eq('sender_email',curChat.email).eq('receiver_email',myEmail).is('read_at',null)}else{const{data:unread}=await sb.from('messages').select('id').eq('chat_id',curChat.id).neq('sender_email',myEmail);if(!unread?.length)return;const ids=unread.map(m=>m.id);const{data:already}=await sb.from('message_reads').select('message_id').in('message_id',ids).eq('user_email',myEmail);const alreadyIds=new Set((already||[]).map(r=>r.message_id));const toInsert=ids.filter(id=>!alreadyIds.has(id)).map(id=>({message_id:id,user_email:myEmail}));if(toInsert.length){await sb.from('message_reads').insert(toInsert)}}}catch(e){}}
 async function updateGroupChecks(){if(!curChat||curChat.type==='private')return;const myMsgs=[...msgArea.querySelectorAll('.msg.mine')];if(!myMsgs.length)return;const ids=myMsgs.map(el=>el.dataset.id);const{data:members}=await sb.from('chat_members').select('member_email').eq('chat_id',curChat.id);const totalOthers=(members||[]).filter(m=>m.member_email!==myEmail).length;if(totalOthers===0)return;const{data:reads}=await sb.from('message_reads').select('message_id').in('message_id',ids);const readCount={};(reads||[]).forEach(r=>{readCount[r.message_id]=(readCount[r.message_id]||0)+1});myMsgs.forEach(el=>{const id=el.dataset.id;const cnt=readCount[id]||0;const checkEl=el.querySelector('[data-check]');if(!checkEl)return;if(cnt>=totalOthers){checkEl.innerHTML='<span class="msg-check read">✓✓</span>'}else{checkEl.innerHTML='<span class="msg-check sent">✓</span>'}})}
@@ -1631,17 +1763,49 @@ function stopRec(c){if(!mr)return;if(mr.state!=='inactive')mr.stop();if(recTmr){
 document.getElementById('rec-cancel').onclick=()=>stopRec(true);
 document.getElementById('rec-send').onclick=async()=>{const du=Math.floor((Date.now()-recStart)/1000);stopRec(false);setTimeout(async()=>{if(!ac.length)return;if(!canISendToChat())return;const bl=new Blob(ac,{type:'audio/webm'});ac=[];mr=null;const fn=`voice-${myEmail.replace(/[^a-z0-9]/gi,'_')}-${Date.now()}.webm`;const{error:ue}=await sb.storage.from('voice-messages').upload(fn,bl,{contentType:'audio/webm'});if(ue){alert(t('error')+': '+ue.message);return}const{data:ud}=sb.storage.from('voice-messages').getPublicUrl(fn);let pl=curChat.type==='private'?{content:'',sender_email:myEmail,receiver_email:curChat.email,message_type:'voice',audio_url:ud.publicUrl,audio_duration:du}:{content:'',sender_email:myEmail,receiver_email:'',chat_id:curChat.id,message_type:'voice',audio_url:ud.publicUrl,audio_duration:du};if(replyTo){pl.reply_to_id=replyTo.id;pl.reply_to_content=replyTo.content;pl.reply_to_sender=replyTo.sender;pl.reply_to_type=replyTo.type}await sb.from('messages').insert(pl);cancelReply()},200)};
 const msgMenu=document.getElementById('msg-menu');
-msgArea.addEventListener('click',e=>{const ab=e.target.closest('.msg-actions');if(ab){e.stopPropagation();const id=ab.dataset.id;const d=ab.closest('.msg');const ty=d.dataset.type;const snd=d.classList.contains('mine')?myEmail:(curChat.type==='private'?curChat.email:'');const isMine=d.classList.contains('mine');const ct=d.querySelector('div:not(.msg-sender):not(.reply-preview):not(.msg-actions):not(.voice-wrap):not(.img-msg):not(.file-msg):not(.msg-meta):not(.msg-deleted-txt)')?.textContent||'';menuTgt={id,ty,ct,snd,isMine};let h=`<button class="msg-menu-item reply" data-a="reply">↩ ${t('replyLabel')}</button>`;if(ty==='text'&&isMine)h+=`<button class="msg-menu-item" data-a="edit">${t('editLabel')}</button>`;h+=`<button class="msg-menu-item delete" data-a="delete">🗑️ ${t('delete')}</button>`;msgMenu.innerHTML=h;let items=2;if(ty==='text'&&isMine)items=3;const w=180,h2=items*45+16;let x=ab.getBoundingClientRect().left,y=ab.getBoundingClientRect().bottom+5;if(document.dir==='rtl')x=ab.getBoundingClientRect().right-w;x=Math.max(10,Math.min(x,innerWidth-w-10));y=Math.min(y,innerHeight-h2-10);msgMenu.style.top=y+'px';msgMenu.style.left=x+'px';msgMenu.classList.add('show');return}const vb=e.target.closest('.voice-play');if(vb){const u=vb.dataset.url;if(curAud){curAud.pause();curAud=null;document.querySelectorAll('.voice-play').forEach(b=>b.textContent='▶')}if(vb.textContent==='▶'){curAud=new Audio(u);curAud.play();vb.textContent='⏸';curAud.onended=()=>{vb.textContent='▶';curAud=null}}else{vb.textContent='▶'}}const im=e.target.closest('.img-msg img');if(im){openLightbox(im.dataset.full||im.src)}const rp=e.target.closest('.reply-preview');if(rp){const tid=rp.dataset.rid;const tm=msgArea.querySelector(`[data-id="${tid}"]`);if(tm){tm.scrollIntoView({behavior:'smooth',block:'center'});tm.style.background='rgba(91,174,110,.3)';setTimeout(()=>tm.style.background='',1500)}}});
-msgMenu.addEventListener('click',async e=>{const it=e.target.closest('.msg-menu-item');if(!it||!menuTgt)return;const a=it.dataset.a;const{id,ty,ct,snd,isMine}=menuTgt;msgMenu.classList.remove('show');if(a==='edit'){const{data}=await sb.from('messages').select('content').eq('id',id).single();if(data){editId=id;document.getElementById('edit-inp').value=data.content;document.getElementById('edit-modal').classList.add('show')}}else if(a==='reply'){let rc=ct;if(ty==='voice'){const{data}=await sb.from('messages').select('audio_duration').eq('id',id).single();rc=t('voiceMsg')+' ('+fmtT(data?.audio_duration||0)+')'}else if(ty==='image')rc=t('imageMsg');else if(ty==='file'){const{data}=await sb.from('messages').select('file_name').eq('id',id).single();rc=t('fileMsg')+' '+(data?.file_name||'')}else if(ty==='deleted')rc=t('deletedMsg');replyTo={id,sender:snd,content:rc,type:ty};document.getElementById('reply-bar-name').textContent=snd.split('@')[0];document.getElementById('reply-bar-text').textContent=rc;document.getElementById('reply-bar').classList.add('show');msgIn.focus()}else if(a==='delete'){if(isMine){const choice=confirm(t('deleteConfirmAll'));if(choice){const{error}=await sb.from('messages').update({deleted_for_all:true,content:null,file_url:null,audio_url:null,file_name:null}).eq('id',id);if(error){alert(t('error')+': '+error.message);return}}else{await sb.from('deleted_messages').insert({message_id:id,user_email:myEmail});const el=msgArea.querySelector(`[data-id="${id}"]`);if(el)el.remove()}}else{if(!confirm(t('deleteConfirmMe')))return;await sb.from('deleted_messages').insert({message_id:id,user_email:myEmail});const el=msgArea.querySelector(`[data-id="${id}"]`);if(el)el.remove()}}});
+msgArea.addEventListener('click',e=>{const ab=e.target.closest('.msg-actions');if(ab){e.stopPropagation();const id=ab.dataset.id;const d=ab.closest('.msg');const ty=d.dataset.type;const snd=d.classList.contains('mine')?myEmail:(curChat.type==='private'?curChat.email:'');const isMine=d.classList.contains('mine');const ct=d.querySelector('div:not(.msg-sender):not(.reply-preview):not(.msg-actions):not(.voice-wrap):not(.img-msg):not(.file-msg):not(.msg-meta):not(.msg-deleted-txt):not(.reactions-wrap)')?.textContent||'';menuTgt={id,ty,ct,snd,isMine};let h=`<button class="msg-menu-item reply" data-a="reply">↩ ${t('replyLabel')}</button>`;if(ty==='text'&&isMine)h+=`<button class="msg-menu-item" data-a="edit">${t('editLabel')}</button>`;if(curChat.type!=='private')h+=`<button class="msg-menu-item" data-a="pin">📌 سنجاق به بالا</button>`;h+=`<button class="msg-menu-item delete" data-a="delete">🗑️ ${t('delete')}</button>`;msgMenu.innerHTML=h;let items=3;if(ty==='text'&&isMine)items++;if(curChat.type!=='private')items++;const w=180,h2=items*45+16;let x=ab.getBoundingClientRect().left,y=ab.getBoundingClientRect().bottom+5;if(document.dir==='rtl')x=ab.getBoundingClientRect().right-w;x=Math.max(10,Math.min(x,innerWidth-w-10));y=Math.min(y,innerHeight-h2-10);msgMenu.style.top=y+'px';msgMenu.style.left=x+'px';msgMenu.classList.add('show');return}const vb=e.target.closest('.voice-play');if(vb){const u=vb.dataset.url;if(curAud){curAud.pause();curAud=null;document.querySelectorAll('.voice-play').forEach(b=>b.textContent='▶')}if(vb.textContent==='▶'){curAud=new Audio(u);curAud.play();vb.textContent='⏸';curAud.onended=()=>{vb.textContent='▶';curAud=null}}else{vb.textContent='▶'}}const im=e.target.closest('.img-msg img');if(im){openLightbox(im.dataset.full||im.src)}const rp=e.target.closest('.reply-preview');if(rp){const tid=rp.dataset.rid;const tm=msgArea.querySelector(`[data-id="${tid}"]`);if(tm){tm.scrollIntoView({behavior:'smooth',block:'center'});tm.style.background='rgba(91,174,110,.3)';setTimeout(()=>tm.style.background='',1500)}}});
+msgMenu.addEventListener('click',async e=>{const it=e.target.closest('.msg-menu-item');if(!it||!menuTgt)return;const a=it.dataset.a;const{id,ty,ct,snd,isMine}=menuTgt;msgMenu.classList.remove('show');if(a==='edit'){const{data}=await sb.from('messages').select('content').eq('id',id).single();if(data){editId=id;document.getElementById('edit-inp').value=data.content;document.getElementById('edit-modal').classList.add('show')}}else if(a==='reply'){let rc=ct;if(ty==='voice'){const{data}=await sb.from('messages').select('audio_duration').eq('id',id).single();rc=t('voiceMsg')+' ('+fmtT(data?.audio_duration||0)+')'}else if(ty==='image')rc=t('imageMsg');else if(ty==='file'){const{data}=await sb.from('messages').select('file_name').eq('id',id).single();rc=t('fileMsg')+' '+(data?.file_name||'')}else if(ty==='deleted')rc=t('deletedMsg');replyTo={id,sender:snd,content:rc,type:ty};document.getElementById('reply-bar-name').textContent=snd.split('@')[0];document.getElementById('reply-bar-text').textContent=rc;document.getElementById('reply-bar').classList.add('show');msgIn.focus()}else if(a==='pin'){if(curChat.type==='private')return;const txt=ct||(ty==='voice'?'پیام صوتی':ty==='image'?'عکس':ty==='file'?'فایل':'');await sb.from('chats').update({pinned_message_id:id,pinned_message_text:txt}).eq('id',curChat.id);curChat.data.pinned_message_id=id;curChat.data.pinned_message_text=txt;showPinnedBar(txt,id);alert('📌 پیام سنجاق شد!')}else if(a==='delete'){if(isMine){const choice=confirm(t('deleteConfirmAll'));if(choice){const{error}=await sb.from('messages').update({deleted_for_all:true,content:null,file_url:null,audio_url:null,file_name:null}).eq('id',id);if(error){alert(t('error')+': '+error.message);return}}else{await sb.from('deleted_messages').insert({message_id:id,user_email:myEmail});const el=msgArea.querySelector(`[data-id="${id}"]`);if(el)el.remove()}}else{if(!confirm(t('deleteConfirmMe')))return;await sb.from('deleted_messages').insert({message_id:id,user_email:myEmail});const el=msgArea.querySelector(`[data-id="${id}"]`);if(el)el.remove()}}});
 document.addEventListener('click',e=>{if(!msgMenu.classList.contains('show'))return;if(e.target.closest('#msg-menu')||e.target.closest('.msg-actions'))return;msgMenu.classList.remove('show')});
 function cancelReply(){replyTo=null;document.getElementById('reply-bar')?.classList.remove('show')}
 document.getElementById('reply-close').onclick=cancelReply;
 document.getElementById('edit-save').onclick=async()=>{const v=document.getElementById('edit-inp').value.trim();if(!v){alert(lang==='fa'?'خالی':'Empty');return}const{error}=await sb.from('messages').update({content:v,edited_at:new Date().toISOString()}).eq('id',editId);if(error)alert(t('error')+': '+error.message);else{closeModal('edit-modal');editId=null}};
-window.openNewContact=()=>document.getElementById('contact-modal').classList.add('show');
+window.openNewContact=()=>{
+  document.getElementById('contact-phone').value='';
+  document.getElementById('contact-username').value='';
+  document.getElementById('contact-phone').style.display='block';
+  document.getElementById('contact-username').style.display='none';
+  document.getElementById('ct-method-phone').classList.add('active');
+  document.getElementById('ct-method-id').classList.remove('active');
+  document.getElementById('contact-modal').classList.add('show');
+};
+document.getElementById('ct-method-phone').onclick=()=>{
+  document.getElementById('contact-phone').style.display='block';
+  document.getElementById('contact-username').style.display='none';
+  document.getElementById('ct-method-phone').classList.add('active');
+  document.getElementById('ct-method-id').classList.remove('active');
+};
+document.getElementById('ct-method-id').onclick=()=>{
+  document.getElementById('contact-phone').style.display='none';
+  document.getElementById('contact-username').style.display='block';
+  document.getElementById('ct-method-id').classList.add('active');
+  document.getElementById('ct-method-phone').classList.remove('active');
+};
 document.getElementById('contact-add').onclick=async()=>{
-  const ph = document.getElementById('contact-phone').value.trim();
-  if(!/^09\d{9}$/.test(ph)){alert('شماره باید ۱۱ رقم و با ۰۹ شروع شود');return}
-  const em = ph + '@nexom.local';
+  const isPhoneMode = document.getElementById('contact-phone').style.display !== 'none';
+  let em = '';
+  
+  if (isPhoneMode) {
+    const ph = document.getElementById('contact-phone').value.trim();
+    if(!/^09\d{9}$/.test(ph)){alert('شماره باید ۱۱ رقم و با ۰۹ شروع شود');return}
+    em = ph + '@nexom.local';
+  } else {
+    const un = document.getElementById('contact-username').value.trim().toLowerCase().replace(/^@/, '');
+    if(!un || un.length < 3){alert('آیدی معتبر نیست (حداقل ۳ حرف)');return}
+    const { data, error } = await sb.from('my_users').select('phone').eq('username', un).maybeSingle();
+    if (error || !data) { alert('❌ کاربری با این آیدی پیدا نشد!'); return; }
+    em = data.phone + '@nexom.local';
+  }
+
   if(em === myEmail){alert(t('cantChatSelf'));return}
   closeModal('contact-modal');
   await renderList();
@@ -1660,7 +1824,25 @@ window.openStoryModal=()=>{selStFile=null;const p=document.getElementById('story
 document.getElementById('file-story').onchange=e=>{const f=e.target.files[0];if(!f)return;e.target.value='';const isI=f.type.startsWith('image/'),isV=f.type.startsWith('video/');if(!isI&&!isV){alert(lang==='fa'?'فقط عکس یا ویدیو':'Images or videos only');return}if(isI&&f.size>10*1048576){alert(lang==='fa'?'عکس زیاد':'Image too large');return}if(isV&&f.size>150*1048576){alert(lang==='fa'?'ویدیو زیاد':'Video too large');return}selStFile=f;const p=document.getElementById('story-preview');p.classList.remove('empty');if(isI){const r=new FileReader();r.onload=ev=>{p.innerHTML=`<img src="${ev.target.result}">`};r.readAsDataURL(f)}else{const u=URL.createObjectURL(f);p.innerHTML=`<video src="${u}" controls></video>`}};
 document.getElementById('story-pub').onclick=async()=>{if(!selStFile){alert(t('nothingSelected'));return}const cap=document.getElementById('story-cap-inp').value.trim();const btn=document.getElementById('story-pub');btn.disabled=true;btn.textContent='...';const isV=selStFile.type.startsWith('video/');const mt=isV?'video':'image';try{const fn=`story-${myEmail.replace(/[^a-z0-9]/gi,'_')}-${Date.now()}.${selStFile.name.split('.').pop()}`;const{error:ue}=await sb.storage.from('stories').upload(fn,selStFile,{contentType:selStFile.type});if(ue){alert(t('error')+': '+ue.message);btn.disabled=false;btn.textContent=t('publish');return}const{data:ud}=sb.storage.from('stories').getPublicUrl(fn);const ex=new Date(Date.now()+24*60*60*1000).toISOString();await sb.from('stories').insert({user_email:myEmail,media_url:ud.publicUrl,media_type:mt,caption:cap,expires_at:ex});closeModal('story-modal');await loadStories()}catch(e){alert(t('error')+': '+e.message)}btn.disabled=false;btn.textContent=t('publish')};
 window.viewStory=em=>{curStUser=em;curStIdx=0;document.getElementById('story-viewer').classList.add('show');showStory()};
-function showStory(){if(!curStUser)return;const sts=stByUser[curStUser];if(!sts?.length){closeStory();return}const s=sts[curStIdx];if(!s){closeStory();return}const md=document.getElementById('story-media');md.innerHTML=s.media_type==='video'?`<video src="${esc(s.media_url)}" autoplay controls playsinline></video>`:`<img src="${esc(s.media_url)}" style="cursor:pointer" onclick="openLightbox('${esc(s.media_url)}')">`;document.getElementById('story-head-av').textContent=ini(namesCache[curStUser]||curStUser);document.getElementById('story-head-name').textContent=namesCache[curStUser]||curStUser;document.getElementById('story-head-time').textContent=ago(new Date(s.created_at));if(s.caption){document.getElementById('story-cap').textContent=s.caption;document.getElementById('story-cap').style.display='block'}else document.getElementById('story-cap').style.display='none';const pb=document.getElementById('story-prog-bar');pb.style.width='0%';if(stTmr)clearInterval(stTmr);if(s.media_type==='video'){const v=md.querySelector('video');if(v){v.onended=nextStory;v.onloadedmetadata=()=>{const du=v.duration*1000,t0=Date.now();stTmr=setInterval(()=>{const p=Math.min(((Date.now()-t0)/du)*100,100);pb.style.width=p+'%';if(p>=100){clearInterval(stTmr);nextStory()}},50)}}}else{const du=5000,t0=Date.now();stTmr=setInterval(()=>{const p=Math.min(((Date.now()-t0)/du)*100,100);pb.style.width=p+'%';if(p>=100){clearInterval(stTmr);nextStory()}},50)}}
+function showStory(){if(!curStUser)return;const sts=stByUser[curStUser];if(!sts?.length){closeStory();return}const s=sts[curStIdx];if(!s){closeStory();return}const md=document.getElementById('story-media');md.innerHTML=s.media_type==='video'?`<video src="${esc(s.media_url)}" autoplay controls playsinline></video>`:`<img src="${esc(s.media_url)}" style="cursor:pointer" onclick="openLightbox('${esc(s.media_url)}')">`;document.getElementById('story-head-av').textContent=ini(namesCache[curStUser]||curStUser);document.getElementById('story-head-name').textContent=namesCache[curStUser]||curStUser;document.getElementById('story-head-time').textContent=ago(new Date(s.created_at));if(s.caption){document.getElementById('story-cap').textContent=s.caption;document.getElementById('story-cap').style.display='block'}else document.getElementById('story-cap').style.display='none';const pb=document.getElementById('story-prog-bar');pb.style.width='0%';if(stTmr)clearInterval(stTmr);if(s.media_type==='video'){const v=md.querySelector('video');if(v){v.onended=nextStory;v.onloadedmetadata=()=>{const du=v.duration*1000,t0=Date.now();stTmr=setInterval(()=>{const p=Math.min(((Date.now()-t0)/du)*100,100);pb.style.width=p+'%';if(p>=100){clearInterval(stTmr);nextStory()}},50)}}}else{const du=5000,t0=Date.now();stTmr=setInterval(()=>{const p=Math.min(((Date.now()-t0)/du)*100,100);pb.style.width=p+'%';if(p>=100){clearInterval(stTmr);nextStory()}},50)}
+  let replyBtn = document.getElementById('story-reply-btn');
+  if (!replyBtn) {
+    replyBtn = document.createElement('button');
+    replyBtn.id = 'story-reply-btn';
+    replyBtn.style.cssText = 'position:absolute; bottom:20px; left:50%; transform:translateX(-50%); padding:10px 20px; border-radius:24px; background:rgba(255,255,255,0.2); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.4); color:#fff; font-family:inherit; font-size:13px; cursor:pointer; z-index:100;';
+    replyBtn.textContent = '↩️ پاسخ به استوری';
+    replyBtn.onclick = () => replyToStory(curStUser);
+    document.getElementById('story-media').appendChild(replyBtn);
+  }
+  replyBtn.style.display = curStUser === myEmail ? 'none' : 'block';
+}
+function replyToStory(userEmail) {
+  closeStory();
+  openRoom('private', userEmail);
+  setTimeout(() => {
+    if (msgIn) { msgIn.value = '↩️ در پاسخ به استوری: '; msgIn.focus(); msgIn.setSelectionRange(msgIn.value.length, msgIn.value.length); }
+  }, 800);
+}
 window.nextStory=()=>{if(!curStUser)return;const sts=stByUser[curStUser];if(curStIdx<sts.length-1){curStIdx++;showStory()}else{const us=Object.keys(stByUser);const i=us.indexOf(curStUser);if(i<us.length-1){curStUser=us[i+1];curStIdx=0;showStory()}else closeStory()}};
 window.prevStory=()=>{if(!curStUser)return;if(curStIdx>0){curStIdx--;showStory()}else{const us=Object.keys(stByUser);const i=us.indexOf(curStUser);if(i>0){curStUser=us[i-1];curStIdx=stByUser[curStUser].length-1;showStory()}}};
 window.closeStory=()=>{document.getElementById('story-viewer').classList.remove('show');if(stTmr){clearInterval(stTmr);stTmr=null}document.getElementById('story-media').innerHTML='';curStUser=null;curStIdx=0};
